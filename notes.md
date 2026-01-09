@@ -1,0 +1,1 @@
+This is notes.md, where I keep the notes. Hopefully, assuming I uploaded this to the repo and github correctly, this is proof that everything is in working order.
