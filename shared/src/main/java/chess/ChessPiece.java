@@ -55,9 +55,10 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
         if (piece.getPieceType() == PieceType.KING) {
-           /* return List.of(new ChessMove(new ChessPosition(5,4), new ChessPosition(1, 8), null));
-            */
             chess.KingMoveCalc moves = new KingMoveCalc();
+            return moves.pieceMoves(board, myPosition);
+        } else if (piece.getPieceType() == PieceType.ROOK) {
+            chess.RookMoveCalc moves = new RookMoveCalc();
             return moves.pieceMoves(board, myPosition);
         }
         return List.of();
