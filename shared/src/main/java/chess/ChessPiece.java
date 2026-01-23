@@ -60,8 +60,16 @@ public class ChessPiece {
         } else if (piece.getPieceType() == PieceType.ROOK) {
             chess.RookMoveCalc moves = new RookMoveCalc();
             return moves.pieceMoves(board, myPosition);
-        }
-        return List.of();
+        } else if (piece.getPieceType() == PieceType.BISHOP) {
+            chess.BishopMoveCalc moves = new BishopMoveCalc();
+            return moves.pieceMoves(board, myPosition);
+        } else if (piece.getPieceType() == PieceType.QUEEN) {
+            chess.QueenMoveCalc moves = new QueenMoveCalc();
+            return moves.pieceMoves(board, myPosition);
+        } else if (piece.getPieceType() == PieceType.KNIGHT) {
+            chess.KnightMoveCalc moves = new KnightMoveCalc();
+            return moves.pieceMoves(board, myPosition);
+        } return List.of();
     }
 
     @Override

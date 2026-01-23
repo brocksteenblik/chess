@@ -62,23 +62,6 @@ public class RookMoveCalc extends PieceMovesCalculator{
             else {break;}
         }
         col = myPosition.getColumn();
-        /*
-        for (int row = myPosition.getRow()-1; row <= myPosition.getRow()+1; row++){
-            if (row >= 1 && row <= 8) {
-                for (int col = myPosition.getColumn() - 1; col <= myPosition.getColumn() + 1; col++) {
-                    if (col >= 1 && col <= 8){
-                        ChessPiece maybeSpot = board.getPiece(new ChessPosition(row, col));
-                        if (maybeSpot == null){
-                            rookMoves.add(new ChessMove(new ChessPosition(myPosition.getRow(),myPosition.getColumn()), new ChessPosition(row, col), null));
-                        } else if (maybeSpot.getTeamColor() != rook.getTeamColor()) {
-                            rookMoves.add(new ChessMove(new ChessPosition(myPosition.getRow(),myPosition.getColumn()), new ChessPosition(row, col), null));
-                        }
-                    }
-                }
-            }
-        }
-
-         */
         return rookMoves;
     }
 }
