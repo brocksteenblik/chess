@@ -18,6 +18,9 @@ public class PieceMovesCalculator {
     }
 
     public boolean spotOccupiedByEnemy(ChessBoard board, ChessPiece piece, int row, int col){
+        if(row > 8 | col > 8 | row < 1 | col < 1){
+            return false;
+        }
         ChessPiece maybeSpot = board.getPiece(new ChessPosition(row, col));
         if (maybeSpot == null){
             return false;
