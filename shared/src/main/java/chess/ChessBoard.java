@@ -81,4 +81,38 @@ public class ChessBoard {
     public int hashCode() {
         return Arrays.deepHashCode(squares);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder string = new StringBuilder();
+        for (int row = 1; row < 9; row++){
+            for (int col = 1; col < 9; col++){
+                ChessPiece piece = getPiece(new ChessPosition(row, col));
+                if (piece == null){
+                    string.append("| ");
+                } else if (piece.getPieceType() == ChessPiece.PieceType.PAWN){
+                    if (piece.getTeamColor() == ChessGame.TeamColor.WHITE){string.append("|P");}
+                    else {string.append("|p");}
+                } else if (piece.getPieceType() == ChessPiece.PieceType.ROOK) {
+                    if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {string.append("|R");}
+                    else {string.append("|r");}
+                } else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
+                    if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {string.append("|N");}
+                    else {string.append("|n");}
+                } else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP) {
+                    if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {string.append("|B");}
+                    else {string.append("|b");}
+                } else if (piece.getPieceType() == ChessPiece.PieceType.KING) {
+                    if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {string.append("|K");}
+                    else {string.append("|k");}
+                } else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN) {
+                    if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {string.append("|Q");}
+                    else {string.append("|q");}
+                }
+            }
+            string.append("|");
+            string.append("\n");
+        }
+        return string.toString();
+    }
 }
