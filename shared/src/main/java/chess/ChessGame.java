@@ -53,11 +53,19 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = getBoard().getPiece(startPosition);
         ArrayList<ChessMove> moves = (ArrayList<ChessMove>) piece.pieceMoves(getBoard(), startPosition);
+        ArrayList<ChessMove> validMovesList = new ArrayList<>();
         ChessBoard board = getBoard();
         for (ChessMove move : moves){
             ChessBoard boardCopy = new ChessBoard(board);
+            boardCopy.addPiece(move.getEndPosition(), piece);
+            boardCopy.addPiece(move.getStartPosition(), null);
+            setBoard(boardCopy);
+            if (!isInCheck(piece.getTeamColor())){
+                validMovesList.add(move);
+            }
+            setBoard(board);
         }
-        return moves;
+        return validMovesList;
     }
 
     /**
@@ -68,8 +76,7 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPiece piece = getBoard().getPiece(move.getStartPosition());
-        ArrayList<ChessMove> moves = (ArrayList<ChessMove>) piece.pieceMoves(getBoard(), move.getStartPosition());
-        if (!moves.contains(move)){
+        if (piece == null | !validMoves(move.getStartPosition()).contains(move)){
             throw new InvalidMoveException();
         }
         getBoard().addPiece(move.getEndPosition(), piece);
