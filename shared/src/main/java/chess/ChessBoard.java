@@ -16,6 +16,13 @@ public class ChessBoard {
         
     }
 
+    public ChessBoard(ChessBoard copy){
+        squares = Arrays.copyOf(copy.squares, copy.squares.length);
+        for (int i = 0; i < 8; i++){
+            squares[i] = Arrays.copyOf(copy.squares[i], copy.squares[i].length);
+        }
+    }
+
     /**
      * Adds a chess piece to the chessboard
      *
@@ -85,7 +92,7 @@ public class ChessBoard {
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder();
-        for (int row = 1; row < 9; row++){
+        for (int row = 8; row > 0; row--){
             for (int col = 1; col < 9; col++){
                 ChessPiece piece = getPiece(new ChessPosition(row, col));
                 if (piece == null){
