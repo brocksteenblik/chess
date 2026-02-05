@@ -74,7 +74,7 @@ public class PawnMoveCalc extends PieceMovesCalculator{
                 }
                 if (col < 8) {
                     if (board.getPiece(new ChessPosition(row - 1, col + 1)) != null) {
-                        if (row == 7){
+                        if (row == 2){
                             promote(myPosition, row - 1, col + 1);
                         }
                         else{
