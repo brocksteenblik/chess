@@ -16,7 +16,7 @@ public class ChessGame {
     private TeamColor teamTurn = TeamColor.WHITE;
     private ChessBoard board = new ChessBoard();
     public ChessGame() {
-
+        board.resetBoard();
     }
 
     /**
@@ -136,7 +136,22 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (isInCheck(teamColor)){
+            for (int row = 1; row < 9; row++) {
+                for (int col = 1; col < 9; col++) {
+                    ChessPiece piece = getBoard().getPiece(new ChessPosition(row, col));
+                    if (piece != null){
+                        if (piece.getTeamColor() == teamColor){
+                            if (!validMoves(new ChessPosition(row, col)).isEmpty()){
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -174,11 +189,11 @@ public class ChessGame {
             return false;
         }
         ChessGame chessGame = (ChessGame) o;
-        return teamTurn == chessGame.teamTurn;
+        return teamTurn == chessGame.teamTurn && Objects.equals(board, chessGame.board);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(teamTurn);
+        return Objects.hash(teamTurn, board);
     }
 }

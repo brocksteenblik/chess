@@ -30,28 +30,29 @@ public class PieceMovesCalculator {
         }
         return false;
     }
-    /* I tried to turn the repeated code into one function, but I couldn't figure it out.
-    I figured it would be faster to code if I had less elegant code
-    public Collection<ChessMove> moveInALine(ChessBoard board, ChessPosition myPosition, ChessPiece piece, int row, int col, ArrayList<ChessMove> pieceMoves, int iterator, int direction){
-        if(iterator == row && direction > 0) {
-            while (iterator > 1) {
-                iterator += direction;
-                ChessMove move = possibleMove(board, myPosition, piece, iterator, col);
-                if (move != null) {
-                    if (spotOccupiedByEnemy(board, piece, row, col)) {
-                        pieceMoves.add(possibleMove(board, myPosition, piece, iterator, col));
-                        break;
-                    }
-                    pieceMoves.add(possibleMove(board, myPosition, piece, iterator, col));
-                } else {
-                    break;
-                }
-            }
-            return pieceMoves;
+    public boolean CheckSpotOpen(ChessBoard board, int row, int col){
+        if (board.getPiece(new ChessPosition(row, col)) == null){
+            return true;
         }
-
-        return null;
+        return false;
     }
 
-     */
+    public boolean CheckSpotOccupiedByOtherColor(ChessBoard board, ChessPiece originalPiece, int row, int col){
+        ChessPiece piece = board.getPiece(new ChessPosition(row, col));
+        if (originalPiece.getTeamColor() != piece.getTeamColor()){
+            return true;
+        }
+        return false;
+    }
+
+    public ArrayList<ChessMove> CheckAndAddNewSpace(ChessBoard board, ArrayList<ChessMove> pieceMoves, ChessPiece piece, ChessPosition myPosition, int row, int col){
+        if (CheckSpotOpen(board, row, col)) {
+            pieceMoves.add(new ChessMove(new ChessPosition(myPosition.getRow(), myPosition.getColumn()), new ChessPosition(row, col), null));
+        } else {
+            if (CheckSpotOccupiedByOtherColor(board, piece, row, col)){
+                pieceMoves.add(new ChessMove(new ChessPosition(myPosition.getRow(), myPosition.getColumn()), new ChessPosition(row, col), null));
+            }
+        }
+        return pieceMoves;
+    }
 }
