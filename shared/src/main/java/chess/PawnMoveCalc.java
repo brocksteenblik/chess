@@ -22,10 +22,10 @@ public class PawnMoveCalc extends PieceMovesCalculator{
                         promote(myPosition, row + 1, col);
                     }
                     else {
-                        CheckAndAddNewSpace(board, pawnMoves, pawn, myPosition, row + 1, col);
+                        checkAndAddNewSpace(board, pawnMoves, pawn, myPosition, row + 1, col);
                     }
                     if (row == 2 && board.getPiece(new ChessPosition(row + 2, col)) == null) {
-                        CheckAndAddNewSpace(board, pawnMoves, pawn, myPosition, row + 2, col);
+                        checkAndAddNewSpace(board, pawnMoves, pawn, myPosition, row + 2, col);
                     }
                 }
                 if (col > 1) {
@@ -34,7 +34,7 @@ public class PawnMoveCalc extends PieceMovesCalculator{
                             promote(myPosition, row + 1, col - 1);
                         }
                         else{
-                            CheckAndAddNewSpace(board, pawnMoves, pawn, myPosition, row + 1, col - 1);
+                            checkAndAddNewSpace(board, pawnMoves, pawn, myPosition, row + 1, col - 1);
                         }
                     }
                 }
@@ -44,7 +44,7 @@ public class PawnMoveCalc extends PieceMovesCalculator{
                             promote(myPosition, row + 1, col + 1);
                         }
                         else{
-                            CheckAndAddNewSpace(board, pawnMoves, pawn, myPosition, row + 1, col + 1);
+                            checkAndAddNewSpace(board, pawnMoves, pawn, myPosition, row + 1, col + 1);
                         }                    }
                 }
             }
@@ -56,10 +56,10 @@ public class PawnMoveCalc extends PieceMovesCalculator{
                         promote(myPosition, row - 1, col);
                     }
                     else {
-                        CheckAndAddNewSpace(board, pawnMoves, pawn, myPosition, row - 1, col);
+                        checkAndAddNewSpace(board, pawnMoves, pawn, myPosition, row - 1, col);
                     }
                     if (row == 7 && board.getPiece(new ChessPosition(row - 2, col)) == null) {
-                        CheckAndAddNewSpace(board, pawnMoves, pawn, myPosition, row - 2, col);
+                        checkAndAddNewSpace(board, pawnMoves, pawn, myPosition, row - 2, col);
                     }
                 }
                 if (col > 1) {
@@ -68,7 +68,7 @@ public class PawnMoveCalc extends PieceMovesCalculator{
                             promote(myPosition, row - 1, col - 1);
                         }
                         else{
-                            CheckAndAddNewSpace(board, pawnMoves, pawn, myPosition, row - 1, col - 1);
+                            checkAndAddNewSpace(board, pawnMoves, pawn, myPosition, row - 1, col - 1);
                         }
                     }
                 }
@@ -78,7 +78,7 @@ public class PawnMoveCalc extends PieceMovesCalculator{
                             promote(myPosition, row - 1, col + 1);
                         }
                         else{
-                            CheckAndAddNewSpace(board, pawnMoves, pawn, myPosition, row - 1, col + 1);
+                            checkAndAddNewSpace(board, pawnMoves, pawn, myPosition, row - 1, col + 1);
                         }                    }
                 }
             }

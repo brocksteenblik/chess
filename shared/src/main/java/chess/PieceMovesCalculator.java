@@ -1,7 +1,6 @@
 package chess;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class PieceMovesCalculator {
     /*
@@ -30,14 +29,14 @@ public class PieceMovesCalculator {
         }
         return false;
     }
-    public boolean CheckSpotOpen(ChessBoard board, int row, int col){
+    public boolean checkSpotOpen(ChessBoard board, int row, int col){
         if (board.getPiece(new ChessPosition(row, col)) == null){
             return true;
         }
         return false;
     }
 
-    public boolean CheckSpotOccupiedByOtherColor(ChessBoard board, ChessPiece originalPiece, int row, int col){
+    public boolean checkSpotOccupiedByOtherColor(ChessBoard board, ChessPiece originalPiece, int row, int col){
         ChessPiece piece = board.getPiece(new ChessPosition(row, col));
         if (originalPiece.getTeamColor() != piece.getTeamColor()){
             return true;
@@ -45,14 +44,13 @@ public class PieceMovesCalculator {
         return false;
     }
 
-    public ArrayList<ChessMove> CheckAndAddNewSpace(ChessBoard board, ArrayList<ChessMove> pieceMoves, ChessPiece piece, ChessPosition myPosition, int row, int col){
-        if (CheckSpotOpen(board, row, col)) {
+    public void checkAndAddNewSpace(ChessBoard board, ArrayList<ChessMove> pieceMoves, ChessPiece piece, ChessPosition myPosition, int row, int col){
+        if (checkSpotOpen(board, row, col)) {
             pieceMoves.add(new ChessMove(new ChessPosition(myPosition.getRow(), myPosition.getColumn()), new ChessPosition(row, col), null));
         } else {
-            if (CheckSpotOccupiedByOtherColor(board, piece, row, col)){
+            if (checkSpotOccupiedByOtherColor(board, piece, row, col)){
                 pieceMoves.add(new ChessMove(new ChessPosition(myPosition.getRow(), myPosition.getColumn()), new ChessPosition(row, col), null));
             }
         }
-        return pieceMoves;
     }
 }
