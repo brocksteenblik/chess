@@ -13,31 +13,15 @@ public class QueenMoveCalc extends PieceMovesCalculator {
         while (row > 1) {
             row += -1;
             ChessMove move = possibleMove(board, myPosition, queen, row, col);
-            if (move != null) {
-                if (spotOccupiedByEnemy(board, queen, row, col)) {
-                    queenMoves.add(possibleMove(board, myPosition, queen, row, col));
-                    break;
-                }
-                queenMoves.add(possibleMove(board, myPosition, queen, row, col));
-            } else {
+            if (spotAvailable(board, myPosition, move, queen, row, col)) {
                 break;
             }
         }
-
-        /*
-        rookMoves = (ArrayList<ChessMove>) moveInALine(board, myPosition, queen, row, col, rookMoves, row, -1);
-         */
         row = myPosition.getRow();
         while (row < 8) {
             row += 1;
             ChessMove move = possibleMove(board, myPosition, queen, row, col);
-            if (move != null) {
-                if (spotOccupiedByEnemy(board, queen, row, col)) {
-                    queenMoves.add(possibleMove(board, myPosition, queen, row, col));
-                    break;
-                }
-                queenMoves.add(possibleMove(board, myPosition, queen, row, col));
-            } else {
+            if (spotAvailable(board, myPosition, move, queen, row, col)) {
                 break;
             }
         }
@@ -45,13 +29,7 @@ public class QueenMoveCalc extends PieceMovesCalculator {
         while (col > 1) {
             col += -1;
             ChessMove move = possibleMove(board, myPosition, queen, row, col);
-            if (move != null) {
-                if (spotOccupiedByEnemy(board, queen, row, col)) {
-                    queenMoves.add(possibleMove(board, myPosition, queen, row, col));
-                    break;
-                }
-                queenMoves.add(possibleMove(board, myPosition, queen, row, col));
-            } else {
+            if (spotAvailable(board, myPosition, move, queen, row, col)) {
                 break;
             }
         }
@@ -59,13 +37,7 @@ public class QueenMoveCalc extends PieceMovesCalculator {
         while (col < 8) {
             col += 1;
             ChessMove move = possibleMove(board, myPosition, queen, row, col);
-            if (move != null) {
-                if (spotOccupiedByEnemy(board, queen, row, col)) {
-                    queenMoves.add(possibleMove(board, myPosition, queen, row, col));
-                    break;
-                }
-                queenMoves.add(possibleMove(board, myPosition, queen, row, col));
-            } else {
+            if (spotAvailable(board, myPosition, move, queen, row, col)) {
                 break;
             }
         }
@@ -74,13 +46,9 @@ public class QueenMoveCalc extends PieceMovesCalculator {
             row += -1;
             col += -1;
             ChessMove move = possibleMove(board, myPosition, queen, row, col);
-            if (move != null){
-                if(spotOccupiedByEnemy(board, queen, row, col)){
-                    queenMoves.add(possibleMove(board, myPosition, queen, row, col));
-                    break;
-                }
-                queenMoves.add(possibleMove(board, myPosition, queen, row, col));}
-            else {break;}
+            if (spotAvailable(board, myPosition, move, queen, row, col)) {
+                break;
+            }
         }
         row = myPosition.getRow();
         col = myPosition.getColumn();
@@ -88,13 +56,9 @@ public class QueenMoveCalc extends PieceMovesCalculator {
             row += 1;
             col += 1;
             ChessMove move = possibleMove(board, myPosition, queen, row, col);
-            if (move != null){
-                if(spotOccupiedByEnemy(board, queen, row, col)){
-                    queenMoves.add(possibleMove(board, myPosition, queen, row, col));
-                    break;
-                }
-                queenMoves.add(possibleMove(board, myPosition, queen, row, col));}
-            else {break;}
+            if (spotAvailable(board, myPosition, move, queen, row, col)) {
+                break;
+            }
         }
         row = myPosition.getRow();
         col = myPosition.getColumn();
@@ -102,13 +66,9 @@ public class QueenMoveCalc extends PieceMovesCalculator {
             col += -1;
             row += 1;
             ChessMove move = possibleMove(board, myPosition, queen, row, col);
-            if (move != null){
-                if(spotOccupiedByEnemy(board, queen, row, col)){
-                    queenMoves.add(possibleMove(board, myPosition, queen, row, col));
-                    break;
-                }
-                queenMoves.add(possibleMove(board, myPosition, queen, row, col));}
-            else {break;}
+            if (spotAvailable(board, myPosition, move, queen, row, col)) {
+                break;
+            }
         }
         row = myPosition.getRow();
         col = myPosition.getColumn();
@@ -116,16 +76,25 @@ public class QueenMoveCalc extends PieceMovesCalculator {
             col += 1;
             row += -1;
             ChessMove move = possibleMove(board, myPosition, queen, row, col);
-            if (move != null){
-                if(spotOccupiedByEnemy(board, queen, row, col)){
-                    queenMoves.add(possibleMove(board, myPosition, queen, row, col));
-                    break;
-                }
-                queenMoves.add(possibleMove(board, myPosition, queen, row, col));}
-            else {break;}
+            if (spotAvailable(board, myPosition, move, queen, row, col)) {
+                break;
+            }
         }
         row = myPosition.getRow();
         col = myPosition.getColumn();
         return queenMoves;
+    }
+
+    private boolean spotAvailable(ChessBoard board, ChessPosition myPosition, ChessMove move, ChessPiece queen, int row, int col) {
+        if (move != null) {
+            if (spotOccupiedByEnemy(board, queen, row, col)) {
+                queenMoves.add(possibleMove(board, myPosition, queen, row, col));
+                return true;
+            }
+            queenMoves.add(possibleMove(board, myPosition, queen, row, col));
+        } else {
+            return true;
+        }
+        return false;
     }
 }
