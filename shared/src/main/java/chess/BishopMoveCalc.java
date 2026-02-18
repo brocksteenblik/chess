@@ -15,8 +15,7 @@ public class BishopMoveCalc extends PieceMovesCalculator{
             col += -1;
             ChessMove move = possibleMove(board, myPosition, bishop, row, col);
             if (move != null){
-                if(spotOccupiedByEnemy(board, bishop, row, col)){
-                    bishopMoves.add(possibleMove(board, myPosition, bishop, row, col));
+                if (enemyPieceInWay(board, myPosition, bishop, row, col)) {
                     break;
                 }
                 bishopMoves.add(possibleMove(board, myPosition, bishop, row, col));}
@@ -29,8 +28,7 @@ public class BishopMoveCalc extends PieceMovesCalculator{
             col += 1;
             ChessMove move = possibleMove(board, myPosition, bishop, row, col);
             if (move != null){
-                if(spotOccupiedByEnemy(board, bishop, row, col)){
-                    bishopMoves.add(possibleMove(board, myPosition, bishop, row, col));
+                if (enemyPieceInWay(board, myPosition, bishop, row, col)) {
                     break;
                 }
                 bishopMoves.add(possibleMove(board, myPosition, bishop, row, col));}
@@ -43,8 +41,7 @@ public class BishopMoveCalc extends PieceMovesCalculator{
             row += 1;
             ChessMove move = possibleMove(board, myPosition, bishop, row, col);
             if (move != null){
-                if(spotOccupiedByEnemy(board, bishop, row, col)){
-                    bishopMoves.add(possibleMove(board, myPosition, bishop, row, col));
+                if (enemyPieceInWay(board, myPosition, bishop, row, col)) {
                     break;
                 }
                 bishopMoves.add(possibleMove(board, myPosition, bishop, row, col));}
@@ -57,15 +54,20 @@ public class BishopMoveCalc extends PieceMovesCalculator{
             row += -1;
             ChessMove move = possibleMove(board, myPosition, bishop, row, col);
             if (move != null){
-                if(spotOccupiedByEnemy(board, bishop, row, col)){
-                    bishopMoves.add(possibleMove(board, myPosition, bishop, row, col));
+                if (enemyPieceInWay(board, myPosition, bishop, row, col)) {
                     break;
                 }
                 bishopMoves.add(possibleMove(board, myPosition, bishop, row, col));}
             else {break;}
         }
-        row = myPosition.getRow();
-        col = myPosition.getColumn();
         return bishopMoves;
+    }
+
+    private boolean enemyPieceInWay(ChessBoard board, ChessPosition myPosition, ChessPiece bishop, int row, int col) {
+        if(spotOccupiedByEnemy(board, bishop, row, col)){
+            bishopMoves.add(possibleMove(board, myPosition, bishop, row, col));
+            return true;
+        }
+        return false;
     }
 }

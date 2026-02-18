@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class QueenMoveCalc extends PieceMovesCalculator {
-    ArrayList<ChessMove> queenMoves = new ArrayList<ChessMove>() {};
+    ArrayList<ChessMove> queenMoves = new ArrayList<>() {};
 
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece queen = board.getPiece(myPosition);
