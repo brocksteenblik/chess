@@ -53,11 +53,4 @@ public class KnightMoveCalc extends  PieceMovesCalculator{
 
         return knightMoves;
     }
-
-    /*
-    private Collection<ChessMove> knightMoveOneDirection (ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves, int moveByTwo, int moveByOne){
-
-    }
-
-     */
 }
