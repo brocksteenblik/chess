@@ -12,13 +12,17 @@ public class KingMoveCalc extends PieceMovesCalculator{
             if (i >= 1 && i <= 8) {
                 for (int j = myPosition.getColumn() - 1; j <= myPosition.getColumn() + 1; j++) {
                     if (j >= 1 && j <= 8){
-                        ChessMove move = possibleMove(board, myPosition, king, i, j);
-                        if (move != null){
-                            kingMoves.add(possibleMove(board, myPosition, king, i, j));}
+                        makeMove(board, myPosition, king, i, j);
                     }
                 }
             }
         }
         return kingMoves;
+    }
+
+    private void makeMove(ChessBoard board, ChessPosition myPosition, ChessPiece king, int i, int j) {
+        ChessMove move = possibleMove(board, myPosition, king, i, j);
+        if (move != null){
+            kingMoves.add(possibleMove(board, myPosition, king, i, j));}
     }
 }
