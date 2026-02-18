@@ -53,4 +53,12 @@ public class PieceMovesCalculator {
             }
         }
     }
+
+    public boolean enemyPieceInWay(ArrayList<ChessMove> pieceMoves, ChessBoard board, ChessPosition myPosition, ChessPiece piece, int row, int col) {
+        if(spotOccupiedByEnemy(board, piece, row, col)){
+            pieceMoves.add(possibleMove(board, myPosition, piece, row, col));
+            return true;
+        }
+        return false;
+    }
 }

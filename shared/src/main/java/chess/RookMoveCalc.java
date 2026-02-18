@@ -14,7 +14,7 @@ public class RookMoveCalc extends PieceMovesCalculator{
             row -= 1;
             ChessMove move = possibleMove(board, myPosition, rook, row, col);
             if (move != null){
-                if (enemyInTheWay(board, myPosition, rook, row, col)) {
+                if (enemyPieceInWay(rookMoves, board, myPosition, rook, row, col)) {
                     break;
                 }
                 rookMoves.add(possibleMove(board, myPosition, rook, row, col));}
@@ -29,7 +29,7 @@ public class RookMoveCalc extends PieceMovesCalculator{
             row += 1;
             ChessMove move = possibleMove(board, myPosition, rook, row, col);
             if (move != null){
-                if (enemyInTheWay(board, myPosition, rook, row, col)) {
+                if (enemyPieceInWay(rookMoves, board, myPosition, rook, row, col)) {
                     break;
                 }
                 rookMoves.add(possibleMove(board, myPosition, rook, row, col));}
@@ -40,7 +40,7 @@ public class RookMoveCalc extends PieceMovesCalculator{
             col -= 1;
             ChessMove move = possibleMove(board, myPosition, rook, row, col);
             if (move != null){
-                if (enemyInTheWay(board, myPosition, rook, row, col)) {
+                if (enemyPieceInWay(rookMoves, board, myPosition, rook, row, col)) {
                     break;
                 }
                 rookMoves.add(possibleMove(board, myPosition, rook, row, col));}
@@ -51,7 +51,7 @@ public class RookMoveCalc extends PieceMovesCalculator{
             col += 1;
             ChessMove move = possibleMove(board, myPosition, rook, row, col);
             if (move != null){
-                if (enemyInTheWay(board, myPosition, rook, row, col)) {
+                if (enemyPieceInWay(rookMoves, board, myPosition, rook, row, col)) {
                     break;
                 }
                 rookMoves.add(possibleMove(board, myPosition, rook, row, col));}
@@ -60,12 +60,6 @@ public class RookMoveCalc extends PieceMovesCalculator{
         return rookMoves;
     }
 
-    private boolean enemyInTheWay(ChessBoard board, ChessPosition myPosition, ChessPiece rook, int row, int col) {
-        if(spotOccupiedByEnemy(board, rook, row, col)){
-            rookMoves.add(possibleMove(board, myPosition, rook, row, col));
-            return true;
-        }
-        return false;
-    }
+
 }
 
