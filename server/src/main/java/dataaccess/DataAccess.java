@@ -7,9 +7,11 @@ public interface DataAccess {
 
     //createUser: Create a new user.
 
+    void createUser(UserData userData);
+
     //getUser: Retrieve a user with the given username.
 
-    RegisterRequest getUser(String username);
+    UserData getUser(String username);
 
     //createGame: Create a new game.
 
@@ -20,6 +22,8 @@ public interface DataAccess {
     //updateGame: Updates a chess game. It should replace the chess game string corresponding to a given gameID. This is used when players join a game or when a move is made.
 
     //createAuth: Create a new authorization.
+
+    AuthData createAuth(String authToken, String username);
 
     //getAuth: Retrieve an authorization given an authToken.
 

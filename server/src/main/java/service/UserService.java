@@ -1,28 +1,30 @@
 package service;
 
+import dataaccess.DataAccess;
+import model.AuthData;
 import model.RegisterRequest;
 import model.RegisterResult;
-import dataaccess.MemoryDataAccess;
+import model.UserData;
 
 public class UserService {
 
-    private final MemoryDataAccess dataAccess;
+    private final DataAccess dataAccess;
 
-    public UserService(MemoryDataAccess dataAccess) {
+    public UserService(DataAccess dataAccess) {
         this.dataAccess = dataAccess;
     }
 
     public RegisterResult register(RegisterRequest registerRequest){
-        isUserDataNew(registerRequest);
+        isUsernameTaken(registerRequest);
+        UserData userData = new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email());
+        dataAccess.createUser(userData);
+        AuthData authData = new AuthData("", registerRequest.username());
         return new RegisterResult("placeholder", "placeholder");
     }
 
-    private void isUserDataNew(RegisterRequest registerRequest) throws AlreadyTaken{
+    private void isUsernameTaken(RegisterRequest registerRequest) throws AlreadyTaken{
         if (dataAccess.getUser(registerRequest.username()) != null){
             throw new AlreadyTaken(403, "Error: username already taken");
-        }
-        else if (dataAccess.getUser(registerRequest.email()) != null){
-            throw new AlreadyTaken(403, "Error: email already taken");
         }
     }
 }
