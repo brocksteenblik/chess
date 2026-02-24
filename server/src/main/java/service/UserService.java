@@ -3,10 +3,7 @@ package service;
 import com.google.gson.Gson;
 import dataaccess.DataAccess;
 import handler.InputException;
-import model.AuthData;
-import model.RegisterRequest;
-import model.RegisterResult;
-import model.UserData;
+import model.*;
 
 import java.util.Map;
 
@@ -24,6 +21,18 @@ public class UserService {
         dataAccess.createUser(userData);
         AuthData authData = dataAccess.createAuth("", registerRequest.username());
         return new RegisterResult(authData.username(), authData.authToken());
+    }
+
+    public LoginResult login(LoginRequest loginRequest){
+        UserData userData = dataAccess.getUser(loginRequest.username());
+        if (userData == null){
+            // Implement InvalidUsernameException later
+        }
+        if (!userData.password().equals(loginRequest.password())){
+            //Implement InvalidPasswordException later
+        }
+        AuthData authData = dataAccess.createAuth("", loginRequest.username());
+        return new LoginResult(authData.username(), authData.authToken());
     }
 
     public void deleteDB(){

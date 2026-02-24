@@ -4,8 +4,7 @@ import com.google.gson.Gson;
 import dataaccess.DataAccess;
 import dataaccess.MemoryDataAccess;
 import io.javalin.http.Context;
-import model.RegisterRequest;
-import model.RegisterResult;
+import model.*;
 import org.eclipse.jetty.http.HttpStatus;
 import org.jetbrains.annotations.NotNull;
 import service.UserService;
@@ -22,20 +21,34 @@ public class Handler {
 
     public void addUser(@NotNull Context context) throws InputException{
         RegisterRequest registerRequest = new Gson().fromJson(context.body(), RegisterRequest.class);
-        // Maybe try doing a Try Catch block?
+        // Maybe try doing a Try Catch block for the Exception in UserService?
         if (registerRequest.email() == null
         || registerRequest.password() == null
         || registerRequest.username() == null){
-            InputException error = new InputException(400, "Error: bad request");
-            context.status(error.getCode());
-            context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+            giveBadRequest(context);
             return;
         }
         RegisterResult registerResult = userService.register(registerRequest);
         context.result(new Gson().toJson(registerResult));
     }
 
+    public void login(@NotNull Context context){
+        LoginRequest loginRequest = new Gson().fromJson(context.body(), LoginRequest.class);
+        if (loginRequest.username() == null
+            || loginRequest.password() == null){
+            giveBadRequest(context);
+        }
+        LoginResult loginResult = userService.login(loginRequest);
+        context.result(new Gson().toJson(loginResult));
+    }
+
     public void clear(@NotNull Context context) {
         userService.deleteDB();
+    }
+
+    private static void giveBadRequest(@NotNull Context context) {
+        InputException error = new InputException(400, "Error: bad request");
+        context.status(error.getCode());
+        context.result(new Gson().toJson(Map.of("message", error.getMessage())));
     }
 }
