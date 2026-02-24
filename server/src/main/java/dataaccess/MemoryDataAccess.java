@@ -8,6 +8,7 @@ public class MemoryDataAccess implements DataAccess {
 
     final private HashMap<String, UserData> users = new HashMap<>();
     final private HashMap<String, AuthData> auths = new HashMap<>();
+    final private HashMap<Integer, GameData> games = new HashMap<>();
 
     public UserData getUser(String username) {
         return users.get(username);
@@ -22,5 +23,11 @@ public class MemoryDataAccess implements DataAccess {
         AuthData authData =  new AuthData(authToken, username);
         auths.put(authToken, authData);
         return authData;
+    }
+
+    public void clear(){
+        users.clear();
+        auths.clear();
+        games.clear();
     }
 }

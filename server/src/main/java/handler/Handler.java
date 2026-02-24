@@ -34,4 +34,8 @@ public class Handler {
         RegisterResult registerResult = userService.register(registerRequest);
         context.result(new Gson().toJson(registerResult));
     }
+
+    public void clear(@NotNull Context context) {
+        userService.deleteDB();
+    }
 }

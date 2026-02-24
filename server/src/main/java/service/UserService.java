@@ -26,6 +26,10 @@ public class UserService {
         return new RegisterResult(authData.username(), authData.authToken());
     }
 
+    public void deleteDB(){
+        dataAccess.clear();
+    }
+
     private void isUsernameTaken(RegisterRequest registerRequest) throws AlreadyTaken{
         if (dataAccess.getUser(registerRequest.username()) != null){
             throw new AlreadyTaken(403, "Error: username already taken");

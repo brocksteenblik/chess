@@ -5,6 +5,8 @@ import model.*;
 public interface DataAccess {
     //clear: A method for clearing all data from the database. This is used during testing.
 
+    void clear();
+
     //createUser: Create a new user.
 
     void createUser(UserData userData);
