@@ -11,6 +11,7 @@ public class InputException extends RuntimeException {
         super(message);
         this.code = code;
     }
+    public int getCode(){return code;}
 
     public String toJson(){return new Gson().toJson(Map.of("message", getMessage(), "status", code));}
 }

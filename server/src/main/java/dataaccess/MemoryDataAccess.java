@@ -7,6 +7,7 @@ import java.util.UUID;
 public class MemoryDataAccess implements DataAccess {
 
     final private HashMap<String, UserData> users = new HashMap<>();
+    final private HashMap<String, AuthData> auths = new HashMap<>();
 
     public UserData getUser(String username) {
         return users.get(username);
@@ -18,6 +19,8 @@ public class MemoryDataAccess implements DataAccess {
 
     public AuthData createAuth(String authToken, String username){
         authToken = UUID.randomUUID().toString();
-        return new AuthData(authToken, username);
+        AuthData authData =  new AuthData(authToken, username);
+        auths.put(authToken, authData);
+        return authData;
     }
 }
