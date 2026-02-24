@@ -15,7 +15,7 @@ public class UserService {
         this.dataAccess = dataAccess;
     }
 
-    public RegisterResult register(RegisterRequest registerRequest){
+    public RegisterResult register(RegisterRequest registerRequest) throws AlreadyTaken{
         isUsernameTaken(registerRequest);
         UserData userData = new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email());
         dataAccess.createUser(userData);

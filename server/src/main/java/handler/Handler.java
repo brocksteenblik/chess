@@ -7,6 +7,7 @@ import io.javalin.http.Context;
 import model.*;
 import org.eclipse.jetty.http.HttpStatus;
 import org.jetbrains.annotations.NotNull;
+import service.AlreadyTaken;
 import service.UserService;
 
 import java.util.Map;
@@ -21,15 +22,20 @@ public class Handler {
 
     public void addUser(@NotNull Context context) throws InputException{
         RegisterRequest registerRequest = new Gson().fromJson(context.body(), RegisterRequest.class);
-        // Maybe try doing a Try Catch block for the Exception in UserService?
         if (registerRequest.email() == null
         || registerRequest.password() == null
         || registerRequest.username() == null){
             giveBadRequest(context);
             return;
         }
-        RegisterResult registerResult = userService.register(registerRequest);
-        context.result(new Gson().toJson(registerResult));
+        try {
+            RegisterResult registerResult = userService.register(registerRequest);
+            context.result(new Gson().toJson(registerResult));
+        } catch(AlreadyTaken error){
+            context.status(error.getCode());
+            context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+        }
+
     }
 
     public void login(@NotNull Context context){
