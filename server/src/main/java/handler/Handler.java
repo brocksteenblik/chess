@@ -52,7 +52,19 @@ public class Handler {
             context.status(error.getCode());
             context.result(new Gson().toJson(Map.of("message", error.getMessage())));
         }
+    }
 
+    public void logout(@NotNull Context context){
+        LogoutRequest logoutRequest = new LogoutRequest(context.header("Authorization"));
+        if (logoutRequest.authToken() == null){
+            giveBadRequest(context);
+        }
+        try{
+            userService.logout(logoutRequest);
+        } catch(Unauthorized error){
+            context.status(error.getCode());
+            context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+        }
     }
 
     public void clear(@NotNull Context context) {

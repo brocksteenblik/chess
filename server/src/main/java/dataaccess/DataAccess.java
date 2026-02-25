@@ -28,6 +28,8 @@ public interface DataAccess {
     AuthData createAuth(String authToken, String username);
 
     //getAuth: Retrieve an authorization given an authToken.
+    AuthData getAuth(String authToken);
 
     //deleteAuth: Delete an authorization so that it is no longer valid
+    void deleteAuth(AuthData authData);
 }

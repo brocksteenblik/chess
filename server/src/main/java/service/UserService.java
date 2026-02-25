@@ -39,6 +39,14 @@ public class UserService {
         }
     }
 
+    public void logout(LogoutRequest logoutRequest){
+        AuthData authData = dataAccess.getAuth(logoutRequest.authToken());
+        if (authData == null){
+            throw new Unauthorized(401, "Error: Unauthorized");
+        }
+        dataAccess.deleteAuth(authData);
+    }
+
     public void deleteDB(){
         dataAccess.clear();
     }
