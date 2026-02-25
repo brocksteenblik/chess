@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.MemoryDataAccess;
+import model.LoginRequest;
 import model.RegisterRequest;
 import model.RegisterResult;
 import org.junit.jupiter.api.Assertions;
@@ -26,6 +27,30 @@ public class UserServiceTests {
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
         service.register(user);
         Assertions.assertThrows(AlreadyTaken.class, ()->service.register(user));
+    }
+
+    @Test
+    void userLogin(){
+        var user = new RegisterRequest("Brock", "1234", "email@emails.com");
+        service.register(user);
+        var login = new LoginRequest("Brock", "1234");
+        Assertions.assertDoesNotThrow(()->service.login(login));
+    }
+
+    @Test
+    void wrongUsernameLogin(){
+        var user = new RegisterRequest("Brock", "1234", "email@emails.com");
+        service.register(user);
+        var login = new LoginRequest("Not Brock", "1234");
+        Assertions.assertThrows((Unauthorized.class), ()->service.login(login));
+    }
+
+    @Test
+    void wrongPasswordLogin(){
+        var user = new RegisterRequest("Brock", "1234", "email@emails.com");
+        service.register(user);
+        var login = new LoginRequest("Brock", "adsfadsfds");
+        Assertions.assertThrows((Unauthorized.class), ()->service.login(login));
     }
 
     @Test
