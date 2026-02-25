@@ -8,6 +8,7 @@ import model.*;
 import org.eclipse.jetty.http.HttpStatus;
 import org.jetbrains.annotations.NotNull;
 import service.AlreadyTaken;
+import service.Unauthorized;
 import service.UserService;
 
 import java.util.Map;
@@ -38,14 +39,20 @@ public class Handler {
 
     }
 
-    public void login(@NotNull Context context){
+    public void login(@NotNull Context context) throws Unauthorized {
         LoginRequest loginRequest = new Gson().fromJson(context.body(), LoginRequest.class);
         if (loginRequest.username() == null
             || loginRequest.password() == null){
             giveBadRequest(context);
         }
-        LoginResult loginResult = userService.login(loginRequest);
-        context.result(new Gson().toJson(loginResult));
+        try {
+            LoginResult loginResult = userService.login(loginRequest);
+            context.result(new Gson().toJson(loginResult));
+        } catch(Unauthorized error){
+            context.status(error.getCode());
+            context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+        }
+
     }
 
     public void clear(@NotNull Context context) {

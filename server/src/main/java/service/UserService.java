@@ -23,16 +23,20 @@ public class UserService {
         return new RegisterResult(authData.username(), authData.authToken());
     }
 
-    public LoginResult login(LoginRequest loginRequest){
+    public LoginResult login(LoginRequest loginRequest) throws Unauthorized{
         UserData userData = dataAccess.getUser(loginRequest.username());
-        if (userData == null){
-            // Implement InvalidUsernameException later
-        }
-        if (!userData.password().equals(loginRequest.password())){
-            //Implement InvalidPasswordException later
-        }
+        authorizeLogin(loginRequest, userData);
         AuthData authData = dataAccess.createAuth("", loginRequest.username());
         return new LoginResult(authData.username(), authData.authToken());
+    }
+
+    private static void authorizeLogin(LoginRequest loginRequest, UserData userData) {
+        if (userData == null){
+            throw new Unauthorized(401, "Error: Unauthorized");
+        }
+        if (!userData.password().equals(loginRequest.password())){
+            throw new Unauthorized(401, "Error: Unauthorized");
+        }
     }
 
     public void deleteDB(){
