@@ -71,6 +71,17 @@ public class Handler {
         }
     }
 
+    public void getGames(@NotNull Context context) {
+        ListGamesRequest listGamesRequest = new ListGamesRequest(context.header("Authorization"));
+        try{
+            ListGamesResult listGamesResult = gameService.requestGamesList(listGamesRequest);
+            context.result(new Gson().toJson(listGamesResult));
+        } catch(Unauthorized error){
+            context.status(error.getCode());
+            context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+        }
+    }
+
     public void clear(@NotNull Context context) {
         userService.deleteDB();
     }
