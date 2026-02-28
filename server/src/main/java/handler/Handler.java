@@ -82,6 +82,17 @@ public class Handler {
         }
     }
 
+    public void newGame(@NotNull Context context) {
+        CreateGameRequest createGameRequest = new CreateGameRequest(context.header("Authorization"), context.body());
+        try{
+            CreateGameResult createGameResult = gameService.newGame(createGameRequest);
+            context.result(new Gson().toJson(createGameResult));
+        } catch (Unauthorized error){
+            context.status(error.getCode());
+            context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+        }
+    }
+
     public void clear(@NotNull Context context) {
         userService.deleteDB();
     }

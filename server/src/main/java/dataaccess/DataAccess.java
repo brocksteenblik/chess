@@ -19,6 +19,8 @@ public interface DataAccess {
 
     //createGame: Create a new game.
 
+    int createGame(String gameName);
+
     //getGame: Retrieve a specified game with the given game ID.
 
     //listGames: Retrieve all games.

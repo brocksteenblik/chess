@@ -12,9 +12,20 @@ public class GameService {
 
     public ListGamesResult requestGamesList(ListGamesRequest listGamesRequest){
         AuthData authData = dataAccess.getAuth(listGamesRequest.authToken());
+        checkAuthInDB(authData);
+        return dataAccess.listGames();
+    }
+
+    public CreateGameResult newGame(CreateGameRequest createGameRequest){
+        AuthData authData = dataAccess.getAuth(createGameRequest.authToken());
+        checkAuthInDB(authData);
+        int gameID = dataAccess.createGame(createGameRequest.gameName());
+        return new CreateGameResult(gameID);
+    }
+
+    private static void checkAuthInDB(AuthData authData) {
         if (authData == null){
             throw new Unauthorized(401, "Error: Unauthorized");
         }
-        return dataAccess.listGames();
     }
 }
