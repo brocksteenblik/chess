@@ -1,10 +1,10 @@
 package model;
 
-public record CreateGameResult(int GameID) {
+public record CreateGameResult(int gameID) {
     @Override
     public String toString() {
         return "CreateGameResult{" +
-                "GameID:'" + GameID + '\'' +
+                "GameID:'" + gameID + '\'' +
                 '}';
     }
 }

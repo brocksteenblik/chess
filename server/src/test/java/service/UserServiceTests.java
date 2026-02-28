@@ -3,85 +3,85 @@ package service;
 import dataaccess.MemoryDataAccess;
 import model.LoginRequest;
 import model.*;
-import model.RegisterResult;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class UserServiceTests {
-    static final UserService service = new UserService(new MemoryDataAccess());
+    static final UserService SERVICE = new UserService(new MemoryDataAccess());
 
     @BeforeEach
     void clear(){
-        service.deleteDB();
+        SERVICE.deleteDB();
     }
 
     @Test
     void addNewUser(){
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
-        Assertions.assertDoesNotThrow(()->service.register(user));
+        Assertions.assertDoesNotThrow(()-> SERVICE.register(user));
     }
 
     @Test
     void addRepeatUser(){
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
-        service.register(user);
-        Assertions.assertThrows(AlreadyTaken.class, ()->service.register(user));
+        SERVICE.register(user);
+        Assertions.assertThrows(AlreadyTaken.class, ()-> SERVICE.register(user));
     }
 
     @Test
     void userLogin(){
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
-        service.register(user);
+        SERVICE.register(user);
         var login = new LoginRequest("Brock", "1234");
-        Assertions.assertDoesNotThrow(()->service.login(login));
+        Assertions.assertDoesNotThrow(()-> SERVICE.login(login));
     }
 
     @Test
     void wrongUsernameLogin(){
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
-        service.register(user);
+        SERVICE.register(user);
         var login = new LoginRequest("Not Brock", "1234");
-        Assertions.assertThrows((Unauthorized.class), ()->service.login(login));
+        Assertions.assertThrows((Unauthorized.class), ()-> SERVICE.login(login));
     }
 
     @Test
     void wrongPasswordLogin(){
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
-        service.register(user);
+        SERVICE.register(user);
         var login = new LoginRequest("Brock", "adsfadsfds");
-        Assertions.assertThrows((Unauthorized.class), ()->service.login(login));
+        Assertions.assertThrows((Unauthorized.class), ()-> SERVICE.login(login));
     }
 
     @Test
     void logUserOut(){
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
-        service.register(user);
+        SERVICE.register(user);
         var login = new LoginRequest("Brock", "1234");
-        LoginResult loginResult = service.login(login);
+        LoginResult loginResult = SERVICE.login(login);
         LogoutRequest logoutRequest = new LogoutRequest(loginResult.authToken());
-        Assertions.assertDoesNotThrow(()->service.logout(logoutRequest));
+        Assertions.assertDoesNotThrow(()-> SERVICE.logout(logoutRequest));
     }
 
     @Test
     void failToLogout(){
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
-        service.register(user);
+        SERVICE.register(user);
         var login = new LoginRequest("Brock", "1234");
-        service.login(login);
+        SERVICE.login(login);
         LogoutRequest logoutRequest = new LogoutRequest("asdfafeaadsfadsdgyadsaf-a");
-        Assertions.assertThrows(Unauthorized.class, ()->service.logout(logoutRequest));
+        Assertions.assertThrows(Unauthorized.class, ()-> SERVICE.logout(logoutRequest));
     }
 
     @Test
     void clearUsers(){
         var user1 = new RegisterRequest("Brock", "1234", "email@emails.com");
         var user2 = new RegisterRequest("Waddle-D", "1234", "emails@emails.com");
-        service.register(user1);
-        service.register(user2);
-        service.deleteDB();
-        Assertions.assertDoesNotThrow(()->{service.register(user1);
-                                           service.register(user2);}
+        SERVICE.register(user1);
+        SERVICE.register(user2);
+        SERVICE.deleteDB();
+        Assertions.assertDoesNotThrow(()->{
+            SERVICE.register(user1);
+                                           SERVICE.register(user2);}
         );
     }
 }
