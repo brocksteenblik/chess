@@ -28,6 +28,8 @@ public interface DataAccess {
 
     //updateGame: Updates a chess game.
 
+    void updateGame(AuthData authData, JoinGameRequest joinGameRequest);
+
     //createAuth: Create a new authorization.
 
     AuthData createAuth(String authToken, String username);

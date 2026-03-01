@@ -23,6 +23,12 @@ public class GameService {
         return new CreateGameResult(gameID);
     }
 
+    public void joinGame(String authToken, JoinGameRequest joinGameRequest){
+        AuthData authData = dataAccess.getAuth(authToken);
+        checkAuthInDB(authData);
+        dataAccess.updateGame(authData, joinGameRequest);
+    }
+
     private static void checkAuthInDB(AuthData authData) {
         if (authData == null){
             throw new Unauthorized(401, "Error: Unauthorized");

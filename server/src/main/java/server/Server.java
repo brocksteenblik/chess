@@ -22,17 +22,10 @@ public class Server {
                 .delete("/session", handler::logout)
                 .get("/game", handler::getGames)
                 .post("/game", handler::newGame)
-                .put("/game", this::newPlayer)
+                .put("/game", handler::newPlayer)
                 .delete("/db", handler::clear)
         ;
-
-
     }
-
-    private void newPlayer(@NotNull Context context) {
-
-    }
-
 
     public int run(int desiredPort) {
         javalin.start(desiredPort);

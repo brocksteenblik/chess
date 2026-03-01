@@ -98,6 +98,17 @@ public class Handler {
         }
     }
 
+    public void newPlayer(@NotNull Context context) {
+        JoinGameRequest joinGameRequest = new Gson().fromJson(context.body(), JoinGameRequest.class);
+        if (joinGameRequest.playerColor() == null){
+            giveBadRequest(context);
+            return;
+        }
+        String authToken = context.header("Authorization");
+        gameService.joinGame(authToken, joinGameRequest);
+        context.result();
+    }
+
     public void clear(@NotNull Context context) {
         userService.deleteDB();
     }

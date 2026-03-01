@@ -47,6 +47,20 @@ public class MemoryDataAccess implements DataAccess {
         return gameID;
     }
 
+    public void updateGame(AuthData authData, JoinGameRequest joinGameRequest){
+        String username = authData.username();
+        Integer gameID = joinGameRequest.gameID();
+        GameData gameData = games.get(gameID);
+        if (joinGameRequest.playerColor() == JoinGameRequest.PlayerColor.WHITE){
+            GameData newGameData = gameData.setWhiteUsername(username);
+            games.put(newGameData.gameID(), newGameData);
+        }
+        else if (joinGameRequest.playerColor() == JoinGameRequest.PlayerColor.BLACK){
+            GameData newGameData = gameData.setBlackUsername(username);
+            games.put(newGameData.gameID(), newGameData);
+        }
+    }
+
     public void clear(){
         users.clear();
         auths.clear();
