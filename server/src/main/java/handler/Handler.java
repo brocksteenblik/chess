@@ -2,10 +2,8 @@ package handler;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccess;
-import dataaccess.MemoryDataAccess;
 import io.javalin.http.Context;
 import model.*;
-import org.eclipse.jetty.http.HttpStatus;
 import org.jetbrains.annotations.NotNull;
 import service.AlreadyTaken;
 import service.GameService;
@@ -74,8 +72,8 @@ public class Handler {
     public void getGames(@NotNull Context context) {
         ListGamesRequest listGamesRequest = new ListGamesRequest(context.header("Authorization"));
         try{
-            ListGamesResult listGamesResult = gameService.requestGamesList(listGamesRequest);
-            context.result(new Gson().toJson(listGamesResult));
+            ListGamesResultCollection listGamesResultCollection = new ListGamesResultCollection(gameService.requestGamesList(listGamesRequest));
+            context.result(new Gson().toJson(listGamesResultCollection));
         } catch(Unauthorized error){
             context.status(error.getCode());
             context.result(new Gson().toJson(Map.of("message", error.getMessage())));

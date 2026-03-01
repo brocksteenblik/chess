@@ -3,6 +3,8 @@ package service;
 import dataaccess.DataAccess;
 import model.*;
 
+import java.util.Collection;
+
 public class GameService {
     private final DataAccess dataAccess;
 
@@ -10,7 +12,7 @@ public class GameService {
         this.dataAccess = dataAccess;
     }
 
-    public ListGamesResult requestGamesList(ListGamesRequest listGamesRequest){
+    public Collection<ListGamesResult> requestGamesList(ListGamesRequest listGamesRequest){
         AuthData authData = dataAccess.getAuth(listGamesRequest.authToken());
         checkAuthInDB(authData);
         return dataAccess.listGames();

@@ -3,10 +3,7 @@ package dataaccess;
 import chess.ChessGame;
 import model.*;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class MemoryDataAccess implements DataAccess {
 
@@ -35,8 +32,12 @@ public class MemoryDataAccess implements DataAccess {
         auths.remove(authData.authToken());
     }
 
-    public ListGamesResult listGames(){
-        return new ListGamesResult(games.values());
+    public Collection<ListGamesResult> listGames(){
+        ArrayList<ListGamesResult> gameList = new ArrayList<>();
+        for (GameData game:games.values()) {
+            gameList.add(new ListGamesResult(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName()));
+        }
+        return gameList;
     }
 
     public int createGame(String gameName){
