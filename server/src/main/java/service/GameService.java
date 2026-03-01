@@ -16,8 +16,8 @@ public class GameService {
         return dataAccess.listGames();
     }
 
-    public CreateGameResult newGame(CreateGameRequest createGameRequest){
-        AuthData authData = dataAccess.getAuth(createGameRequest.authToken());
+    public CreateGameResult newGame(CreateGameRequest createGameRequest, String authToken){
+        AuthData authData = dataAccess.getAuth(authToken);
         checkAuthInDB(authData);
         int gameID = dataAccess.createGame(createGameRequest.gameName());
         return new CreateGameResult(gameID);

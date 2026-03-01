@@ -82,10 +82,15 @@ public class Handler {
         }
     }
 
-    public void newGame(@NotNull Context context) {
-        CreateGameRequest createGameRequest = new CreateGameRequest(context.header("Authorization"), context.body());
+    public void newGame(@NotNull Context context) throws InputException, Unauthorized{
+        CreateGameRequest createGameRequest = new Gson().fromJson(context.body(), CreateGameRequest.class);
+        if (createGameRequest.gameName() == null){
+            giveBadRequest(context);
+            return;
+        }
+        String authToken = context.header("Authorization");
         try{
-            CreateGameResult createGameResult = gameService.newGame(createGameRequest);
+            CreateGameResult createGameResult = gameService.newGame(createGameRequest, authToken);
             context.result(new Gson().toJson(createGameResult));
         } catch (Unauthorized error){
             context.status(error.getCode());
