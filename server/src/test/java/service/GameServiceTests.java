@@ -47,7 +47,8 @@ public class GameServiceTests {
         var registeredUser = USER_SERVICE.register(newUser);
         CreateGameResult createResult1 = GAME_SERVICE.newGame(new CreateGameRequest("First Game"), registeredUser.authToken());
         CreateGameResult createResult2 = GAME_SERVICE.newGame(new CreateGameRequest("Second Game"), registeredUser.authToken());
-        ArrayList<ListGamesResult> actual = (ArrayList<ListGamesResult>) GAME_SERVICE.requestGamesList(new ListGamesRequest(registeredUser.authToken()));
+        ArrayList<ListGamesResult> actual = (ArrayList<ListGamesResult>) GAME_SERVICE.requestGamesList(
+                new ListGamesRequest(registeredUser.authToken()));
         if (actual.getFirst().gameName().equals("First Game")){
             expected.add(new ListGamesResult(createResult1.gameID(), null, null, "First Game"));
             expected.add(new ListGamesResult(createResult2.gameID(), null, null, "Second Game"));
