@@ -1,0 +1,91 @@
+package service;
+
+
+import dataaccess.MemoryDataAccess;
+import handler.InputException;
+import model.CreateGameRequest;
+import model.LoginRequest;
+import model.RegisterRequest;
+import org.eclipse.jetty.server.Authentication;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import model.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+public class GameServiceTests {
+    static MemoryDataAccess memory = new MemoryDataAccess();
+    static final UserService USER_SERVICE = new UserService(memory);
+    static final GameService GAME_SERVICE = new GameService(memory);
+
+    @BeforeEach
+    void clear(){
+        GAME_SERVICE.deleteDB();
+    }
+
+    @Test
+    void createNewGame(){
+        var newUser = new RegisterRequest("Brock", "1234", "email@emails.com");
+        var createGameRequest = new CreateGameRequest("Named Game");
+        Assertions.assertDoesNotThrow(() -> GAME_SERVICE.newGame(createGameRequest, USER_SERVICE.register(newUser).authToken()));
+    }
+
+    @Test
+    void createNewGameWithBadAuthToken(){
+        var newUser = new RegisterRequest("Brock", "1234", "email@emails.com");
+        var createGameRequest = new CreateGameRequest("Named Game");
+        Assertions.assertThrows((Unauthorized.class), () -> GAME_SERVICE.newGame(createGameRequest, "Bad Auth Token"));
+    }
+
+    @Test
+    void listAllGames(){
+        List<ListGamesResult> expected = new ArrayList<>();
+        var newUser = new RegisterRequest("Brock", "1234", "email@emails.com");
+        var registeredUser = USER_SERVICE.register(newUser);
+        CreateGameResult createResult1 = GAME_SERVICE.newGame(new CreateGameRequest("First Game"), registeredUser.authToken());
+        CreateGameResult createResult2 = GAME_SERVICE.newGame(new CreateGameRequest("Second Game"), registeredUser.authToken());
+        if (createResult1.gameID() <= createResult2.gameID()){
+            expected.add(new ListGamesResult(createResult1.gameID(), null, null, "First Game"));
+            expected.add(new ListGamesResult(createResult2.gameID(), null, null, "Second Game"));
+        }
+        else{
+            expected.add(new ListGamesResult(createResult2.gameID(), null, null, "Second Game"));
+            expected.add(new ListGamesResult(createResult1.gameID(), null, null, "First Game"));
+        }
+        Assertions.assertEquals(expected, GAME_SERVICE.requestGamesList(new ListGamesRequest(registeredUser.authToken())));
+    }
+
+    @Test
+    void listGamesWithoutRegistration(){
+        Assertions.assertThrows(Unauthorized.class, ()->GAME_SERVICE.requestGamesList(new ListGamesRequest("Bad Auth Token")));
+    }
+
+    @Test
+    void joinGame(){
+        List<ListGamesResult> expected = new ArrayList<>();
+        var newUser = new RegisterRequest("Brock", "1234", "email@emails.com");
+        var registeredUser = USER_SERVICE.register(newUser);
+        CreateGameResult createResult1 = GAME_SERVICE.newGame(new CreateGameRequest("First Game"), registeredUser.authToken());
+        JoinGameRequest joinGameRequest = new JoinGameRequest(JoinGameRequest.PlayerColor.WHITE, createResult1.gameID());
+        GAME_SERVICE.joinGame(registeredUser.authToken(), joinGameRequest);
+        expected.add(new ListGamesResult(createResult1.gameID(), "Brock", null, "First Game"));
+        Assertions.assertEquals(expected, GAME_SERVICE.requestGamesList(new ListGamesRequest(registeredUser.authToken())));
+    }
+
+    @Test
+    void tryToStealColor(){
+        List<ListGamesResult> expected = new ArrayList<>();
+        var newUser = new RegisterRequest("Brock", "1234", "email@emails.com");
+        var newUser2 = new RegisterRequest("Schemer Man", "5678", "emailaccount@emails.com");
+        var registeredUser = USER_SERVICE.register(newUser);
+        var registeredUser2 = USER_SERVICE.register(newUser2);
+        CreateGameResult createResult1 = GAME_SERVICE.newGame(new CreateGameRequest("First Game"), registeredUser.authToken());
+        JoinGameRequest joinGameRequest = new JoinGameRequest(JoinGameRequest.PlayerColor.WHITE, createResult1.gameID());
+        JoinGameRequest joinGameRequest2 = new JoinGameRequest(JoinGameRequest.PlayerColor.WHITE, createResult1.gameID());
+        GAME_SERVICE.joinGame(registeredUser.authToken(), joinGameRequest);
+        Assertions.assertThrows(InputException.class, ()->GAME_SERVICE.joinGame(registeredUser2.authToken(), joinGameRequest2));
+    }
+}

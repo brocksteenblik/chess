@@ -43,7 +43,7 @@ public class MemoryDataAccess implements DataAccess {
 
     public int createGame(String gameName){
         Random random = new Random();
-        int gameID = random.nextInt(10000);
+        int gameID = random.nextInt(1,10000);
         GameData game = new GameData(gameID, null, null, gameName, new ChessGame());
         games.put(gameID, game);
         return gameID;

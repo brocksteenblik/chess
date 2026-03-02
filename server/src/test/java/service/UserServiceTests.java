@@ -81,7 +81,7 @@ public class UserServiceTests {
         SERVICE.deleteDB();
         Assertions.assertDoesNotThrow(()->{
             SERVICE.register(user1);
-                                           SERVICE.register(user2);}
+            SERVICE.register(user2);}
         );
     }
 }
