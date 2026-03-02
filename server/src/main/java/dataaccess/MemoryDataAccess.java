@@ -1,6 +1,7 @@
 package dataaccess;
 
 import chess.ChessGame;
+import handler.InputException;
 import model.*;
 
 import java.util.*;
@@ -48,17 +49,25 @@ public class MemoryDataAccess implements DataAccess {
         return gameID;
     }
 
-    public void updateGame(AuthData authData, JoinGameRequest joinGameRequest){
+    public void updateGame(AuthData authData, JoinGameRequest joinGameRequest) throws InputException {
         String username = authData.username();
         Integer gameID = joinGameRequest.gameID();
         GameData gameData = games.get(gameID);
         if (joinGameRequest.playerColor() == JoinGameRequest.PlayerColor.WHITE){
-            GameData newGameData = gameData.setWhiteUsername(username);
-            games.put(newGameData.gameID(), newGameData);
+            if (gameData.whiteUsername() == null){
+                GameData newGameData = gameData.setWhiteUsername(username);
+                games.put(newGameData.gameID(), newGameData);
+            } else{
+                throw new InputException(403, "Error 403: Forbidden");
+            }
         }
         else if (joinGameRequest.playerColor() == JoinGameRequest.PlayerColor.BLACK){
-            GameData newGameData = gameData.setBlackUsername(username);
-            games.put(newGameData.gameID(), newGameData);
+            if (gameData.blackUsername() == null) {
+                GameData newGameData = gameData.setBlackUsername(username);
+                games.put(newGameData.gameID(), newGameData);
+            } else{
+                throw new InputException(403, "Error 403: Forbidden");
+            }
         }
     }
 

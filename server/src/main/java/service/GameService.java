@@ -1,6 +1,8 @@
 package service;
 
 import dataaccess.DataAccess;
+import dataaccess.DataAccessException;
+import handler.InputException;
 import model.*;
 
 import java.util.Collection;
@@ -25,13 +27,13 @@ public class GameService {
         return new CreateGameResult(gameID);
     }
 
-    public void joinGame(String authToken, JoinGameRequest joinGameRequest){
+    public void joinGame(String authToken, JoinGameRequest joinGameRequest) throws Unauthorized {
         AuthData authData = dataAccess.getAuth(authToken);
         checkAuthInDB(authData);
         dataAccess.updateGame(authData, joinGameRequest);
     }
 
-    private static void checkAuthInDB(AuthData authData) {
+    private static void checkAuthInDB(AuthData authData) throws Unauthorized{
         if (authData == null){
             throw new Unauthorized(401, "Error: Unauthorized");
         }

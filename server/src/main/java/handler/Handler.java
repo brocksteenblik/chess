@@ -96,15 +96,27 @@ public class Handler {
         }
     }
 
-    public void newPlayer(@NotNull Context context) {
+    public void newPlayer(@NotNull Context context) throws InputException{
         JoinGameRequest joinGameRequest = new Gson().fromJson(context.body(), JoinGameRequest.class);
-        if (joinGameRequest.playerColor() == null){
+        if (joinGameRequest.playerColor() == null
+            || joinGameRequest.gameID() == 0){
             giveBadRequest(context);
             return;
         }
         String authToken = context.header("Authorization");
-        gameService.joinGame(authToken, joinGameRequest);
-        context.result();
+        try{
+            try{
+                gameService.joinGame(authToken, joinGameRequest);
+            } catch (Unauthorized error){
+                context.status(error.getCode());
+                context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+            }
+            context.result();
+        } catch(InputException error){
+            context.status(error.getCode());
+            context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+        }
+
     }
 
     public void clear(@NotNull Context context) {
