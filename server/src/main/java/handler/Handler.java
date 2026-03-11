@@ -2,6 +2,7 @@ package handler;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccess;
+import dataaccess.DataAccessException;
 import io.javalin.http.Context;
 import model.*;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +23,7 @@ public class Handler {
         this.gameService = new GameService(memoryDataAccess);
     }
 
-    public void addUser(@NotNull Context context) throws InputException{
+    public void addUser(@NotNull Context context) throws InputException {
         RegisterRequest registerRequest = new Gson().fromJson(context.body(), RegisterRequest.class);
         if (registerRequest.email() == null
         || registerRequest.password() == null
@@ -31,8 +32,13 @@ public class Handler {
             return;
         }
         try {
-            RegisterResult registerResult = userService.register(registerRequest);
-            context.result(new Gson().toJson(registerResult));
+            try{
+                RegisterResult registerResult = userService.register(registerRequest);
+                context.result(new Gson().toJson(registerResult));
+            } catch (DataAccessException error){
+                context.status(500);
+                context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+            }
         } catch(AlreadyTaken error){
             context.status(error.getCode());
             context.result(new Gson().toJson(Map.of("message", error.getMessage())));
@@ -119,7 +125,7 @@ public class Handler {
 
     }
 
-    public void clear(@NotNull Context context) {
+    public void clear(@NotNull Context context) throws DataAccessException{
         userService.deleteDB();
     }
 

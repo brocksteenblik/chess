@@ -38,7 +38,7 @@ public class GameService {
             throw new Unauthorized(401, "Error: Unauthorized");
         }
     }
-    public void deleteDB(){
+    public void deleteDB() throws DataAccessException{
         dataAccess.clear();
     }
 }

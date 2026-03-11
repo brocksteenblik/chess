@@ -6,10 +6,10 @@ import java.util.Collection;
 
 public interface DataAccess {
     //clear: A method for clearing all data from the database. This is used during testing.
-    void clear();
+    void clear() throws DataAccessException;
 
     //createUser: Create a new user.
-    void createUser(UserData userData);
+    void createUser(UserData userData) throws DataAccessException;
 
     //getUser: Retrieve a user with the given username.
     UserData getUser(String username);

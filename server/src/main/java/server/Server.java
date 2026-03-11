@@ -1,7 +1,9 @@
 package server;
 
 import dataaccess.DataAccess;
+import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
+import dataaccess.SqlDataAccess;
 import handler.Handler;
 import io.javalin.*;
 import io.javalin.http.Context;
@@ -14,17 +16,22 @@ public class Server {
 
 
     public Server() {
-        DataAccess memoryDataAccess = new MemoryDataAccess();
-        Handler handler = new Handler(memoryDataAccess);
-        javalin = Javalin.create(config -> config.staticFiles.add("web"))
-                .post("/user", handler::addUser)
-                .post("/session", handler::login)
-                .delete("/session", handler::logout)
-                .get("/game", handler::getGames)
-                .post("/game", handler::newGame)
-                .put("/game", handler::newPlayer)
-                .delete("/db", handler::clear)
-        ;
+        try{
+            DataAccess memoryDataAccess = new SqlDataAccess();
+            Handler handler = new Handler(memoryDataAccess);
+            javalin = Javalin.create(config -> config.staticFiles.add("web"))
+                    .post("/user", handler::addUser)
+                    .post("/session", handler::login)
+                    .delete("/session", handler::logout)
+                    .get("/game", handler::getGames)
+                    .post("/game", handler::newGame)
+                    .put("/game", handler::newPlayer)
+                    .delete("/db", handler::clear);
+        }
+        catch (DataAccessException error){
+            throw new RuntimeException(error);
+        }
+
     }
 
     public int run(int desiredPort) {
