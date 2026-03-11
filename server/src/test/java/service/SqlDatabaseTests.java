@@ -1,5 +1,7 @@
 package service;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
@@ -154,16 +156,46 @@ public class SqlDatabaseTests {
             DAO.createGame("Chess Gaming");
             try (var preparedStatement = conn.prepareStatement(
                     """
-                        SELECT authToken, username FROM auths WHERE username = 'Brock'
+                        SELECT gameID, gameName, chessGame FROM games WHERE gameName = 'Chess Gaming'
                         """)) {
                 var rs = preparedStatement.executeQuery();
                 rs.next();
-                var authToken = rs.getString("authToken");
-                var username = rs.getString("username");
-                Assertions.assertEquals("Brock", username);
-                Assertions.assertNotEquals("", authToken);
+                var gameID = rs.getString("gameID");
+                var gameName = rs.getString("gameName");
+                var chessGameJSON = rs.getString("chessGame");
+                var chessGame = new Gson().fromJson(chessGameJSON, ChessGame.class);
+
+                Assertions.assertNotNull(gameID);
+                Assertions.assertEquals("Chess Gaming", gameName);
+                Assertions.assertEquals(new ChessGame(), chessGame);
             }
         } catch (SQLException error) {
+        }
+    }
+
+    @Test
+    void negativeTestCreateGame() throws DataAccessException, SQLException {
+        try(var conn = DatabaseManager.getConnection()) {
+            DAO.createGame("Game");
+            try (var preparedStatement = conn.prepareStatement(
+                    """
+                        SELECT gameID FROM games WHERE gameName = 'Game'
+                        """)) {
+                var rs = preparedStatement.executeQuery();
+                rs.next();
+                var gameID = rs.getString("gameID");
+                DAO.createGame("Game");
+                try (var preparedStatement2 = conn.prepareStatement(
+                        """
+                            
+                                SELECT gameID FROM games WHERE gameName = 'Game'
+                            """)) {
+                    var rs2 = preparedStatement.executeQuery();
+                    rs2.next();
+                    var gameID2 = rs2.getString("gameID");
+                    Assertions.assertEquals(gameID, gameID2);
+                }
+            }
         }
     }
 
