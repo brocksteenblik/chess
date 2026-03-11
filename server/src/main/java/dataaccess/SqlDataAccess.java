@@ -2,7 +2,10 @@ package dataaccess;
 
 import com.google.gson.Gson;
 import model.*;
+import org.eclipse.jetty.server.Authentication;
+import org.jetbrains.annotations.NotNull;
 
+import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,8 +37,36 @@ public class SqlDataAccess implements DataAccess{
     }
 
     @Override
-    public UserData getUser(String username) {
-        return null;
+    public UserData getUser(String username) throws DataAccessException{
+        try(var conn = DatabaseManager.getConnection()){
+            try (var preparedStatement = conn.prepareStatement(
+                    "SELECT username, password, email FROM users WHERE username = ?")){
+                preparedStatement.setString(1, username);
+                try (var rs = preparedStatement.executeQuery()){
+                    if (rs.next()) {
+                        return grabUserInfo(username, rs);
+                    }
+                }catch (SQLException error){
+                    throw new DataAccessException(String.format("Unable to configure database: %s", error));
+                }
+            }catch (SQLException error){
+                throw new DataAccessException(String.format("Unable to configure database: %s", error));
+            }
+        } catch (SQLException error){
+            throw new DataAccessException(String.format("Unable to configure database: %s", error));
+        }
+        return new UserData(null, null, null);
+    }
+
+    @NotNull
+    private static UserData grabUserInfo(String username, ResultSet rs) throws DataAccessException{
+        try {
+            String password = rs.getString("password");
+            String email = rs.getString("email");
+            return new UserData(username, password, email);
+        } catch (SQLException error) {
+            throw new DataAccessException(String.format("Unable to configure database: %s", error));
+        }
     }
 
     @Override
@@ -89,10 +120,9 @@ public class SqlDataAccess implements DataAccess{
 
                 return 0;
             }
-        } catch (SQLException e) {
-            //throw new ResponseException(ResponseException.Code.ServerError, String.format("unable to update database: %s, %s", statement, e.getMessage()));
+        } catch (SQLException error) {
+            throw new DataAccessException(String.format("Unable to configure database: %s", error));
         }
-        return 0;
     }
 
     private final String[] createUsers = {

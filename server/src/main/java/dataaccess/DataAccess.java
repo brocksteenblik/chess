@@ -2,6 +2,7 @@ package dataaccess;
 
 import model.*;
 
+import java.sql.SQLException;
 import java.util.Collection;
 
 public interface DataAccess {
@@ -12,7 +13,7 @@ public interface DataAccess {
     void createUser(UserData userData) throws DataAccessException;
 
     //getUser: Retrieve a user with the given username.
-    UserData getUser(String username);
+    UserData getUser(String username) throws SQLException, DataAccessException;
 
     //createGame: Create a new game.
     int createGame(String gameName);
