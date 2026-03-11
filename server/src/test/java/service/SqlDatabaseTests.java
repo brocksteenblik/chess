@@ -178,28 +178,7 @@ public class SqlDatabaseTests {
 
     @Test
     void negativeTestCreateGame() throws DataAccessException, SQLException {
-        try(var conn = DatabaseManager.getConnection()) {
-            DAO.createGame("Game");
-            try (var preparedStatement = conn.prepareStatement(
-                    """
-                        SELECT gameID FROM games WHERE gameName = 'Game'
-                        """)) {
-                var rs = preparedStatement.executeQuery();
-                rs.next();
-                var gameID = rs.getString("gameID");
-                DAO.createGame("Game");
-                try (var preparedStatement2 = conn.prepareStatement(
-                        """
-                            
-                                SELECT gameID FROM games WHERE gameName = 'Game'
-                            """)) {
-                    var rs2 = preparedStatement.executeQuery();
-                    rs2.next();
-                    var gameID2 = rs2.getString("gameID");
-                    Assertions.assertEquals(gameID, gameID2);
-                }
-            }
-        }
+        Assertions.assertThrows(DataAccessException.class, ()->DAO.createGame(null));
     }
 
     @Test
