@@ -64,7 +64,8 @@ public class SqlDatabaseTests {
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
         try(var conn = DatabaseManager.getConnection()){
             DAO.createUser(new UserData(user.username(), user.password(), user.email()));
-            Assertions.assertThrows((DataAccessException.class), ()->DAO.createUser(new UserData(user.username(), "user.password()", "user.email()")));
+            Assertions.assertThrows((DataAccessException.class),
+                    ()->DAO.createUser(new UserData(user.username(), "user.password()", "user.email()")));
 
         }
     }
