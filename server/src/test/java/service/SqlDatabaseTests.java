@@ -6,6 +6,7 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import dataaccess.SqlDataAccess;
+import handler.InputException;
 import model.RegisterRequest;
 import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.Assertions;
@@ -18,6 +19,8 @@ import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SqlDatabaseTests {
     static final DataAccess DAO;
@@ -193,6 +196,37 @@ public class SqlDatabaseTests {
     void negativeTestListGames() throws DataAccessException {
         var gameList = DAO.listGames();
         Assertions.assertEquals(0, gameList.size());
+    }
+
+    @Test
+    void testUpdateGame() throws DataAccessException {
+        UserData userData = new UserData("Brock", "1234", "email@emails.com");
+        DAO.createUser(userData);
+        AuthData authData = DAO.createAuth("", "Brock");
+        int gameID = DAO.createGame("Chess Game");
+        DAO.updateGame(authData, new JoinGameRequest(JoinGameRequest.PlayerColor.WHITE, gameID));
+        try(var conn = DatabaseManager.getConnection()){
+            try(var preparedStatement = conn.prepareStatement(
+                    "SELECT whiteUsername FROM games")){
+                var rs = preparedStatement.executeQuery();
+                rs.next();
+                String whiteUsername = rs.getString("whiteUsername");
+                Assertions.assertEquals("Brock", whiteUsername);
+            }
+        }catch (SQLException error){}
+    }
+
+    @Test
+    void negativeTestUpdateGame() throws DataAccessException{
+        UserData userData = new UserData("Brock", "1234", "email@emails.com");
+        DAO.createUser(userData);
+        UserData userData2 = new UserData("Malicious Agent", "5678", "evilmail@emails.com");
+        DAO.createUser(userData2);
+        AuthData authData = DAO.createAuth("", "Brock");
+        AuthData authData2 = DAO.createAuth("", "Malicious Agent");
+        int gameID = DAO.createGame("Chess Game");
+        DAO.updateGame(authData, new JoinGameRequest(JoinGameRequest.PlayerColor.WHITE, gameID));
+        Assertions.assertThrows(InputException.class, ()->DAO.updateGame(authData2, new JoinGameRequest(JoinGameRequest.PlayerColor.WHITE, gameID)));
     }
 
     @Test
