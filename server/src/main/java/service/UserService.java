@@ -2,6 +2,7 @@ package service;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccess;
+import dataaccess.DataAccessException;
 import handler.InputException;
 import model.*;
 
@@ -15,7 +16,7 @@ public class UserService {
         this.dataAccess = dataAccess;
     }
 
-    public RegisterResult register(RegisterRequest registerRequest) throws AlreadyTaken{
+    public RegisterResult register(RegisterRequest registerRequest) throws AlreadyTaken, DataAccessException {
         isUsernameTaken(registerRequest);
         UserData userData = new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email());
         dataAccess.createUser(userData);
@@ -47,7 +48,7 @@ public class UserService {
         dataAccess.deleteAuth(authData);
     }
 
-    public void deleteDB(){
+    public void deleteDB() throws DataAccessException {
         dataAccess.clear();
     }
 

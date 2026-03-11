@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
 import model.LoginRequest;
 import model.*;
@@ -7,11 +8,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.crypto.Data;
+
 public class UserServiceTests {
     static final UserService SERVICE = new UserService(new MemoryDataAccess());
 
     @BeforeEach
-    void clear(){
+    void clear() throws DataAccessException{
         SERVICE.deleteDB();
     }
 
@@ -24,14 +27,20 @@ public class UserServiceTests {
     @Test
     void addRepeatUser(){
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
-        SERVICE.register(user);
+        try{
+            SERVICE.register(user);
+        } catch(DataAccessException error){
+        }
         Assertions.assertThrows(AlreadyTaken.class, ()-> SERVICE.register(user));
     }
 
     @Test
     void userLogin(){
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
-        SERVICE.register(user);
+        try{
+            SERVICE.register(user);
+        } catch(DataAccessException error){
+        }
         var login = new LoginRequest("Brock", "1234");
         Assertions.assertDoesNotThrow(()-> SERVICE.login(login));
     }
@@ -39,7 +48,10 @@ public class UserServiceTests {
     @Test
     void wrongUsernameLogin(){
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
-        SERVICE.register(user);
+        try{
+            SERVICE.register(user);
+        } catch(DataAccessException error){
+        }
         var login = new LoginRequest("Not Brock", "1234");
         Assertions.assertThrows((Unauthorized.class), ()-> SERVICE.login(login));
     }
@@ -47,7 +59,10 @@ public class UserServiceTests {
     @Test
     void wrongPasswordLogin(){
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
-        SERVICE.register(user);
+        try{
+            SERVICE.register(user);
+        } catch(DataAccessException error){
+        }
         var login = new LoginRequest("Brock", "adsfadsfds");
         Assertions.assertThrows((Unauthorized.class), ()-> SERVICE.login(login));
     }
@@ -55,7 +70,10 @@ public class UserServiceTests {
     @Test
     void logUserOut(){
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
-        SERVICE.register(user);
+        try{
+            SERVICE.register(user);
+        } catch(DataAccessException error){
+        }
         var login = new LoginRequest("Brock", "1234");
         LoginResult loginResult = SERVICE.login(login);
         LogoutRequest logoutRequest = new LogoutRequest(loginResult.authToken());
@@ -65,7 +83,10 @@ public class UserServiceTests {
     @Test
     void failToLogout(){
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
-        SERVICE.register(user);
+        try{
+            SERVICE.register(user);
+        } catch(DataAccessException error){
+        }
         var login = new LoginRequest("Brock", "1234");
         SERVICE.login(login);
         LogoutRequest logoutRequest = new LogoutRequest("asdfafeaadsfadsdgyadsaf-a");
@@ -73,11 +94,17 @@ public class UserServiceTests {
     }
 
     @Test
-    void clearUsers(){
+    void clearUsers() throws DataAccessException{
         var user1 = new RegisterRequest("Brock", "1234", "email@emails.com");
         var user2 = new RegisterRequest("Waddle-D", "1234", "emails@emails.com");
-        SERVICE.register(user1);
-        SERVICE.register(user2);
+        try{
+            SERVICE.register(user1);
+        } catch(DataAccessException error){
+        }
+        try{
+            SERVICE.register(user2);
+        } catch(DataAccessException error){
+        }
         SERVICE.deleteDB();
         Assertions.assertDoesNotThrow(()->{
             SERVICE.register(user1);
