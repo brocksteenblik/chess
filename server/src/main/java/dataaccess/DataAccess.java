@@ -21,7 +21,7 @@ public interface DataAccess {
     //getGame: Retrieve a specified game with the given game ID.
 
     //listGames: Retrieve all games.
-    Collection<ListGamesResult> listGames();
+    Collection<ListGamesResult> listGames() throws DataAccessException;
 
     //updateGame: Updates a chess game.
     void updateGame(AuthData authData, JoinGameRequest joinGameRequest);

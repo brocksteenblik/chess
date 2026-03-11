@@ -87,8 +87,26 @@ public class SqlDataAccess implements DataAccess{
     }
 
     @Override
-    public Collection<ListGamesResult> listGames() {
-        return List.of();
+    public Collection<ListGamesResult> listGames() throws DataAccessException{
+        ArrayList<ListGamesResult> gameList = new ArrayList<>();
+        try(Connection conn = DatabaseManager.getConnection()){
+            try (var preparedStatement = conn.prepareStatement(
+                    "SELECT gameID, whiteUsername, blackUsername, gameName FROM games")){
+                    try (ResultSet rs = preparedStatement.executeQuery()) {
+                        while (rs.next()) {
+                            int gameID = rs.getInt("gameID");
+                            String whiteUsername = rs.getString("whiteUsername");
+                            String blackUsername = rs.getString("blackUsername");
+                            String gameName = rs.getString("gameName");
+                            ListGamesResult listGameResult = new ListGamesResult(gameID, whiteUsername, blackUsername, gameName);
+                            gameList.add(listGameResult);
+                        }
+                    }
+            }
+        } catch (SQLException error){
+            throw new DataAccessException(String.format("Unable to configure database: %s", error));
+        }
+        return gameList;
     }
 
     @Override

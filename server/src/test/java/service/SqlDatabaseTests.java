@@ -182,6 +182,20 @@ public class SqlDatabaseTests {
     }
 
     @Test
+    void testListGames() throws DataAccessException{
+        DAO.createGame("Chess Game");
+        DAO.createGame("Another Chess Game");
+        var gameList = DAO.listGames();
+        Assertions.assertEquals(2, gameList.size());
+    }
+
+    @Test
+    void negativeTestListGames() throws DataAccessException {
+        var gameList = DAO.listGames();
+        Assertions.assertEquals(0, gameList.size());
+    }
+
+    @Test
     void testClearWithUsers() throws SQLException, DataAccessException{
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
         try(var conn = DatabaseManager.getConnection()) {
