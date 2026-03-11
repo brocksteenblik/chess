@@ -2,6 +2,7 @@ package dataaccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import handler.InputException;
 import model.*;
 import org.eclipse.jetty.server.Authentication;
 import org.jetbrains.annotations.NotNull;
@@ -114,6 +115,34 @@ public class SqlDataAccess implements DataAccess{
         String username = authData.username();
         Integer gameID = joinGameRequest.gameID();
         GameData gameData = getGame(gameID);
+        if (joinGameRequest.playerColor() == JoinGameRequest.PlayerColor.WHITE){
+            if (gameData.whiteUsername() == null){
+                GameData newGameData = gameData.setWhiteUsername(username);
+                changeColorUsername(newGameData);
+            } else{
+                throw new InputException(403, "Error 403: Forbidden");
+            }
+        } else if (joinGameRequest.playerColor() == JoinGameRequest.PlayerColor.BLACK){
+            if (gameData.blackUsername() == null) {
+                GameData newGameData = gameData.setBlackUsername(username);
+                changeColorUsername(newGameData);
+            } else{
+                throw new InputException(403, "Error 403: Forbidden");
+            }
+        }
+    }
+
+    private void changeColorUsername(GameData newGameData) throws DataAccessException {
+        try(var conn = DatabaseManager.getConnection()){
+            try(var preparedStatement = conn.prepareStatement(
+                    "UPDATE games SET whiteUsername = ?, blackUsername = ? WHERE gameID = ?")){
+                preparedStatement.setString(1, newGameData.whiteUsername());
+                preparedStatement.setString(2, newGameData.blackUsername());
+                preparedStatement.setInt(3, newGameData.gameID());
+            }
+        } catch (SQLException error) {
+            throw new DataAccessException(String.format("Unable to configure database: %s", error));
+        }
     }
 
     private GameData getGame(Integer gameID) throws DataAccessException{
