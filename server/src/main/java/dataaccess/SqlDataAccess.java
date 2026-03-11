@@ -53,13 +53,13 @@ public class SqlDataAccess implements DataAccess{
                         return grabUserInfo(username, rs);
                     }
                 }catch (SQLException error){
-                    throw new DataAccessException(String.format("Unable to configure database: %s", error));
+                    throw new DataAccessException(String.format("Error: Unable to configure database: %s", error));
                 }
             }catch (SQLException error){
-                throw new DataAccessException(String.format("Unable to configure database: %s", error));
+                throw new DataAccessException(String.format("Error: Unable to configure database: %s", error));
             }
         } catch (SQLException error){
-            throw new DataAccessException(String.format("Unable to configure database: %s", error));
+            throw new DataAccessException(String.format("Error: Unable to configure database: %s", error));
         }
         return null;
     }
@@ -71,7 +71,7 @@ public class SqlDataAccess implements DataAccess{
             String email = rs.getString("email");
             return new UserData(username, hashedPassword, email);
         } catch (SQLException error) {
-            throw new DataAccessException(String.format("Unable to configure database: %s", error));
+            throw new DataAccessException(String.format("Error: Unable to configure database: %s", error));
         }
     }
 
@@ -105,7 +105,7 @@ public class SqlDataAccess implements DataAccess{
                     }
             }
         } catch (SQLException error){
-            throw new DataAccessException(String.format("Unable to configure database: %s", error));
+            throw new DataAccessException(String.format("Error: Unable to configure database: %s", error));
         }
         return gameList;
     }
@@ -143,7 +143,7 @@ public class SqlDataAccess implements DataAccess{
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException error) {
-            throw new DataAccessException(String.format("Unable to configure database: %s", error));
+            throw new DataAccessException(String.format("Error: Unable to configure database: %s", error));
         }
     }
 
@@ -159,7 +159,7 @@ public class SqlDataAccess implements DataAccess{
                 }
             }
         } catch(SQLException error){
-            throw new DataAccessException(String.format("Unable to configure database: %s", error));
+            throw new DataAccessException(String.format("Error: Unable to configure database: %s", error));
         }
         return null;
     }
@@ -193,13 +193,13 @@ public class SqlDataAccess implements DataAccess{
                         return grabAuthInfo(authToken, rs);
                     }
                 }catch (SQLException error){
-                    throw new DataAccessException(String.format("Unable to configure database: %s", error));
+                    throw new DataAccessException(String.format("Error: Unable to configure database: %s", error));
                 }
             }catch (SQLException error){
-                throw new DataAccessException(String.format("Unable to configure database: %s", error));
+                throw new DataAccessException(String.format("Error: Unable to configure database: %s", error));
             }
         } catch (SQLException error){
-            throw new DataAccessException(String.format("Unable to configure database: %s", error));
+            throw new DataAccessException(String.format("Error: Unable to configure database: %s", error));
         }
         return null;
     }
@@ -209,7 +209,7 @@ public class SqlDataAccess implements DataAccess{
             String username = rs.getString("username");
             return new AuthData(authToken, username);
         } catch (SQLException error) {
-            throw new DataAccessException(String.format("Unable to configure database: %s", error));
+            throw new DataAccessException(String.format("Error: Unable to configure database: %s", error));
         }
     }
 
@@ -241,7 +241,7 @@ public class SqlDataAccess implements DataAccess{
                 return 0;
             }
         } catch (SQLException error) {
-            throw new DataAccessException(String.format("Unable to configure database: %s", error));
+            throw new DataAccessException(String.format("Error: Unable to configure database: %s", error));
         }
     }
 
@@ -286,7 +286,7 @@ public class SqlDataAccess implements DataAccess{
             createTable(conn, createAuths);
             createTable(conn, createGames);
         } catch (SQLException error) {
-            throw new DataAccessException(String.format("Unable to configure database: %s", error));
+            throw new DataAccessException(String.format("Error: Unable to configure database: %s", error));
         }
     }
 

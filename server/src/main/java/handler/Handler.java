@@ -38,11 +38,11 @@ public class Handler {
                 context.result(new Gson().toJson(registerResult));
             } catch (DataAccessException | SQLException error){
                 context.status(500);
-                context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+                context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
             }
         } catch(AlreadyTaken error){
             context.status(error.getCode());
-            context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
         }
 
     }
@@ -59,11 +59,12 @@ public class Handler {
             context.result(new Gson().toJson(loginResult));
         } catch(Unauthorized error){
             context.status(error.getCode());
-            context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+        } catch (DataAccessException error){
+            context.status(error.getCode());
+            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
         }
     }
 
@@ -76,7 +77,10 @@ public class Handler {
             userService.logout(logoutRequest);
         } catch(Unauthorized error){
             context.status(error.getCode());
-            context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+        } catch (DataAccessException error){
+            context.status(error.getCode());
+            context.result(new Gson().toJson(Map.of("message", "Error: " + "Error: " + error.getMessage())));
         }
     }
 
@@ -87,7 +91,10 @@ public class Handler {
             context.result(new Gson().toJson(listGamesResultCollection));
         } catch(Unauthorized error){
             context.status(error.getCode());
-            context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+        } catch (DataAccessException error){
+            context.status(error.getCode());
+            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
         }
     }
 
@@ -103,7 +110,10 @@ public class Handler {
             context.result(new Gson().toJson(createGameResult));
         } catch (Unauthorized error){
             context.status(error.getCode());
-            context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+        } catch (DataAccessException error){
+            context.status(error.getCode());
+            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
         }
     }
 
@@ -120,23 +130,29 @@ public class Handler {
                 gameService.joinGame(authToken, joinGameRequest);
             } catch (Unauthorized error){
                 context.status(error.getCode());
-                context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+                context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
             }
             context.result();
         } catch(InputException error){
             context.status(error.getCode());
-            context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+        } catch (DataAccessException error){
+            context.status(error.getCode());
+            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
         }
-
     }
 
     public void clear(@NotNull Context context) throws DataAccessException{
-        userService.deleteDB();
+        try{userService.deleteDB();}
+        catch (DataAccessException error){
+            context.status(error.getCode());
+            context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
+        }
     }
 
     private static void giveBadRequest(@NotNull Context context) throws InputException{
         InputException error = new InputException(400, "Error: bad request");
         context.status(error.getCode());
-        context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+        context.result(new Gson().toJson(Map.of("message", "Error: " + error.getMessage())));
     }
 }
