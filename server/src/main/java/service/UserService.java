@@ -5,6 +5,7 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import handler.InputException;
 import model.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.SQLException;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class UserService {
         if (userData == null){
             throw new Unauthorized(401, "Error: Unauthorized");
         }
-        if (!userData.password().equals(loginRequest.password())){
+        if (!BCrypt.checkpw(loginRequest.password(), userData.password())){
             throw new Unauthorized(401, "Error: Unauthorized");
         }
     }

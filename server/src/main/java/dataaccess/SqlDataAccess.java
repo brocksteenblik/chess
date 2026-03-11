@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import model.*;
 import org.eclipse.jetty.server.Authentication;
 import org.jetbrains.annotations.NotNull;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.xml.crypto.Data;
 import java.sql.Connection;
@@ -32,7 +33,12 @@ public class SqlDataAccess implements DataAccess{
     @Override
     public void createUser(UserData userData) throws DataAccessException{
         var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
-        executeUpdate(statement, userData.username(), userData.password(), userData.email());
+        String hashedPassword = hashPassword(userData.password());
+        executeUpdate(statement, userData.username(), hashedPassword, userData.email());
+    }
+
+    private String hashPassword(String password){
+        return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
     @Override
@@ -60,9 +66,9 @@ public class SqlDataAccess implements DataAccess{
     @NotNull
     private static UserData grabUserInfo(String username, ResultSet rs) throws DataAccessException{
         try {
-            String password = rs.getString("password");
+            String hashedPassword = rs.getString("password");
             String email = rs.getString("email");
-            return new UserData(username, password, email);
+            return new UserData(username, hashedPassword, email);
         } catch (SQLException error) {
             throw new DataAccessException(String.format("Unable to configure database: %s", error));
         }
@@ -190,7 +196,7 @@ public class SqlDataAccess implements DataAccess{
               `whiteUsername` varchar(256),
               `blackUsername` varchar(256),
               `gameName` varchar(256) NOT NULL,
-              `chessGame` varchar(256) NOT NULL,
+              `chessGame` TEXT NOT NULL,
               PRIMARY KEY (`gameID`)
             )
     """

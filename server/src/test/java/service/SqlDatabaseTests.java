@@ -46,7 +46,9 @@ public class SqlDatabaseTests {
                 var username = rs.getString("username");
                 var password = rs.getString("password");
                 var email = rs.getString("email");
-                Assertions.assertEquals(user, new RegisterRequest(username, password, email));
+                Assertions.assertEquals(user.username(), username);
+                Assertions.assertEquals(user.email(), email);
+                Assertions.assertNotEquals(user.password(), password);
             }
         }
     }
@@ -56,16 +58,8 @@ public class SqlDatabaseTests {
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
         try(var conn = DatabaseManager.getConnection()){
             DAO.createUser(new UserData(user.username(), user.password(), user.email()));
-            DAO.createUser(new UserData(user.username(), "user.password()", "user.email()"));
-            try (var preparedStatement = conn.prepareStatement(
-                    """
-                        SELECT username, password, email FROM users WHERE username = 'Brock'
-                        """)) {
-                var rs = preparedStatement.executeQuery();
-                rs.next();
-                var email = rs.getString("email");
-                Assertions.assertEquals(user.email(), email);
-            }
+            Assertions.assertThrows((DataAccessException.class), ()->DAO.createUser(new UserData(user.username(), "user.password()", "user.email()")));
+
         }
     }
 
