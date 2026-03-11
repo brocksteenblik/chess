@@ -84,6 +84,51 @@ public class SqlDatabaseTests {
     }
 
     @Test
+    void testCreateAuth() throws SQLException, DataAccessException{
+        try(Connection conn = DatabaseManager.getConnection()){
+            DAO.createAuth("", "Brock");
+            try (var preparedStatement = conn.prepareStatement(
+                    """
+                        SELECT authToken, username FROM auths WHERE username = 'Brock'
+                        """)) {
+                var rs = preparedStatement.executeQuery();
+                rs.next();
+                var authToken = rs.getString("authToken");
+                var username = rs.getString("username");
+                Assertions.assertEquals("Brock", username);
+                Assertions.assertNotEquals("", authToken);
+            }
+        }
+    }
+
+    @Test
+    void negativeTestCreateAuth() throws SQLException, DataAccessException{
+        try(Connection conn = DatabaseManager.getConnection()) {
+            DAO.createAuth("", "Brock");
+            try (var preparedStatement = conn.prepareStatement(
+                    """
+                        
+                            SELECT authToken, username FROM auths WHERE username = 'Brock'
+                        """)) {
+                var rs = preparedStatement.executeQuery();
+                rs.next();
+                var authToken1 = rs.getString("authToken");
+                DAO.createAuth("duplicate authToken", "Brock");
+                try (var preparedStatement2 = conn.prepareStatement(
+                                """
+                            
+                                SELECT authToken, username FROM auths WHERE username = 'Brock'
+                            """)) {
+                    var rs2 = preparedStatement2.executeQuery();
+                    rs2.next();
+                    var authToken2 = rs.getString("authToken");
+                    Assertions.assertEquals(authToken1, authToken2);
+                }
+            }
+        }
+    }
+
+    @Test
     void testClearWithUsers() throws SQLException, DataAccessException{
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
         try(var conn = DatabaseManager.getConnection()) {

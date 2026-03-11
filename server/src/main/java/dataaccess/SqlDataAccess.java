@@ -89,7 +89,7 @@ public class SqlDataAccess implements DataAccess{
     public AuthData createAuth(String authToken, String username) throws DataAccessException {
         authToken = UUID.randomUUID().toString();
         AuthData authData =  new AuthData(authToken, username);
-        var statement = "INSERT INTO auths (username, password, email) VALUES (?, ?)";
+        var statement = "INSERT INTO auths (authToken, username) VALUES (?, ?)";
         executeUpdate(statement, authData.authToken(), authData.username());
         return null;
     }
