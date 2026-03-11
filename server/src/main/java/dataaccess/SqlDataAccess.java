@@ -91,12 +91,38 @@ public class SqlDataAccess implements DataAccess{
         AuthData authData =  new AuthData(authToken, username);
         var statement = "INSERT INTO auths (authToken, username) VALUES (?, ?)";
         executeUpdate(statement, authData.authToken(), authData.username());
-        return null;
+        return authData;
     }
 
     @Override
-    public AuthData getAuth(String authToken) {
+    public AuthData getAuth(String authToken) throws DataAccessException {
+        try(var conn = DatabaseManager.getConnection()){
+            try (var preparedStatement = conn.prepareStatement(
+                    "SELECT authToken, username FROM auths WHERE username = ?")){
+                preparedStatement.setString(1, authToken);
+                try (var rs = preparedStatement.executeQuery()){
+                    if (rs.next()) {
+                        return grabAuthInfo(authToken, rs);
+                    }
+                }catch (SQLException error){
+                    throw new DataAccessException(String.format("Unable to configure database: %s", error));
+                }
+            }catch (SQLException error){
+                throw new DataAccessException(String.format("Unable to configure database: %s", error));
+            }
+        } catch (SQLException error){
+            throw new DataAccessException(String.format("Unable to configure database: %s", error));
+        }
         return null;
+    }
+
+    private AuthData grabAuthInfo(String authToken, ResultSet rs) throws DataAccessException{
+        try {
+            String username = rs.getString("username");
+            return new AuthData(authToken, username);
+        } catch (SQLException error) {
+            throw new DataAccessException(String.format("Unable to configure database: %s", error));
+        }
     }
 
     @Override

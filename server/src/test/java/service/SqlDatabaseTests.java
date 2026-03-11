@@ -86,7 +86,7 @@ public class SqlDatabaseTests {
     @Test
     void testCreateAuth() throws SQLException, DataAccessException{
         try(Connection conn = DatabaseManager.getConnection()){
-            DAO.createAuth("", "Brock");
+            AuthData authData = DAO.createAuth("", "Brock");
             try (var preparedStatement = conn.prepareStatement(
                     """
                         SELECT authToken, username FROM auths WHERE username = 'Brock'
