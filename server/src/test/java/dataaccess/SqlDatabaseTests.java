@@ -1,26 +1,17 @@
-package service;
+package dataaccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import dataaccess.DataAccess;
-import dataaccess.DataAccessException;
-import dataaccess.DatabaseManager;
-import dataaccess.SqlDataAccess;
 import handler.InputException;
 import model.RegisterRequest;
-import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import model.*;
 import org.mindrot.jbcrypt.BCrypt;
 
-import javax.xml.crypto.Data;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SqlDatabaseTests {
     static final DataAccess DAO;
