@@ -24,7 +24,7 @@ public interface DataAccess {
     Collection<ListGamesResult> listGames() throws DataAccessException;
 
     //updateGame: Updates a chess game.
-    void updateGame(AuthData authData, JoinGameRequest joinGameRequest);
+    void updateGame(AuthData authData, JoinGameRequest joinGameRequest) throws DataAccessException;
 
     //createAuth: Create a new authorization.
     AuthData createAuth(String authToken, String username) throws DataAccessException;

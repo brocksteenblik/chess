@@ -110,8 +110,36 @@ public class SqlDataAccess implements DataAccess{
     }
 
     @Override
-    public void updateGame(AuthData authData, JoinGameRequest joinGameRequest) {
+    public void updateGame(AuthData authData, JoinGameRequest joinGameRequest) throws DataAccessException {
+        String username = authData.username();
+        Integer gameID = joinGameRequest.gameID();
+        GameData gameData = getGame(gameID);
+    }
 
+    private GameData getGame(Integer gameID) throws DataAccessException{
+        try(var conn = DatabaseManager.getConnection()){
+            try (var preparedStatement = conn.prepareStatement(
+                    "SELECT * FROM games WHERE gameID = ?")) {
+                preparedStatement.setInt(1, gameID);
+                try (var rs = preparedStatement.executeQuery()) {
+                    if (rs.next()) {
+                        return grabGameInfo(gameID, rs);
+                    }
+                }
+            }
+        } catch(SQLException error){
+            throw new DataAccessException(String.format("Unable to configure database: %s", error));
+        }
+        return null;
+    }
+
+    private GameData grabGameInfo(Integer gameID, ResultSet rs) throws SQLException {
+        String whiteUsername = rs.getString("whiteUsername");
+        String blackUsername = rs.getString("blackUsername");
+        String gameName = rs.getString("gameName");
+        String chessGameJSON = rs.getString("chessGame");
+        ChessGame chessGame = new Gson().fromJson(chessGameJSON, ChessGame.class);
+        return new GameData(gameID, whiteUsername, blackUsername, gameName, chessGame);
     }
 
     @Override
