@@ -155,6 +155,25 @@ public class SqlDatabaseTests {
     }
 
     @Test
+    void testCreateGame() throws DataAccessException{
+        try(Connection conn = DatabaseManager.getConnection()){
+            DAO.createGame("Chess Gaming");
+            try (var preparedStatement = conn.prepareStatement(
+                    """
+                        SELECT authToken, username FROM auths WHERE username = 'Brock'
+                        """)) {
+                var rs = preparedStatement.executeQuery();
+                rs.next();
+                var authToken = rs.getString("authToken");
+                var username = rs.getString("username");
+                Assertions.assertEquals("Brock", username);
+                Assertions.assertNotEquals("", authToken);
+            }
+        } catch (SQLException error) {
+        }
+    }
+
+    @Test
     void testClearWithUsers() throws SQLException, DataAccessException{
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
         try(var conn = DatabaseManager.getConnection()) {

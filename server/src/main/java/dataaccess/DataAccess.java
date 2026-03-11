@@ -16,7 +16,7 @@ public interface DataAccess {
     UserData getUser(String username) throws SQLException, DataAccessException;
 
     //createGame: Create a new game.
-    int createGame(String gameName);
+    int createGame(String gameName) throws DataAccessException;
 
     //getGame: Retrieve a specified game with the given game ID.
 

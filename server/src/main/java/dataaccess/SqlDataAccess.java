@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.*;
 import org.eclipse.jetty.server.Authentication;
@@ -10,10 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
@@ -71,8 +69,15 @@ public class SqlDataAccess implements DataAccess{
     }
 
     @Override
-    public int createGame(String gameName) {
-        return 0;
+    public int createGame(String gameName) throws DataAccessException {
+        Random random = new Random();
+        int gameID = random.nextInt(1,10000);
+        GameData game = new GameData(gameID, null, null, gameName, new ChessGame());
+        var statement = "INSERT INTO games (gameID, gameName, chessGame) VALUES (?, ?, ?)";
+        Gson serializer = new Gson();
+        String gameinfo = serializer.toJson(game.game());
+        executeUpdate(statement, game.gameID(), game.gameName(), gameinfo);
+        return gameID;
     }
 
     @Override

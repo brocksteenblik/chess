@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
+import dataaccess.SqlDataAccess;
 import model.LoginRequest;
 import model.*;
 import org.junit.jupiter.api.Assertions;
@@ -12,7 +13,15 @@ import javax.xml.crypto.Data;
 import java.sql.SQLException;
 
 public class UserServiceTests {
-    static final UserService SERVICE = new UserService(new MemoryDataAccess());
+    static final UserService SERVICE;
+
+    static {
+        try {
+            SERVICE = new UserService(new SqlDataAccess());
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @BeforeEach
     void clear() throws DataAccessException{
