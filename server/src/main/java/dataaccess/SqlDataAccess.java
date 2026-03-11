@@ -139,6 +139,8 @@ public class SqlDataAccess implements DataAccess{
                 preparedStatement.setString(1, newGameData.whiteUsername());
                 preparedStatement.setString(2, newGameData.blackUsername());
                 preparedStatement.setInt(3, newGameData.gameID());
+
+                preparedStatement.executeUpdate();
             }
         } catch (SQLException error) {
             throw new DataAccessException(String.format("Unable to configure database: %s", error));
