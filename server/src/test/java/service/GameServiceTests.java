@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import model.*;
 
 import javax.xml.crypto.Data;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -43,7 +44,7 @@ public class GameServiceTests {
     }
 
     @Test
-    void listAllGames(){
+    void listAllGames() throws SQLException {
         List<ListGamesResult> expected = new ArrayList<>();
         var newUser = new RegisterRequest("Brock", "1234", "email@emails.com");
         try{
@@ -73,7 +74,7 @@ public class GameServiceTests {
     }
 
     @Test
-    void joinGame(){
+    void joinGame() throws SQLException{
         List<ListGamesResult> expected = new ArrayList<>();
         var newUser = new RegisterRequest("Brock", "1234", "email@emails.com");
         try{
@@ -89,7 +90,7 @@ public class GameServiceTests {
     }
 
     @Test
-    void tryToStealColor(){
+    void tryToStealColor() throws SQLException{
         List<ListGamesResult> expected = new ArrayList<>();
         var newUser = new RegisterRequest("Brock", "1234", "email@emails.com");
         var newUser2 = new RegisterRequest("Schemer Man", "5678", "emailaccount@emails.com");

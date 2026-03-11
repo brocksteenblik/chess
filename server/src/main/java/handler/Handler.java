@@ -11,6 +11,7 @@ import service.GameService;
 import service.Unauthorized;
 import service.UserService;
 
+import java.sql.SQLException;
 import java.util.Map;
 
 public class Handler {
@@ -35,7 +36,7 @@ public class Handler {
             try{
                 RegisterResult registerResult = userService.register(registerRequest);
                 context.result(new Gson().toJson(registerResult));
-            } catch (DataAccessException error){
+            } catch (DataAccessException | SQLException error){
                 context.status(500);
                 context.result(new Gson().toJson(Map.of("message", error.getMessage())));
             }
@@ -59,6 +60,10 @@ public class Handler {
         } catch(Unauthorized error){
             context.status(error.getCode());
             context.result(new Gson().toJson(Map.of("message", error.getMessage())));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 

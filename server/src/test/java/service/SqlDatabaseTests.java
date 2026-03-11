@@ -5,6 +5,7 @@ import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import dataaccess.SqlDataAccess;
 import model.RegisterRequest;
+import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,6 +67,20 @@ public class SqlDatabaseTests {
                 Assertions.assertEquals(user.email(), email);
             }
         }
+    }
+
+    @Test
+    void testGetUser() throws SQLException, DataAccessException{
+        try(var conn = DatabaseManager.getConnection()){
+            UserData user = new UserData("Brock", "1234", "email@emails.com");
+            DAO.createUser(user);
+            Assertions.assertEquals(DAO.getUser("Brock"), user);
+        }
+    }
+
+    @Test
+    void testGetUserNegative() throws SQLException, DataAccessException{
+        Assertions.assertNull(DAO.getUser("Brock"));
     }
 
     @Test

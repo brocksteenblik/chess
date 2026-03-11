@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.crypto.Data;
+import java.sql.SQLException;
 
 public class UserServiceTests {
     static final UserService SERVICE = new UserService(new MemoryDataAccess());
@@ -29,7 +30,7 @@ public class UserServiceTests {
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
         try{
             SERVICE.register(user);
-        } catch(DataAccessException error){
+        } catch(DataAccessException | SQLException error){
         }
         Assertions.assertThrows(AlreadyTaken.class, ()-> SERVICE.register(user));
     }
@@ -39,7 +40,7 @@ public class UserServiceTests {
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
         try{
             SERVICE.register(user);
-        } catch(DataAccessException error){
+        } catch(DataAccessException | SQLException error){
         }
         var login = new LoginRequest("Brock", "1234");
         Assertions.assertDoesNotThrow(()-> SERVICE.login(login));
@@ -50,7 +51,7 @@ public class UserServiceTests {
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
         try{
             SERVICE.register(user);
-        } catch(DataAccessException error){
+        } catch(DataAccessException | SQLException error){
         }
         var login = new LoginRequest("Not Brock", "1234");
         Assertions.assertThrows((Unauthorized.class), ()-> SERVICE.login(login));
@@ -61,18 +62,18 @@ public class UserServiceTests {
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
         try{
             SERVICE.register(user);
-        } catch(DataAccessException error){
+        } catch(DataAccessException | SQLException error){
         }
         var login = new LoginRequest("Brock", "adsfadsfds");
         Assertions.assertThrows((Unauthorized.class), ()-> SERVICE.login(login));
     }
 
     @Test
-    void logUserOut(){
+    void logUserOut() throws SQLException, DataAccessException {
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
         try{
             SERVICE.register(user);
-        } catch(DataAccessException error){
+        } catch(DataAccessException | SQLException error){
         }
         var login = new LoginRequest("Brock", "1234");
         LoginResult loginResult = SERVICE.login(login);
@@ -81,11 +82,11 @@ public class UserServiceTests {
     }
 
     @Test
-    void failToLogout(){
+    void failToLogout() throws SQLException, DataAccessException {
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
         try{
             SERVICE.register(user);
-        } catch(DataAccessException error){
+        } catch(DataAccessException | SQLException error){
         }
         var login = new LoginRequest("Brock", "1234");
         SERVICE.login(login);
@@ -94,7 +95,7 @@ public class UserServiceTests {
     }
 
     @Test
-    void clearUsers() throws DataAccessException{
+    void clearUsers() throws DataAccessException, SQLException {
         var user1 = new RegisterRequest("Brock", "1234", "email@emails.com");
         var user2 = new RegisterRequest("Waddle-D", "1234", "emails@emails.com");
         try{

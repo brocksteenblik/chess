@@ -6,6 +6,7 @@ import dataaccess.DataAccessException;
 import handler.InputException;
 import model.*;
 
+import java.sql.SQLException;
 import java.util.Map;
 
 public class UserService {
@@ -16,7 +17,7 @@ public class UserService {
         this.dataAccess = dataAccess;
     }
 
-    public RegisterResult register(RegisterRequest registerRequest) throws AlreadyTaken, DataAccessException {
+    public RegisterResult register(RegisterRequest registerRequest) throws AlreadyTaken, DataAccessException, SQLException {
         isUsernameTaken(registerRequest);
         UserData userData = new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email());
         dataAccess.createUser(userData);
@@ -24,7 +25,8 @@ public class UserService {
         return new RegisterResult(authData.username(), authData.authToken());
     }
 
-    public LoginResult login(LoginRequest loginRequest) throws Unauthorized{
+    public LoginResult login(LoginRequest loginRequest) throws Unauthorized, DataAccessException, SQLException {
+        // look into removing SQLExcpetion
         UserData userData = dataAccess.getUser(loginRequest.username());
         authorizeLogin(loginRequest, userData);
         AuthData authData = dataAccess.createAuth("", loginRequest.username());
@@ -52,7 +54,7 @@ public class UserService {
         dataAccess.clear();
     }
 
-    private void isUsernameTaken(RegisterRequest registerRequest) throws AlreadyTaken{
+    private void isUsernameTaken(RegisterRequest registerRequest) throws AlreadyTaken, DataAccessException, SQLException {
         if (dataAccess.getUser(registerRequest.username()) != null){
             throw new AlreadyTaken(403, "Error: username already taken");
         }

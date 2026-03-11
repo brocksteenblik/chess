@@ -55,7 +55,7 @@ public class SqlDataAccess implements DataAccess{
         } catch (SQLException error){
             throw new DataAccessException(String.format("Unable to configure database: %s", error));
         }
-        return new UserData(null, null, null);
+        return null;
     }
 
     @NotNull
