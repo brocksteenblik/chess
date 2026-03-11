@@ -33,5 +33,5 @@ public interface DataAccess {
     AuthData getAuth(String authToken) throws DataAccessException;
 
     //deleteAuth: Delete an authorization so that it is no longer valid
-    void deleteAuth(AuthData authData);
+    void deleteAuth(AuthData authData) throws DataAccessException;
 }

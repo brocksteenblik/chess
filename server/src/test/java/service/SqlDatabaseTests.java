@@ -141,6 +141,20 @@ public class SqlDatabaseTests {
     }
 
     @Test
+    void testDeleteAuth() throws DataAccessException{
+        AuthData authData = DAO.createAuth("", "Brock");
+        DAO.deleteAuth(authData);
+        Assertions.assertNull(DAO.getAuth(authData.authToken()));
+    }
+
+    @Test
+    void negativeTestDeleteAuth() throws DataAccessException{
+        AuthData authData = DAO.createAuth("", "Brock");
+        DAO.deleteAuth(new AuthData("authToken", "New User"));
+        Assertions.assertEquals(authData, DAO.getAuth(authData.authToken()));
+    }
+
+    @Test
     void testClearWithUsers() throws SQLException, DataAccessException{
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
         try(var conn = DatabaseManager.getConnection()) {
