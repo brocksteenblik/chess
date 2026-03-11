@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
@@ -85,7 +86,11 @@ public class SqlDataAccess implements DataAccess{
     }
 
     @Override
-    public AuthData createAuth(String authToken, String username) {
+    public AuthData createAuth(String authToken, String username) throws DataAccessException {
+        authToken = UUID.randomUUID().toString();
+        AuthData authData =  new AuthData(authToken, username);
+        var statement = "INSERT INTO auths (username, password, email) VALUES (?, ?)";
+        executeUpdate(statement, authData.authToken(), authData.username());
         return null;
     }
 
@@ -104,12 +109,12 @@ public class SqlDataAccess implements DataAccess{
             try (PreparedStatement ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (int i = 0; i < params.length; i++) {
                     Object param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param instanceof UserData p) ps.setString(i + 1, p.toString());
-                    else if (param instanceof AuthData p) ps.setString(i + 1, p.toString());
-                    else if (param instanceof GameData p) ps.setString(i + 1, p.toString());
-                    else if (param == null) ps.setNull(i + 1, NULL);
+                    if (param instanceof String p) {ps.setString(i + 1, p);}
+                    else if (param instanceof Integer p) {ps.setInt(i + 1, p);}
+                    else if (param instanceof UserData p) {ps.setString(i + 1, p.toString());}
+                    else if (param instanceof AuthData p) {ps.setString(i + 1, p.toString());}
+                    else if (param instanceof GameData p) {ps.setString(i + 1, p.toString());}
+                    else if (param == null) {ps.setNull(i + 1, NULL);}
                 }
                 ps.executeUpdate();
 

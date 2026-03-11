@@ -27,7 +27,7 @@ public interface DataAccess {
     void updateGame(AuthData authData, JoinGameRequest joinGameRequest);
 
     //createAuth: Create a new authorization.
-    AuthData createAuth(String authToken, String username);
+    AuthData createAuth(String authToken, String username) throws DataAccessException;
 
     //getAuth: Retrieve an authorization given an authToken.
     AuthData getAuth(String authToken);
