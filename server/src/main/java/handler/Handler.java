@@ -67,7 +67,7 @@ public class Handler {
         }
     }
 
-    public void logout(@NotNull Context context){
+    public void logout(@NotNull Context context) throws DataAccessException {
         LogoutRequest logoutRequest = new LogoutRequest(context.header("Authorization"));
         if (logoutRequest.authToken() == null){
             giveBadRequest(context);
@@ -80,7 +80,7 @@ public class Handler {
         }
     }
 
-    public void getGames(@NotNull Context context) {
+    public void getGames(@NotNull Context context) throws DataAccessException {
         ListGamesRequest listGamesRequest = new ListGamesRequest(context.header("Authorization"));
         try{
             ListGamesResultCollection listGamesResultCollection = new ListGamesResultCollection(gameService.requestGamesList(listGamesRequest));
@@ -91,7 +91,7 @@ public class Handler {
         }
     }
 
-    public void newGame(@NotNull Context context) throws InputException, Unauthorized{
+    public void newGame(@NotNull Context context) throws InputException, Unauthorized, DataAccessException {
         CreateGameRequest createGameRequest = new Gson().fromJson(context.body(), CreateGameRequest.class);
         if (createGameRequest.gameName() == null){
             giveBadRequest(context);
@@ -107,7 +107,7 @@ public class Handler {
         }
     }
 
-    public void newPlayer(@NotNull Context context) throws InputException{
+    public void newPlayer(@NotNull Context context) throws InputException, DataAccessException {
         JoinGameRequest joinGameRequest = new Gson().fromJson(context.body(), JoinGameRequest.class);
         if (joinGameRequest.playerColor() == null
             || joinGameRequest.gameID() == 0){

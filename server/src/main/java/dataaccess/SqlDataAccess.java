@@ -98,7 +98,7 @@ public class SqlDataAccess implements DataAccess{
     public AuthData getAuth(String authToken) throws DataAccessException {
         try(var conn = DatabaseManager.getConnection()){
             try (var preparedStatement = conn.prepareStatement(
-                    "SELECT authToken, username FROM auths WHERE username = ?")){
+                    "SELECT authToken, username FROM auths WHERE authToken = ?")){
                 preparedStatement.setString(1, authToken);
                 try (var rs = preparedStatement.executeQuery()){
                     if (rs.next()) {

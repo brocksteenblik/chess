@@ -14,20 +14,20 @@ public class GameService {
         this.dataAccess = dataAccess;
     }
 
-    public Collection<ListGamesResult> requestGamesList(ListGamesRequest listGamesRequest){
+    public Collection<ListGamesResult> requestGamesList(ListGamesRequest listGamesRequest) throws DataAccessException {
         AuthData authData = dataAccess.getAuth(listGamesRequest.authToken());
         checkAuthInDB(authData);
         return dataAccess.listGames();
     }
 
-    public CreateGameResult newGame(CreateGameRequest createGameRequest, String authToken){
+    public CreateGameResult newGame(CreateGameRequest createGameRequest, String authToken) throws DataAccessException {
         AuthData authData = dataAccess.getAuth(authToken);
         checkAuthInDB(authData);
         int gameID = dataAccess.createGame(createGameRequest.gameName());
         return new CreateGameResult(gameID);
     }
 
-    public void joinGame(String authToken, JoinGameRequest joinGameRequest) throws Unauthorized {
+    public void joinGame(String authToken, JoinGameRequest joinGameRequest) throws Unauthorized, DataAccessException {
         AuthData authData = dataAccess.getAuth(authToken);
         checkAuthInDB(authData);
         dataAccess.updateGame(authData, joinGameRequest);

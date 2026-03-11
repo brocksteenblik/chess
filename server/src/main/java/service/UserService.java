@@ -42,7 +42,7 @@ public class UserService {
         }
     }
 
-    public void logout(LogoutRequest logoutRequest){
+    public void logout(LogoutRequest logoutRequest) throws DataAccessException {
         AuthData authData = dataAccess.getAuth(logoutRequest.authToken());
         if (authData == null){
             throw new Unauthorized(401, "Error: Unauthorized");

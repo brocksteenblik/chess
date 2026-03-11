@@ -129,6 +129,18 @@ public class SqlDatabaseTests {
     }
 
     @Test
+    void testGetAuth() throws SQLException, DataAccessException{
+        AuthData authData = DAO.createAuth("", "Brock");
+        Assertions.assertEquals(authData, DAO.getAuth(authData.authToken()));
+    }
+
+    @Test
+    void negativeTestGetAuth() throws SQLException, DataAccessException{
+        AuthData authData = DAO.createAuth("", "Brock");
+        Assertions.assertNull(DAO.getAuth(""));
+    }
+
+    @Test
     void testClearWithUsers() throws SQLException, DataAccessException{
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
         try(var conn = DatabaseManager.getConnection()) {
