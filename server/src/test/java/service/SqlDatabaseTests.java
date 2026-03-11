@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import model.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.xml.crypto.Data;
 import java.sql.Connection;
@@ -50,7 +51,7 @@ public class SqlDatabaseTests {
                 var email = rs.getString("email");
                 Assertions.assertEquals(user.username(), username);
                 Assertions.assertEquals(user.email(), email);
-                Assertions.assertNotEquals(user.password(), password);
+                Assertions.assertTrue(BCrypt.checkpw(user.password(), password));
             }
         }
     }
@@ -70,7 +71,9 @@ public class SqlDatabaseTests {
         try(var conn = DatabaseManager.getConnection()){
             UserData user = new UserData("Brock", "1234", "email@emails.com");
             DAO.createUser(user);
-            Assertions.assertEquals(DAO.getUser("Brock"), user);
+            Assertions.assertEquals(DAO.getUser("Brock").username(), user.username());
+            Assertions.assertEquals(DAO.getUser("Brock").email(), user.email());
+            Assertions.assertTrue(BCrypt.checkpw(user.password(), DAO.getUser("Brock").password()));
         }
     }
 
