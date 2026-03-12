@@ -147,22 +147,6 @@ public class SqlDataAccess implements DataAccess{
         }
     }
 
-    private GameData getGame(Integer gameID) throws DataAccessException{
-        try(var conn = DatabaseManager.getConnection()){
-            try (var preparedStatement = conn.prepareStatement(
-                    "SELECT * FROM games WHERE gameID = ?")) {
-                preparedStatement.setInt(1, gameID);
-                try (var rs = preparedStatement.executeQuery()) {
-                    if (rs.next()) {
-                        return grabGameInfo(gameID, rs);
-                    }
-                }
-            }
-        } catch(SQLException error){
-            throw new DataAccessException(String.format("Error: Unable to configure database: %s", error));
-        }
-        return null;
-    }
 
     private GameData grabGameInfo(Integer gameID, ResultSet rs) throws SQLException {
         String whiteUsername = rs.getString("whiteUsername");
@@ -217,6 +201,24 @@ public class SqlDataAccess implements DataAccess{
     public void deleteAuth(AuthData authData) throws DataAccessException {
         var statement = "DELETE FROM auths WHERE authToken=?";
         executeUpdate(statement, authData.authToken());
+    }
+
+    @Override
+    public GameData getGame(int gameID) throws DataAccessException {
+        try(var conn = DatabaseManager.getConnection()){
+            try (var preparedStatement = conn.prepareStatement(
+                    "SELECT * FROM games WHERE gameID = ?")) {
+                preparedStatement.setInt(1, gameID);
+                try (var rs = preparedStatement.executeQuery()) {
+                    if (rs.next()) {
+                        return grabGameInfo(gameID, rs);
+                    }
+                }
+            }
+        } catch(SQLException error){
+            throw new DataAccessException(String.format("Error: Unable to configure database: %s", error));
+        }
+        return null;
     }
 
     private int executeUpdate(String statement, Object... params) throws DataAccessException {

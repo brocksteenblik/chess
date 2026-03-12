@@ -33,6 +33,11 @@ public class MemoryDataAccess implements DataAccess {
         auths.remove(authData.authToken());
     }
 
+    @Override
+    public GameData getGame(int gameID) throws DataAccessException {
+        return games.get(gameID);
+    }
+
     public Collection<ListGamesResult> listGames(){
         ArrayList<ListGamesResult> gameList = new ArrayList<>();
         for (GameData game:games.values()) {

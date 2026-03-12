@@ -34,4 +34,6 @@ public interface DataAccess {
 
     //deleteAuth: Delete an authorization so that it is no longer valid
     void deleteAuth(AuthData authData) throws DataAccessException;
+
+    GameData getGame(int gameID) throws DataAccessException;
 }

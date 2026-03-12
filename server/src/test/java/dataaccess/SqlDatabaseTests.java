@@ -222,6 +222,18 @@ public class SqlDatabaseTests {
     }
 
     @Test
+    void testGetGame() throws SQLException, DataAccessException{
+        int gameID = DAO.createGame("Chess Game");
+        GameData gameData = DAO.getGame(gameID);
+        Assertions.assertEquals(gameID, gameData.gameID());
+    }
+
+    @Test
+    void negativeTestGetGame() throws DataAccessException{
+        Assertions.assertNull(DAO.getGame(1234));
+    }
+
+    @Test
     void testClearWithUsers() throws SQLException, DataAccessException{
         var user = new RegisterRequest("Brock", "1234", "email@emails.com");
         try(var conn = DatabaseManager.getConnection()) {
