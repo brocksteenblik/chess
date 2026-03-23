@@ -40,61 +40,51 @@ public class ChessBoard {
                 out.print(EMPTY);
             }
             else if (i == 0){
-                out.print(EMPTY.repeat(2));
-                out.print(" ");
+                out.print(EMPTY.repeat(3));
             }
         }
         out.println();
     }
 
     private static void drawBlackBackline(PrintStream out){
+        // add backwards parser for board flip
         String[] pieces = {" R ", " N ", " B ", " Q ", " K ", " B ", " N ", " R "};
-        for (int i = 0; i <= 9; i++){
-            if (i > 0 && i < 9){
-                if (i % 2 != 0){
-                    setWhiteSpaceBlackPiece(out);
-                }
-                else{
-                    setBlackSpaceBlackPiece(out);
-                }
-                out.print(pieces[i - 1]);
-            }
-            else if (i == 0){
-                setBorderColors(out);
-                out.print(" 8");
-                out.print(EMPTY);
+        setBorderColors(out);
+        out.print(" 8 ");
+        out.print(EMPTY);
+        for (int i = 0; i <= 7; i++){
+            if (i % 2 != 0){
+                setWhiteSpaceBlackPiece(out);
             }
             else{
-                setBorderColors(out);
-                out.print(EMPTY);
-                out.print("8");
+                setBlackSpaceBlackPiece(out);
             }
-        }
+            out.print(pieces[i]);
+            }
+        setBorderColors(out);
+        out.print(EMPTY);
+        out.print(" 8 ");
+
         out.println();
     }
 
     private static void drawBlackPawnLine(PrintStream out){
-        for (int i = 0; i <= 9; i++){
-            if (i > 0 && i < 9){
-                if (i % 2 != 0){
-                    setBlackSpaceBlackPiece(out);
-                }
-                else{
-                    setWhiteSpaceBlackPiece(out);
-                }
-                out.print(" P ");
-            }
-            else if (i == 0){
-                setBorderColors(out);
-                out.print(" 7");
-                out.print(EMPTY);
+        // Add backwards parser for board flip
+        setBorderColors(out);
+        out.print(" 7 ");
+        out.print(EMPTY);
+        for (int i = 0; i <= 7; i++){
+            if (i % 2 != 0){
+                setBlackSpaceBlackPiece(out);
             }
             else{
-                setBorderColors(out);
-                out.print(EMPTY);
-                out.print("7");
+                setWhiteSpaceBlackPiece(out);
             }
+            out.print(" P ");
         }
+        setBorderColors(out);
+        out.print(EMPTY);
+        out.print(" 7 ");
         out.println();
     }
 
