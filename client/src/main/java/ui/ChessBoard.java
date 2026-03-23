@@ -28,6 +28,7 @@ public class ChessBoard {
         drawWhiteBorder(out);
         drawBlackBackline(out);
         drawBlackPawnLine(out);
+        drawMiddleSquares(out);
     }
 
     private static void drawWhiteBorder(PrintStream out){
@@ -86,6 +87,46 @@ public class ChessBoard {
         out.print(EMPTY);
         out.print(" 7 ");
         out.println();
+    }
+
+    private static void drawMiddleSquares(PrintStream out){
+        // From the perspective of white player
+        for (int i = 6; i >= 3; i--){
+            drawSingleBlankLine(i, out);
+        }
+    }
+
+    private static void drawSingleBlankLine(int row, PrintStream out){
+        setBorderColors(out);
+        out.print(" " + row + " ");
+        out.print(EMPTY);
+        for (int i = 0; i <= 7; i++){
+            determineRowPattern(out, i, row);
+            out.print("   ");
+        }
+        setBorderColors(out);
+        out.print(EMPTY);
+        out.print(" " + row + " ");
+        out.println();
+    }
+
+    private static void determineRowPattern(PrintStream out, int i, int row) {
+        if (row % 2 == 0){
+            if (i % 2 != 0){
+                setWhiteSpaceBlackPiece(out);
+            }
+            else{
+                setBlackSpaceBlackPiece(out);
+            }
+        }
+        else {
+            if (i % 2 != 0){
+                setBlackSpaceBlackPiece(out);
+            }
+            else{
+                setWhiteSpaceBlackPiece(out);
+            }
+        }
     }
 
     private static void drawWhiteBackline(PrintStream out){}
