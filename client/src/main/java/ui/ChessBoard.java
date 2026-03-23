@@ -27,6 +27,7 @@ public class ChessBoard {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         drawWhiteBorder(out);
         drawBlackBackline(out);
+        drawBlackPawnLine(out);
     }
 
     private static void drawWhiteBorder(PrintStream out){
@@ -72,7 +73,30 @@ public class ChessBoard {
         out.println();
     }
 
-    private static void drawBlackPawnLine(PrintStream out){}
+    private static void drawBlackPawnLine(PrintStream out){
+        for (int i = 0; i <= 9; i++){
+            if (i > 0 && i < 9){
+                if (i % 2 != 0){
+                    setBlackSpaceBlackPiece(out);
+                }
+                else{
+                    setWhiteSpaceBlackPiece(out);
+                }
+                out.print(" P ");
+            }
+            else if (i == 0){
+                setBorderColors(out);
+                out.print(" 7");
+                out.print(EMPTY);
+            }
+            else{
+                setBorderColors(out);
+                out.print(EMPTY);
+                out.print("7");
+            }
+        }
+        out.println();
+    }
 
     private static void drawWhiteBackline(PrintStream out){}
 
