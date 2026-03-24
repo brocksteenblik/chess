@@ -1,19 +1,25 @@
 package ui;
 
-import ui.EscapeSequences.*;
+import model.RegisterResult;
 
 import java.util.Arrays;
 import java.util.Scanner;
+import client.*;
 
 import static ui.EscapeSequences.*;
 
 public class Client {
 
     private State state = State.LOGGED_OUT;
+    private final ServerFacade server;
+
+    public Client(String serverUrl){
+        server = new ServerFacade(serverUrl);
+    }
 
     public void run(){
         setColor("RESET");
-        System.out.print("Welcome to CS 240 Chess! Please select an option:\n");
+        System.out.print("♕ Welcome to CS 240 Chess! Please select an option:\n");
         System.out.print(help() + "\n");
 
         Scanner scanner = new Scanner(System.in);
@@ -47,7 +53,14 @@ public class Client {
     }
 
     private String registerUser(String[] params) {
-        return null;
+        if (params.length >= 3){
+            String username = params[0];
+            String password = params[1];
+            String email = params[2];
+            RegisterResult registerResult = server.userRegistration(username, password, email);
+            return String.format("You signed up as %s", username);
+        }
+        return "Try again!";
     }
 
     private String login(String[] params) {
