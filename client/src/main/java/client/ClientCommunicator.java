@@ -37,6 +37,14 @@ public class ClientCommunicator {
         sendNewRequest("DELETE", url, path, jsonBody);
     }
 
+    public CreateGameResult useCreateGameEndpoint(String url, CreateGameRequest createGameRequest) throws ResponseException{
+        var jsonBody = new Gson().toJson(createGameRequest);
+        String path = "/game";
+        HttpResponse<String> httpResponse = sendNewRequest("POST", url, path, jsonBody);
+        CreateGameResult createGameResult = new Gson().fromJson(httpResponse.body(), CreateGameResult.class);
+        return createGameResult;
+    }
+
     private static HttpResponse<String> sendNewRequest(String method, String url, String path, String body) throws ResponseException {
         String urlWithEndpoint = String.format(url + path);
         HttpRequest request = HttpRequest.newBuilder()

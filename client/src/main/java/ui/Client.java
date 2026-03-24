@@ -103,23 +103,34 @@ public class Client {
         assertLoggedIn();
         server.userLogout(authToken);
         state = State.LOGGED_OUT;
-        authToken = "";
+        authToken = null;
         return "Successfully logged out";
     }
 
-    private String createGame(String[] params) {
+    private String createGame(String[] params) throws ResponseException {
+        assertLoggedIn();
+        if (params.length >= 1){
+            String gameName = params[0];
+            server.userCreateGame(gameName);
+            return String.format("Successfully created new game: %s", gameName);
+        }
+        else{
+            throw new ResponseException(400, "Error: incorrect number of parameters");
+        }
+    }
+
+    private String listGames(String[] params) throws ResponseException {
+        assertLoggedIn();
         return null;
     }
 
-    private String listGames(String[] params) {
+    private String playGame(String[] params) throws ResponseException {
+        assertLoggedIn();
         return null;
     }
 
-    private String playGame(String[] params) {
-        return null;
-    }
-
-    private String observeGame(String[] params) {
+    private String observeGame(String[] params) throws ResponseException {
+        assertLoggedIn();
         return null;
     }
 

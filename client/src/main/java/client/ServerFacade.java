@@ -27,11 +27,16 @@ public class ServerFacade {
     }
 
     public void userLogout(String authToken) throws ResponseException {
-        if (authToken.equals("")){
+        if (authToken == null){
             throw new ResponseException(401, "Error: Not logged in");
         }
         LogoutRequest logoutRequest = new LogoutRequest(authToken);
         communicator.useLogoutEndpoint(serverUrl, logoutRequest);
     }
 
+    public CreateGameResult userCreateGame(String gameName) throws ResponseException {
+        CreateGameRequest createGameRequest = new CreateGameRequest(gameName);
+        CreateGameResult createGameResult = communicator.useCreateGameEndpoint(serverUrl, createGameRequest);
+        return createGameResult;
+    }
 }
