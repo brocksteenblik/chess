@@ -30,10 +30,11 @@ public class Client {
             String input = scanner.nextLine();
             
             try {
-                result = eval(input);
                 setColor("BLUE");
+                result = eval(input);
                 System.out.print(result + "\n");
             } catch (Throwable e){
+                setColor("RED");
                 var msg = e.toString();
                 System.out.print(msg);
             }
@@ -48,15 +49,16 @@ public class Client {
             return switch (cmd) {
                 case "register" -> registerUser(params);
                 case "login" -> login(params);
-                case "logout" -> logout(params);
+                case "logout" -> logout();
                 case "create" -> createGame(params);
                 case "list" -> listGames(params);
                 case "play" -> playGame(params);
                 case "observe" -> observeGame(params);
-                case "quit" -> "quit";
+                case "quit" -> quit();
                 default -> help();
             };
         } catch (ResponseException error){
+            setColor("RED");
             return error.getMessage();
         }
     }
@@ -97,10 +99,11 @@ public class Client {
     }
 
 
-    private String logout(String[] params) throws ResponseException {
+    private String logout() throws ResponseException {
         assertLoggedIn();
         server.userLogout(authToken);
         state = State.LOGGED_OUT;
+        authToken = "";
         return "Successfully logged out";
     }
 
@@ -118,6 +121,14 @@ public class Client {
 
     private String observeGame(String[] params) {
         return null;
+    }
+
+    private String quit() throws ResponseException {
+        String result = "quit";
+        if (state == State.LOGGED_IN){
+            logout();
+        }
+        return result;
     }
 
     private void startPrompt() {
@@ -149,11 +160,17 @@ public class Client {
     }
 
     private void assertLoggedOut() throws ResponseException{
-        if (state == State.LOGGED_IN){throw new ResponseException(401, "Unauthorized: Already logged in");}
+        if (state == State.LOGGED_IN){
+            setColor("RED");
+            throw new ResponseException(401, "Unauthorized: Already logged in");
+        }
     }
 
     private void assertLoggedIn() throws ResponseException{
-        if (state == State.LOGGED_OUT){throw new ResponseException(401, "Unauthorized: Already logged in");}
+        if (state == State.LOGGED_OUT){
+            setColor("RED");
+            throw new ResponseException(401, "Unauthorized: Already logged in");
+        }
     }
 
     private void setColor(String color){
