@@ -17,18 +17,26 @@ public class ClientCommunicator {
     public RegisterResult useRegisterEndpoint(String url, RegisterRequest registerRequest) throws ResponseException {
         var jsonBody = new Gson().toJson(registerRequest);
         String path = "/user";
-        HttpResponse<String> httpResponse = sendNewRequest(url, path, jsonBody);
+        HttpResponse<String> httpResponse = sendNewRequest("POST", url, path, jsonBody);
         // Ask about how to deal with error: name already taken
         RegisterResult registerResult = new Gson().fromJson(httpResponse.body(), RegisterResult.class);
         return registerResult;
     }
 
-    private static HttpResponse<String> sendNewRequest(String url, String path, String body) throws ResponseException {
+    public LoginResult useLoginEndpoint(String url, LoginRequest loginRequest) throws ResponseException{
+        var jsonBody = new Gson().toJson(loginRequest);
+        String path = "/session";
+        HttpResponse<String> httpResponse = sendNewRequest("POST", url, path, jsonBody);
+        LoginResult loginResult = new Gson().fromJson(httpResponse.body(), LoginResult.class);
+        return loginResult;
+    }
+
+    private static HttpResponse<String> sendNewRequest(String method, String url, String path, String body) throws ResponseException {
         String urlWithEndpoint = String.format(url + path);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(urlWithEndpoint))
                 .timeout(java.time.Duration.ofMillis(5000))
-                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .method(method, HttpRequest.BodyPublishers.ofString(body))
                 .build();
         try{
             return client.send(request, HttpResponse.BodyHandlers.ofString());

@@ -1,6 +1,6 @@
 package ui;
 
-import model.RegisterResult;
+import model.*;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -77,8 +77,20 @@ public class Client {
         return "Too few parameters. Make sure to include a username, a password, and an email!";
     }
 
-    private String login(String[] params) {
-        return null;
+    private String login(String[] params) throws ResponseException {
+        if (params.length >= 2){
+            String username = params[0];
+            String password = params[1];
+            LoginResult loginResult = server.userLogin(username, password);
+            if (loginResult.username() != null){
+                state = State.LOGGED_IN;
+                return String.format("You logged in as %s", loginResult.username());
+            }
+            else{
+                return "That username is already taken. Try a new username!";
+            }
+        }
+        return "Too few parameters. Make sure to include a username, a password, and an email!";
     }
 
     private String logout(String[] params) {
