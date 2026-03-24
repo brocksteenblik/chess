@@ -5,7 +5,11 @@ import ui.Client;
 
 public class ClientMain {
     public static void main(String[] args) {
-        var client = new Client("http://localhost:8080");
+        String serverUrl = "http://localhost:8080";
+        if (args.length == 1){
+            serverUrl = args[0];
+        }
+        var client = new Client(serverUrl);
         client.run();
     }
 }

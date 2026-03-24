@@ -62,11 +62,13 @@ public class Client {
 
     private String registerUser(String[] params) throws ResponseException {
         if (params.length >= 3){
+            state = State.LOGGED_IN;
             String username = params[0];
             String password = params[1];
             String email = params[2];
             RegisterResult registerResult = server.userRegistration(username, password, email);
-            return String.format("You signed up as %s", registerResult.username());
+            return String.format("You signed up as %s", registerResult.username()
+            );
         }
         return "Try again!";
     }
