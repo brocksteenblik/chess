@@ -26,4 +26,9 @@ public class ServerFacade {
         return loginResult;
     }
 
+    public void userLogout(String authToken) throws ResponseException {
+        LogoutRequest logoutRequest = new LogoutRequest(authToken);
+        communicator.useLogoutEndpoint(serverUrl, logoutRequest);
+    }
+
 }

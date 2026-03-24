@@ -31,6 +31,12 @@ public class ClientCommunicator {
         return loginResult;
     }
 
+    public void useLogoutEndpoint(String url, LogoutRequest logoutRequest) throws ResponseException{
+        var jsonBody = new Gson().toJson(logoutRequest);
+        String path = "/session";
+        sendNewRequest("DELETE", url, path, jsonBody);
+    }
+
     private static HttpResponse<String> sendNewRequest(String method, String url, String path, String body) throws ResponseException {
         String urlWithEndpoint = String.format(url + path);
         HttpRequest request = HttpRequest.newBuilder()
