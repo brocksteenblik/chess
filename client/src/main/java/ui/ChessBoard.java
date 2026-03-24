@@ -25,6 +25,10 @@ public class ChessBoard {
         - Draw another white or black border
          */
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+        drawWhitePlayerBoard(out);
+    }
+
+    private static void drawWhitePlayerBoard(PrintStream out) {
         drawWhiteBorder(out);
         drawBlackBackline(out);
         drawBlackPawnLine(out);
