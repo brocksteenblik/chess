@@ -75,7 +75,7 @@ public class Client {
                 authToken = registerResult.authToken();
                 return String.format("You signed up as %s", registerResult.username());
             } else {
-                return "That username is already taken. Try a new username!";
+                throw new ResponseException(400, "Error: username already taken");
             }
         }
         return "Too few parameters. Make sure to include a username, a password, and an email!";
@@ -92,10 +92,10 @@ public class Client {
                 authToken = loginResult.authToken();
                 return String.format("You logged in as %s", loginResult.username());
             } else {
-                return "That username is already taken. Try a new username!";
+                throw new ResponseException(400, "Error: invalid credentials");
             }
         }
-        return "Too few parameters. Make sure to include a username, a password, and an email!";
+        return "Too few parameters. Make sure to include a username and a password!";
     }
 
 
