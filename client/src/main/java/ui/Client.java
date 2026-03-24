@@ -28,37 +28,45 @@ public class Client {
             startPrompt();
             String input = scanner.nextLine();
             
-            // Remember a Try/Catch block
-            result = eval(input);
-            setColor("BLUE");
-            System.out.print(result + "\n");
+            try {
+                result = eval(input);
+                setColor("BLUE");
+                System.out.print(result + "\n");
+            } catch (Throwable e){
+                var msg = e.toString();
+                System.out.print(msg);
+            }
         }
     }
 
     private String eval(String input) {
-        String[] tokens = input.toLowerCase().split(" ");
-        String cmd = (tokens.length > 0) ? tokens[0] : "help";
-        String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
-        return switch(cmd){
-            case "register" -> registerUser(params);
-            case "login" -> login(params);
-            case "logout" -> logout(params);
-            case "create" -> createGame(params);
-            case "list" -> listGames(params);
-            case "play" -> playGame(params);
-            case "observe" -> observeGame(params);
-            case "quit" -> "quit";
-            default -> help();
-        };
+        try {
+            String[] tokens = input.toLowerCase().split(" ");
+            String cmd = (tokens.length > 0) ? tokens[0] : "help";
+            String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
+            return switch (cmd) {
+                case "register" -> registerUser(params);
+                case "login" -> login(params);
+                case "logout" -> logout(params);
+                case "create" -> createGame(params);
+                case "list" -> listGames(params);
+                case "play" -> playGame(params);
+                case "observe" -> observeGame(params);
+                case "quit" -> "quit";
+                default -> help();
+            };
+        } catch (ResponseException error){
+            return error.getMessage();
+        }
     }
 
-    private String registerUser(String[] params) {
+    private String registerUser(String[] params) throws ResponseException {
         if (params.length >= 3){
             String username = params[0];
             String password = params[1];
             String email = params[2];
             RegisterResult registerResult = server.userRegistration(username, password, email);
-            return String.format("You signed up as %s", username);
+            return String.format("You signed up as %s", registerResult.username());
         }
         return "Try again!";
     }
