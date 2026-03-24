@@ -69,4 +69,41 @@ public class ServerFacadeTests {
         }
     }
 
+    @Test
+    public void positiveLogoutUser(){
+        try {
+            RegisterResult registerResult = facade.userRegistration("Brock", "1234", "email@emails.net");
+            Assertions.assertDoesNotThrow(()->facade.userLogout(registerResult.authToken()));
+        } catch (ResponseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void negativeLogoutUser(){
+        Assertions.assertThrows(ResponseException.class, ()-> facade.userLogout(""));
+    }
+
+    @Test
+    public void positiveLoginUser(){
+        try {
+            RegisterResult registerResult = facade.userRegistration("Brock", "1234", "email@emails.net");
+            facade.userLogout(registerResult.authToken());
+            LoginResult loginResult = facade.userLogin("Brock", "1234");
+            Assertions.assertEquals(registerResult.username(), loginResult.username());
+            Assertions.assertNotEquals(registerResult.authToken(), loginResult.authToken());
+        } catch (ResponseException e) {
+        }
+    }
+
+    @Test
+    public void negativeLoginUser(){
+        try {
+            LoginResult loginResult = facade.userLogin("Brock", "1234");
+            Assertions.assertNull(loginResult.username());
+            Assertions.assertNull(loginResult.authToken());
+        } catch (ResponseException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

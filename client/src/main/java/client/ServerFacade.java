@@ -27,6 +27,9 @@ public class ServerFacade {
     }
 
     public void userLogout(String authToken) throws ResponseException {
+        if (authToken.equals("")){
+            throw new ResponseException(401, "Error: Not logged in");
+        }
         LogoutRequest logoutRequest = new LogoutRequest(authToken);
         communicator.useLogoutEndpoint(serverUrl, logoutRequest);
     }
