@@ -12,6 +12,7 @@ public class Client {
 
     private State state = State.LOGGED_OUT;
     private final ServerFacade server;
+    private String authToken;
 
     public Client(String serverUrl){
         server = new ServerFacade(serverUrl);
@@ -61,16 +62,17 @@ public class Client {
     }
 
     private String registerUser(String[] params) throws ResponseException {
-        if (params.length >= 3){
+        assertLoggedOut();
+        if (params.length >= 3) {
             String username = params[0];
             String password = params[1];
             String email = params[2];
             RegisterResult registerResult = server.userRegistration(username, password, email);
-            if (registerResult.username() != null){
+            if (registerResult.username() != null) {
                 state = State.LOGGED_IN;
+                authToken = registerResult.authToken();
                 return String.format("You signed up as %s", registerResult.username());
-            }
-            else{
+            } else {
                 return "That username is already taken. Try a new username!";
             }
         }
@@ -78,23 +80,28 @@ public class Client {
     }
 
     private String login(String[] params) throws ResponseException {
-        if (params.length >= 2){
+    assertLoggedOut();
+        if (params.length >= 2) {
             String username = params[0];
             String password = params[1];
             LoginResult loginResult = server.userLogin(username, password);
-            if (loginResult.username() != null){
+            if (loginResult.username() != null) {
                 state = State.LOGGED_IN;
+                authToken = loginResult.authToken();
                 return String.format("You logged in as %s", loginResult.username());
-            }
-            else{
+            } else {
                 return "That username is already taken. Try a new username!";
             }
         }
         return "Too few parameters. Make sure to include a username, a password, and an email!";
     }
 
-    private String logout(String[] params) {
-        return null;
+
+    private String logout(String[] params) throws ResponseException {
+        assertLoggedIn();
+        server.userLogout(authToken);
+        state = State.LOGGED_OUT;
+        return "Successfully logged out";
     }
 
     private String createGame(String[] params) {
@@ -139,6 +146,14 @@ public class Client {
                     help - Display info about what actions can be taken.
                     """;
         }
+    }
+
+    private void assertLoggedOut() throws ResponseException{
+        if (state == State.LOGGED_IN){throw new ResponseException(401, "Unauthorized: Already logged in");}
+    }
+
+    private void assertLoggedIn() throws ResponseException{
+        if (state == State.LOGGED_OUT){throw new ResponseException(401, "Unauthorized: Already logged in");}
     }
 
     private void setColor(String color){
