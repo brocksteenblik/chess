@@ -1,10 +1,8 @@
 package client;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import model.*;
 
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -13,7 +11,7 @@ import java.util.ArrayList;
 
 public class ClientCommunicator {
     // URL will be http://localhost:8080
-    private static final HttpClient client = HttpClient.newHttpClient();
+    private static final HttpClient CLIENT = HttpClient.newHttpClient();
 
     public RegisterResult useRegisterEndpoint(String url, RegisterRequest registerRequest) throws ResponseException {
         var jsonBody = new Gson().toJson(registerRequest);
@@ -58,7 +56,7 @@ public class ClientCommunicator {
         String urlWithEndpoint = String.format(url + path);
         HttpRequest request = createNewRequest(method, body, header, urlWithEndpoint);
         try{
-            return client.send(request, HttpResponse.BodyHandlers.ofString());
+            return CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception error){
             throw new ResponseException(500, error.getMessage());
         }

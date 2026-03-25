@@ -48,9 +48,11 @@ public class ChessBoard {
                 out.print(EMPTY);
             }
             else if (i == 0){
-                out.print(EMPTY.repeat(3));
+                out.print(EMPTY.repeat(2));
             }
         }
+        out.print(EMPTY);
+        resetColors(out);
         out.println();
     }
 
@@ -59,7 +61,6 @@ public class ChessBoard {
         String[] pieces = {" R ", " N ", " B ", " Q ", " K ", " B ", " N ", " R "};
         setBorderColors(out);
         out.print(" 8 ");
-        out.print(EMPTY);
         for (int i = 0; i <= 7; i++){
             if (i % 2 != 0){
                 setWhiteSpaceBlackPiece(out);
@@ -70,9 +71,8 @@ public class ChessBoard {
             out.print(pieces[i]);
             }
         setBorderColors(out);
-        out.print(EMPTY);
         out.print(" 8 ");
-
+        resetColors(out);
         out.println();
     }
 
@@ -80,7 +80,6 @@ public class ChessBoard {
         // Add backwards parser for board flip
         setBorderColors(out);
         out.print(" 7 ");
-        out.print(EMPTY);
         for (int i = 0; i <= 7; i++){
             if (i % 2 != 0){
                 setBlackSpaceBlackPiece(out);
@@ -91,8 +90,8 @@ public class ChessBoard {
             out.print(" P ");
         }
         setBorderColors(out);
-        out.print(EMPTY);
         out.print(" 7 ");
+        resetColors(out);
         out.println();
     }
 
@@ -106,14 +105,13 @@ public class ChessBoard {
     private static void drawSingleBlankLine(int row, PrintStream out){
         setBorderColors(out);
         out.print(" " + row + " ");
-        out.print(EMPTY);
         for (int i = 0; i <= 7; i++){
             determineRowPattern(out, i, row);
             out.print("   ");
         }
         setBorderColors(out);
-        out.print(EMPTY);
         out.print(" " + row + " ");
+        resetColors(out);
         out.println();
     }
 
@@ -141,7 +139,6 @@ public class ChessBoard {
         String[] pieces = {" R ", " N ", " B ", " Q ", " K ", " B ", " N ", " R "};
         setBorderColors(out);
         out.print(" 1 ");
-        out.print(EMPTY);
         for (int i = 0; i <= 7; i++){
             if (i % 2 != 0){
                 setBlackSpaceWhitePiece(out);
@@ -152,9 +149,8 @@ public class ChessBoard {
             out.print(pieces[i]);
         }
         setBorderColors(out);
-        out.print(EMPTY);
         out.print(" 1 ");
-
+        resetColors(out);
         out.println();
     }
 
@@ -162,7 +158,6 @@ public class ChessBoard {
         // Add backwards parser for board flip
         setBorderColors(out);
         out.print(" 2 ");
-        out.print(EMPTY);
         for (int i = 0; i <= 7; i++){
             if (i % 2 != 0){
                 setWhiteSpaceWhitePiece(out);
@@ -173,35 +168,40 @@ public class ChessBoard {
             out.print(" P ");
         }
         setBorderColors(out);
-        out.print(EMPTY);
         out.print(" 2 ");
+        resetColors(out);
         out.println();
     }
 
     private static void drawBlackBorder(PrintStream out){}
 
     private static void setBorderColors(PrintStream out) {
+        out.print(SET_BG_COLOR_DARK_GREY);
+        out.print(SET_TEXT_COLOR_MAGENTA);
+    }
+
+    private static void setBlackSpaceBlackPiece(PrintStream out) {
+        out.print(SET_BG_COLOR_DARK_GREEN);
+        out.print(SET_TEXT_COLOR_BLACK);
+    }
+
+    private static void setWhiteSpaceBlackPiece(PrintStream out) {
         out.print(SET_BG_COLOR_LIGHT_GREY);
         out.print(SET_TEXT_COLOR_BLACK);
     }
 
-    private static void setBlackSpaceBlackPiece(PrintStream out) {
-        out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_BLUE);
-    }
-
-    private static void setWhiteSpaceBlackPiece(PrintStream out) {
-        out.print(SET_BG_COLOR_WHITE);
-        out.print(SET_TEXT_COLOR_BLUE);
-    }
-
     private static void setBlackSpaceWhitePiece(PrintStream out) {
-        out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_RED);
+        out.print(SET_BG_COLOR_DARK_GREEN);
+        out.print(SET_TEXT_COLOR_WHITE);
     }
 
     private static void setWhiteSpaceWhitePiece(PrintStream out) {
-        out.print(SET_BG_COLOR_WHITE);
-        out.print(SET_TEXT_COLOR_RED);
+        out.print(SET_BG_COLOR_LIGHT_GREY);
+        out.print(SET_TEXT_COLOR_WHITE);
+    }
+
+    private static void resetColors(PrintStream out){
+        out.print(RESET_BG_COLOR);
+        out.print(RESET_TEXT_COLOR);
     }
 }
