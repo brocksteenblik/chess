@@ -56,7 +56,9 @@ public class ClientCommunicator {
         var jsonBody = new Gson().toJson((joinGameRequest));
         String path = "/game";
         HttpResponse<String> httpResponse = sendNewRequest("PUT", url, path, jsonBody, header);
-        httpResponse.body();
+        if (httpResponse.statusCode() == 403){
+            throw new ResponseException(403, "Error: Requested color already taken");
+        }
     }
 
     private static HttpResponse<String> sendNewRequest(String method, String url, String path, String body, String header) throws ResponseException {

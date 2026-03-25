@@ -147,7 +147,15 @@ public class Client {
         int gameID = getGames().get(gameIndex).gameID();
         String color = params[1].toLowerCase();
         server.userPlayGame(gameID, color, authToken);
-        return "success!";
+        String gameName = getGames().get(gameIndex).gameName();
+        System.out.printf("Successfully joined game: %s!" + "\n \n", gameName);
+        if (color.equals("white")){
+            ChessBoard.drawWhitePlayerBoard();
+        }
+        else{
+            ChessBoard.drawBlackPlayerBoard();
+        }
+        return "";
     }
 
     private void checkValidJoinInput(String[] params) throws ResponseException{
