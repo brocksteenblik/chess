@@ -2,6 +2,7 @@ package ui;
 
 import model.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import client.*;
@@ -51,7 +52,7 @@ public class Client {
                 case "login" -> login(params);
                 case "logout" -> logout();
                 case "create" -> createGame(params);
-                case "list" -> listGames(params);
+                case "list" -> listGames();
                 case "play" -> playGame(params);
                 case "observe" -> observeGame(params);
                 case "quit" -> quit();
@@ -111,7 +112,7 @@ public class Client {
         assertLoggedIn();
         if (params.length >= 1){
             String gameName = params[0];
-            server.userCreateGame(gameName);
+            server.userCreateGame(gameName, authToken);
             return String.format("Successfully created new game: %s", gameName);
         }
         else{
@@ -119,9 +120,17 @@ public class Client {
         }
     }
 
-    private String listGames(String[] params) throws ResponseException {
+    private String listGames() throws ResponseException {
         assertLoggedIn();
-        return null;
+        ArrayList<ListGamesResult> gamesList = server.userListGames(authToken);
+        int i = 1;
+        StringBuilder result = new StringBuilder();
+        for (ListGamesResult game : gamesList){
+            String singleGame = String.format("%d: %s \n", i, game.toString());
+            result.append(singleGame);
+            i++;
+        }
+        return result.toString();
     }
 
     private String playGame(String[] params) throws ResponseException {

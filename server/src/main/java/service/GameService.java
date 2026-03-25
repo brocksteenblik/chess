@@ -5,6 +5,7 @@ import dataaccess.DataAccessException;
 import handler.InputException;
 import model.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class GameService {
@@ -14,10 +15,10 @@ public class GameService {
         this.dataAccess = dataAccess;
     }
 
-    public Collection<ListGamesResult> requestGamesList(ListGamesRequest listGamesRequest) throws DataAccessException {
+    public ArrayList<ListGamesResult> requestGamesList(ListGamesRequest listGamesRequest) throws DataAccessException {
         AuthData authData = dataAccess.getAuth(listGamesRequest.authToken());
         checkAuthInDB(authData);
-        return dataAccess.listGames();
+        return (ArrayList<ListGamesResult>) dataAccess.listGames();
     }
 
     public CreateGameResult newGame(CreateGameRequest createGameRequest, String authToken) throws DataAccessException {

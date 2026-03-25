@@ -2,7 +2,7 @@ package client;
 
 import model.*;
 
-import java.net.http.HttpClient;
+import java.util.ArrayList;
 
 public class ServerFacade {
     private final String serverUrl;
@@ -34,9 +34,15 @@ public class ServerFacade {
         communicator.useLogoutEndpoint(serverUrl, logoutRequest);
     }
 
-    public CreateGameResult userCreateGame(String gameName) throws ResponseException {
+    public CreateGameResult userCreateGame(String gameName, String authToken) throws ResponseException {
         CreateGameRequest createGameRequest = new CreateGameRequest(gameName);
-        CreateGameResult createGameResult = communicator.useCreateGameEndpoint(serverUrl, createGameRequest);
+        CreateGameResult createGameResult = communicator.useCreateGameEndpoint(serverUrl, createGameRequest, authToken);
         return createGameResult;
+    }
+
+    public ArrayList<ListGamesResult> userListGames(String authToken) throws ResponseException{
+        ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
+        ArrayList<ListGamesResult> games = communicator.useListGamesEndpoint(serverUrl, listGamesRequest, authToken);
+        return games;
     }
 }
