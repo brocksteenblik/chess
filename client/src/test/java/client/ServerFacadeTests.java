@@ -16,14 +16,14 @@ public class ServerFacadeTests {
 
     private static Server server;
     static ServerFacade facade;
+    private static String url;
 
     @BeforeAll
     public static void init() {
         server = new Server();
         var port = server.run(0);
-        var url = "http://localhost:" + port;
+        url = "http://localhost:" + port;
         facade = new ServerFacade(url);
-        clearDB(url);
         System.out.println("Started test HTTP server on " + port);
     }
 
@@ -38,6 +38,11 @@ public class ServerFacadeTests {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @BeforeEach
+    void resetForEachTest(){
+        clearDB(url);
     }
 
     @AfterAll
@@ -81,7 +86,7 @@ public class ServerFacadeTests {
 
     @Test
     public void negativeLogoutUser(){
-        Assertions.assertThrows(ResponseException.class, ()-> facade.userLogout(""));
+        Assertions.assertThrows(ResponseException.class, () -> facade.userLogout(null));
     }
 
     @Test
@@ -103,6 +108,16 @@ public class ServerFacadeTests {
             Assertions.assertNull(loginResult.username());
             Assertions.assertNull(loginResult.authToken());
         } catch (ResponseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void positiveCreateGame(){
+        try{
+            RegisterResult registerResult = facade.userRegistration("Brock" , "1234", "email@emails.com");
+            Assertions.assertNotNull(facade.userCreateGame("Game-with-a-name", registerResult.authToken()));
+        } catch(ResponseException e){
             throw new RuntimeException(e);
         }
     }
