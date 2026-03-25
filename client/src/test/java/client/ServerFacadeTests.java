@@ -10,6 +10,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 
 
 public class ServerFacadeTests {
@@ -118,6 +119,46 @@ public class ServerFacadeTests {
             RegisterResult registerResult = facade.userRegistration("Brock" , "1234", "email@emails.com");
             Assertions.assertNotNull(facade.userCreateGame("Game-with-a-name", registerResult.authToken()));
         } catch(ResponseException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void negativeCreateGame(){
+        try {
+            Assertions.assertEquals(0, facade.userCreateGame("GameName", null).gameID());
+        } catch (ResponseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void positiveListGames(){
+        try {
+            var registerResult = facade.userRegistration("Brock", "1234", "email@emails.com");
+            facade.userCreateGame("Game 1", registerResult.authToken());
+            facade.userCreateGame("Game 2", registerResult.authToken());
+            var actual = facade.userListGames(registerResult.authToken());
+            ArrayList<ListGamesResult> expected = new ArrayList<>();
+            if (actual.getFirst().gameName().equals("Game 1")){
+                expected.add(new ListGamesResult(actual.get(0).gameID(), null, null, "Game 1"));
+                expected.add(new ListGamesResult(actual.get(1).gameID(), null, null, "Game 2"));
+            }
+            else{
+                expected.add(new ListGamesResult(actual.get(0).gameID(), null, null, "Game 2"));
+                expected.add(new ListGamesResult(actual.get(1).gameID(), null, null, "Game 1"));
+            }
+            Assertions.assertEquals(expected, actual);
+        } catch (ResponseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void negativeListGames(){
+        try {
+            Assertions.assertNull(facade.userListGames("FAKE AUTH TOKEN"));
+        } catch (ResponseException e) {
             throw new RuntimeException(e);
         }
     }
