@@ -11,24 +11,8 @@ public class ChessBoard {
 
     private static final String EMPTY = "  ";
 
-    public static void main(){
-        // Add stuff with player color checking later
-        /*
-        Order of operations:
-        - Draw white or black border
-        - Draw black or white backline
-        - Draw corresponding line of pawns
-        - Draw middle lines
-        - Draw pawn line and backline for other color
-        - Draw another white or black border
-         */
+    public static void drawWhitePlayerBoard() {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        drawWhitePlayerBoard(out);
-        System.out.print("\n");
-        drawBlackPlayerBoard(out);
-    }
-
-    private static void drawWhitePlayerBoard(PrintStream out) {
         drawWhiteBorder(out);
         drawBlackBackline(out, "WHITE");
         drawBlackPawnLine(out, "WHITE");
@@ -38,7 +22,8 @@ public class ChessBoard {
         drawWhiteBorder(out);
     }
 
-    private static void drawBlackPlayerBoard(PrintStream out){
+    public static void drawBlackPlayerBoard(){
+        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         drawBlackBorder(out);
         drawWhiteBackline(out, "BLACK");
         drawWhitePawnLine(out, "BLACK");

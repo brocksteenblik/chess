@@ -122,15 +122,23 @@ public class Client {
 
     private String listGames() throws ResponseException {
         assertLoggedIn();
-        ArrayList<ListGamesResult> gamesList = server.userListGames(authToken);
+        ArrayList<ListGamesResult> gamesList = getGames();
         int i = 1;
         StringBuilder result = new StringBuilder();
         for (ListGamesResult game : gamesList){
-            String singleGame = String.format("%d: %s \n", i, game.toString());
+            String gameInfo = String.format("%s\n - WhitePlayer: %s | BlackPlayer: %s",
+                    game.gameName(), game.whiteUsername(), game.blackUsername());
+            String singleGame = String.format("%d: %s \n", i, gameInfo);
             result.append(singleGame);
+            if (gamesList.size() <= 5){result.append("\n");}
             i++;
         }
         return result.toString();
+    }
+
+    private ArrayList<ListGamesResult> getGames() throws ResponseException {
+        ArrayList<ListGamesResult> gamesList = server.userListGames(authToken);
+        return gamesList;
     }
 
     private String playGame(String[] params) throws ResponseException {
