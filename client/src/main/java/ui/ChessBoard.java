@@ -11,7 +11,7 @@ public class ChessBoard {
 
     private static final String EMPTY = "  ";
 
-    public static void drawWhitePlayerBoard() {
+    public static void drawWhitePlayerBoard(int gameID) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         drawWhiteBorder(out);
         drawBlackBackline(out, "WHITE");
@@ -22,7 +22,7 @@ public class ChessBoard {
         drawWhiteBorder(out);
     }
 
-    public static void drawBlackPlayerBoard(){
+    public static void drawBlackPlayerBoard(int gameID){
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         drawBlackBorder(out);
         drawWhiteBackline(out, "BLACK");
