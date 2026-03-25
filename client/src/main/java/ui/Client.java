@@ -143,6 +143,9 @@ public class Client {
     private String playGame(String[] params) throws ResponseException {
         assertLoggedIn();
         checkValidJoinInput(params);
+        int gameID = Integer.parseInt(params[0]);
+        String color = params[1].toLowerCase();
+        server.userPlayGame(gameID, color, authToken);
         return "success!";
     }
 

@@ -52,6 +52,13 @@ public class ClientCommunicator {
         return games;
     }
 
+    public void usePlayGameEndpoint(String url, JoinGameRequest joinGameRequest, String header) throws ResponseException {
+        var jsonBody = new Gson().toJson((joinGameRequest));
+        String path = "/game";
+        HttpResponse<String> httpResponse = sendNewRequest("PUT", url, path, jsonBody, header);
+        httpResponse.body();
+    }
+
     private static HttpResponse<String> sendNewRequest(String method, String url, String path, String body, String header) throws ResponseException {
         String urlWithEndpoint = String.format(url + path);
         HttpRequest request = createNewRequest(method, body, header, urlWithEndpoint);

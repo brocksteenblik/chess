@@ -1,5 +1,7 @@
 package client;
 
+import chess.ChessGame;
+import chess.ChessPiece;
 import model.*;
 
 import java.util.ArrayList;
@@ -44,5 +46,15 @@ public class ServerFacade {
         ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
         ArrayList<ListGamesResult> games = communicator.useListGamesEndpoint(serverUrl, listGamesRequest, authToken);
         return games;
+    }
+
+    public void userPlayGame(int gameID, String color, String authToken) throws ResponseException {
+        JoinGameRequest joinGameRequest;
+        if (color.equals("white")) {
+            joinGameRequest = new JoinGameRequest(JoinGameRequest.PlayerColor.WHITE, gameID);
+        } else if (color.equals("black")){
+            joinGameRequest = new JoinGameRequest(JoinGameRequest.PlayerColor.BLACK, gameID);
+        } else {throw new ResponseException(400, "Error: invalid player color");}
+        communicator.usePlayGameEndpoint(serverUrl, joinGameRequest, authToken);
     }
 }
