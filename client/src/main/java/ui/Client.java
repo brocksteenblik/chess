@@ -21,7 +21,7 @@ public class Client {
 
     public void run(){
         setColor("RESET");
-        System.out.print("♕ Welcome to CS 240 Chess! Please select an option:\n");
+        System.out.print("♕ Welcome to CS 240 Chess!\n");
         System.out.print(help() + "\n");
 
         Scanner scanner = new Scanner(System.in);
@@ -34,11 +34,19 @@ public class Client {
                 setColor("BLUE");
                 result = eval(input);
                 System.out.print(result + "\n");
+                optionalPrintHelp(input);
             } catch (Throwable e){
                 setColor("RED");
                 var msg = e.toString();
                 System.out.print(msg);
             }
+        }
+    }
+
+    private void optionalPrintHelp(String input) {
+        String cmd = input.toLowerCase().split(" ")[0];
+        if (cmd.equals("register") || cmd.equals("login") || cmd.equals("logout")){
+            System.out.print(help());
         }
     }
 
@@ -74,7 +82,7 @@ public class Client {
             if (registerResult.username() != null) {
                 state = State.LOGGED_IN;
                 authToken = registerResult.authToken();
-                return String.format("You signed up as %s", registerResult.username());
+                return String.format("You signed up as %s\n", registerResult.username());
             } else {
                 throw new ResponseException(400, "Error: username already taken");
             }
@@ -91,7 +99,7 @@ public class Client {
             if (loginResult.username() != null) {
                 state = State.LOGGED_IN;
                 authToken = loginResult.authToken();
-                return String.format("You logged in as %s", loginResult.username());
+                return String.format("You logged in as %s\n", loginResult.username());
             } else {
                 throw new ResponseException(400, "Error: invalid credentials");
             }
@@ -105,7 +113,7 @@ public class Client {
         server.userLogout(authToken);
         state = State.LOGGED_OUT;
         authToken = null;
-        return "Successfully logged out";
+        return "Successfully logged out\n";
     }
 
     private String createGame(String[] params) throws ResponseException {
@@ -186,11 +194,16 @@ public class Client {
     }
 
     private String help() {
+        setColor("BLUE");
+        String start = "Please select one of the following:\n";
+        System.out.print(start);
         setColor("YELLOW");
         if (state == State.LOGGED_OUT){
             return """
-                    register <USERNAME> <PASSWORD> <EMAIL> - Provide info to create an account.
+                    register <USERNAME> <PASSWORD> <EMAIL> - Provide info to create an account and log in.
+                    - ex. register Jim 123456 jim@gmail.com
                     login <USERNAME> <PASSWORD> - Provide info to login to existing account.
+                    - ex. login Jim 123456
                     help - Display info about what actions can be taken.
                     quit - Exit the program.
                     """;
@@ -198,9 +211,12 @@ public class Client {
         else{
             return """
                     create <NAME> - Create a new game.
-                    list - Show all games in database.
+                    - ex. create newgame
                     join <ID> [WHITE|BLACK] - Choose a game to play and which color to play as.
+                    - ex. join 1 WHITE
                     observe <ID> - Watch an ongoing game.
+                    - ex. observe 1
+                    list - Show all games in database.
                     logout - Logs current user out.
                     quit - Exit the program.
                     help - Display info about what actions can be taken.
