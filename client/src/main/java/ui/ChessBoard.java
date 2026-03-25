@@ -52,7 +52,7 @@ public class ChessBoard {
 
     private static void drawBlackBackline(PrintStream out, String color){
         // add backwards parser for board flip
-        String[] pieces = {" R ", " N ", " B ", " Q ", " K ", " B ", " N ", " R "};
+        String[] pieces = {" R ", " N ", " B ", " K ", " Q ", " B ", " N ", " R "};
         setBorderColors(out);
         out.print(" 8 ");
         drawBlBLWithPlayerPOV(out, pieces, color);
@@ -181,7 +181,7 @@ public class ChessBoard {
 
     private static void drawWhiteBackline(PrintStream out, String color){
         // add backwards parser for board flip
-        String[] pieces = {" R ", " N ", " B ", " Q ", " K ", " B ", " N ", " R "};
+        String[] pieces = {" R ", " N ", " B ", " K ", " Q ", " B ", " N ", " R "};
         setBorderColors(out);
         out.print(" 1 ");
         drawWhBLWithPlayerPOV(out, pieces, color);
