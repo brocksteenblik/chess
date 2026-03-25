@@ -186,7 +186,8 @@ public class ServerFacadeTests {
             facade.userPlayGame(games.getFirst().gameID(), "white", registerResult.authToken());
             facade.userLogout(registerResult.authToken());
             var registerResult2 = facade.userRegistration("evilman", "5678", "email@emails.com");
-            Assertions.assertThrows(ResponseException.class, ()->facade.userPlayGame(games.getFirst().gameID(), "white", registerResult2.authToken()));
+            Assertions.assertThrows(ResponseException.class,
+                    ()->facade.userPlayGame(games.getFirst().gameID(), "white", registerResult2.authToken()));
         } catch (ResponseException e) {
             throw new RuntimeException(e);
         }
