@@ -53,7 +53,7 @@ public class Client {
                 case "logout" -> logout();
                 case "create" -> createGame(params);
                 case "list" -> listGames();
-                case "play" -> playGame(params);
+                case "join" -> playGame(params);
                 case "observe" -> observeGame(params);
                 case "quit" -> quit();
                 default -> help();
@@ -130,7 +130,6 @@ public class Client {
                     game.gameName(), game.whiteUsername(), game.blackUsername());
             String singleGame = String.format("%d: %s \n", i, gameInfo);
             result.append(singleGame);
-            if (gamesList.size() <= 5){result.append("\n");}
             i++;
         }
         return result.toString();
@@ -143,7 +142,17 @@ public class Client {
 
     private String playGame(String[] params) throws ResponseException {
         assertLoggedIn();
-        return null;
+        checkValidJoinInput(params);
+        return "success!";
+    }
+
+    private void checkValidJoinInput(String[] params) throws ResponseException{
+        if (params.length < 2){throw new ResponseException(400, "Error: incorrect number of parameters");}
+        if (!params[0].matches("[0-9][0-9]*")){throw new ResponseException(400, "Error: Not a number");}
+        int gameID = Integer.parseInt(params[0]);
+        if (gameID > getGames().size()){throw new ResponseException(400, "Error: Game not found");}
+        String color = params[1].toLowerCase();
+        if (!color.equals("white") && !color.equals("black")){throw new ResponseException(400, "Error: invalid player color");}
     }
 
     private String observeGame(String[] params) throws ResponseException {
