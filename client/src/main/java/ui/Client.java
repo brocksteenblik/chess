@@ -158,10 +158,10 @@ public class Client {
         String gameName = getGames().get(gameIndex).gameName();
         System.out.printf("Successfully joined game: %s!" + "\n \n", gameName);
         if (color.equals("white")){
-            ChessBoard.drawWhitePlayerBoard();
+            ChessBoard.drawWhitePlayerBoard(gameID);
         }
         else{
-            ChessBoard.drawBlackPlayerBoard();
+            ChessBoard.drawBlackPlayerBoard(gameID);
         }
         return "";
     }
@@ -177,7 +177,18 @@ public class Client {
 
     private String observeGame(String[] params) throws ResponseException {
         assertLoggedIn();
-        return null;
+        checkValidObserveInput(params);
+        int gameIndex = Integer.parseInt(params[0]) - 1;
+        int gameID = getGames().get(gameIndex).gameID();
+        ChessBoard.drawWhitePlayerBoard(gameID);
+        return "";
+    }
+
+    private void checkValidObserveInput(String[] params) throws ResponseException {
+        if (params.length < 1){throw new ResponseException(400, "Error: incorrect number of parameters");}
+        if (!params[0].matches("[0-9][0-9]*")){throw new ResponseException(400, "Error: Not a number");}
+        int gameID = Integer.parseInt(params[0]);
+        if (gameID > getGames().size()){throw new ResponseException(400, "Error: Game not found");}
     }
 
     private String quit() throws ResponseException {
