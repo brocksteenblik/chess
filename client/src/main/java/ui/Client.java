@@ -74,7 +74,7 @@ public class Client {
 
     private String registerUser(String[] params) throws ResponseException {
         assertLoggedOut();
-        if (params.length >= 3) {
+        if (params.length == 3) {
             String username = params[0];
             String password = params[1];
             String email = params[2];
@@ -87,12 +87,12 @@ public class Client {
                 throw new ResponseException(400, "Error: username already taken");
             }
         }
-        return "Too few parameters. Make sure to include a username, a password, and an email!";
+        return "Incorrect number of parameters. Make sure to include a username, a password, and an email!\n";
     }
 
     private String login(String[] params) throws ResponseException {
     assertLoggedOut();
-        if (params.length >= 2) {
+        if (params.length == 2) {
             String username = params[0];
             String password = params[1];
             LoginResult loginResult = server.userLogin(username, password);
@@ -104,7 +104,7 @@ public class Client {
                 throw new ResponseException(400, "Error: invalid credentials");
             }
         }
-        return "Too few parameters. Make sure to include a username and a password!";
+        return "Incorrect number of parameters. Make sure to include a username and a password!\n";
     }
 
 
@@ -118,13 +118,13 @@ public class Client {
 
     private String createGame(String[] params) throws ResponseException {
         assertLoggedIn();
-        if (params.length >= 1){
+        if (params.length == 1){
             String gameName = params[0];
             server.userCreateGame(gameName, authToken);
             return String.format("Successfully created new game: %s", gameName);
         }
         else{
-            throw new ResponseException(400, "Error: incorrect number of parameters");
+            throw new ResponseException(400, "Error: incorrect number of parameter\n");
         }
     }
 
@@ -167,8 +167,8 @@ public class Client {
     }
 
     private void checkValidJoinInput(String[] params) throws ResponseException{
-        if (params.length < 2){throw new ResponseException(400, "Error: incorrect number of parameters");}
-        if (!params[0].matches("[0-9][0-9]*")){throw new ResponseException(400, "Error: Not a number");}
+        if (params.length != 2){throw new ResponseException(400, "Error: incorrect number of parameters");}
+        if (!params[0].matches("[0-9][0-9]*")){throw new ResponseException(400, "Error: Not a valid number");}
         int gameID = Integer.parseInt(params[0]);
         if (gameID > getGames().size()){throw new ResponseException(400, "Error: Game not found");}
         String color = params[1].toLowerCase();
@@ -185,7 +185,7 @@ public class Client {
     }
 
     private void checkValidObserveInput(String[] params) throws ResponseException {
-        if (params.length < 1){throw new ResponseException(400, "Error: incorrect number of parameters");}
+        if (params.length != 1){throw new ResponseException(400, "Error: incorrect number of parameters");}
         if (!params[0].matches("[0-9][0-9]*")){throw new ResponseException(400, "Error: Not a number");}
         int gameID = Integer.parseInt(params[0]);
         if (gameID > getGames().size()){throw new ResponseException(400, "Error: Game not found");}
