@@ -113,7 +113,11 @@ public class SqlDataAccess implements DataAccess{
     @Override
     public void updateGame(AuthData authData, JoinGameRequest joinGameRequest) throws DataAccessException {
         String username = authData.username();
-        Integer gameID = joinGameRequest.gameID();
+        if (username == null){
+            removePlayerFromGame(joinGameRequest);
+            return;
+        }
+        int gameID = joinGameRequest.gameID();
         GameData gameData = getGame(gameID);
         if (joinGameRequest.playerColor() == JoinGameRequest.PlayerColor.WHITE){
             if (gameData.whiteUsername() == null){
@@ -127,6 +131,26 @@ public class SqlDataAccess implements DataAccess{
                 GameData newGameData = gameData.setBlackUsername(username);
                 changeColorUsername(newGameData);
             } else{
+                throw new InputException(403, "Error 403: Forbidden");
+            }
+        }
+    }
+
+    private void removePlayerFromGame(JoinGameRequest joinGameRequest) throws DataAccessException {
+        int gameID = joinGameRequest.gameID();
+        GameData gameData = getGame(gameID);
+        if (joinGameRequest.playerColor() == JoinGameRequest.PlayerColor.WHITE){
+            if (gameData.whiteUsername() != null){
+                GameData newGameData = gameData.setWhiteUsername(null);
+                changeColorUsername(newGameData);
+            } else {
+                throw new InputException(403, "Error 403: Forbidden");
+            }
+        } else if (joinGameRequest.playerColor() == JoinGameRequest.PlayerColor.BLACK) {
+            if (gameData.whiteUsername() != null) {
+                GameData newGameData = gameData.setBlackUsername(null);
+                changeColorUsername(newGameData);
+            } else {
                 throw new InputException(403, "Error 403: Forbidden");
             }
         }

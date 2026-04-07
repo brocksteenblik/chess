@@ -3,9 +3,11 @@ package service;
 import chess.ChessGame;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
+import dataaccess.SqlDataAccess;
 import handler.websocket.ConnectionManager;
 import model.AuthData;
 import model.GameData;
+import model.JoinGameRequest;
 import org.eclipse.jetty.websocket.api.Session;
 
 public class WebSocketService {
@@ -37,5 +39,24 @@ public class WebSocketService {
         if (dataAccess.getGame(gameID) == null){
             throw new DataAccessException("Error: Invalid GameID");
         }
+    }
+
+    public boolean checkIfPlayer(String username, int gameID) throws DataAccessException {
+        checkValidGameID(gameID);
+        GameData gameData = dataAccess.getGame(gameID);
+        return gameData.whiteUsername().equals(username) || gameData.blackUsername().equals(username);
+    }
+
+    public void removePlayerFromGame(String authToken, int gameID) throws DataAccessException {
+        AuthData authData = dataAccess.getAuth(authToken);
+        GameData gameData = dataAccess.getGame(gameID);
+        JoinGameRequest joinGameRequest;
+        if (gameData.whiteUsername().equals(authData.username())){
+            joinGameRequest = new JoinGameRequest(JoinGameRequest.PlayerColor.WHITE, gameID);
+        }
+        else {
+            joinGameRequest = new JoinGameRequest(JoinGameRequest.PlayerColor.BLACK, gameID);
+        }
+        dataAccess.updateGame(new AuthData(authToken, null), joinGameRequest);
     }
 }

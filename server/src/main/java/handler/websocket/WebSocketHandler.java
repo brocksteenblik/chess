@@ -73,7 +73,10 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             service.checkValidGameID(gameID);
             connections.remove(session, gameID);
             String username = service.getUsernameFromAuth(authToken);
-            String message = String.format("%s has joined the game", username);
+            if (service.checkIfPlayer(username, gameID)){
+                service.removePlayerFromGame(authToken, gameID);
+            }
+            String message = String.format("%s has left the game", username);
             ServerMessage notificationMessage = new NotificationMessage(message);
             connections.broadcast(session, gameID, notificationMessage);
         } catch (DataAccessException e) {
