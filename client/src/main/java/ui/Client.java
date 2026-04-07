@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import client.*;
+import websocket.messages.NotificationMessage;
 
 import static ui.EscapeSequences.*;
 
@@ -41,6 +42,10 @@ public class Client {
                 System.out.print(msg);
             }
         }
+    }
+
+    public void notify(NotificationMessage notification) {
+        System.out.println(notification.getMessage());
     }
 
     private void optionalPrintHelp(String input) {
