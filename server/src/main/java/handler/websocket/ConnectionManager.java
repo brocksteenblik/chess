@@ -22,8 +22,10 @@ public class ConnectionManager {
         }
     }
 
-    public void remove(Session session) {
-        connections.remove(session);
+    public void remove(Session session, int gameID) {
+        var sessionList = connections.get(gameID);
+        sessionList.remove(session);
+        connections.put(gameID, sessionList);
     }
 
     public void broadcast(Session excludeSession, int gameID, ServerMessage message) throws IOException {

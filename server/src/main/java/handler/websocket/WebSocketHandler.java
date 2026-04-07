@@ -52,11 +52,11 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             String username = service.getUsernameFromAuth(authToken);
             ChessGame game = service.getGame(gameID);
             connections.add(gameID, session);
-            String message = String.format("%s has joined the game", username);
             ServerMessage rootNotif = new LoadGameMessage(game);
             connections.messageRoot(session, gameID, rootNotif);
-            ServerMessage nonRootNotif = new NotificationMessage(message);
-            connections.broadcast(session, gameID, nonRootNotif);
+            String message = String.format("%s has joined the game", username);
+            ServerMessage notificationMessage = new NotificationMessage(message);
+            connections.broadcast(session, gameID, notificationMessage);
         } catch (DataAccessException e) {
             ServerMessage rootError = new ErrorMessage("Error: Faulty Data Provided");
             connections.messageRoot(session, gameID, rootError);
@@ -67,8 +67,19 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     }
 
-    private void leave(String authToken, int gameID, Session session) {
-
+    private void leave(String authToken, int gameID, Session session) throws IOException {
+        try {
+            service.checkValidAuth(authToken);
+            service.checkValidGameID(gameID);
+            connections.remove(session, gameID);
+            String username = service.getUsernameFromAuth(authToken);
+            String message = String.format("%s has joined the game", username);
+            ServerMessage notificationMessage = new NotificationMessage(message);
+            connections.broadcast(session, gameID, notificationMessage);
+        } catch (DataAccessException e) {
+            ServerMessage rootError = new ErrorMessage("Error: Faulty Data Provided");
+            connections.messageRoot(session, gameID, rootError);
+        }
     }
 
     private void resign(String authToken, int gameID, Session session) {
