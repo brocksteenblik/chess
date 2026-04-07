@@ -16,18 +16,26 @@ public class WebSocketService {
     }
 
     public String getUsernameFromAuth(String authToken) throws DataAccessException {
+        checkValidAuth(authToken);
         AuthData authData = dataAccess.getAuth(authToken);
-        if (authData == null){
-            throw new DataAccessException("Error: Invalid Auth Token");
-        }
         return authData.username();
     }
 
+    public void checkValidAuth(String authToken) throws DataAccessException{
+        if (dataAccess.getAuth(authToken) == null){
+            throw new DataAccessException("Error: Invalid Auth Token");
+        }
+    }
+
     public ChessGame getGame(int gameID) throws DataAccessException {
+        checkValidGameID(gameID);
         GameData gameData = dataAccess.getGame(gameID);
-        if (gameData == null){
+        return gameData.getChessGame();
+    }
+
+    public void checkValidGameID(int gameID) throws DataAccessException{
+        if (dataAccess.getGame(gameID) == null){
             throw new DataAccessException("Error: Invalid GameID");
         }
-        return gameData.getChessGame();
     }
 }

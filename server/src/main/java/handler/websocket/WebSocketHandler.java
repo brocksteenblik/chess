@@ -50,9 +50,9 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void connect(String authToken, int gameID, Session session) throws IOException, DataAccessException {
         try {
             String username = service.getUsernameFromAuth(authToken);
+            ChessGame game = service.getGame(gameID);
             connections.add(gameID, session);
             String message = String.format("%s has joined the game", username);
-            ChessGame game = service.getGame(gameID);
             ServerMessage rootNotif = new LoadGameMessage(game);
             connections.messageRoot(session, gameID, rootNotif);
             ServerMessage nonRootNotif = new NotificationMessage(message);
@@ -68,6 +68,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
     private void leave(String authToken, int gameID, Session session) {
+
     }
 
     private void resign(String authToken, int gameID, Session session) {
