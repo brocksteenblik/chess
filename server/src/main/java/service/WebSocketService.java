@@ -5,6 +5,7 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import handler.websocket.ConnectionManager;
 import model.AuthData;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 
 public class WebSocketService {
@@ -22,8 +23,11 @@ public class WebSocketService {
         return authData.username();
     }
 
-    public ChessGame getGame(int gameID) {
-        // Update this later
-        return new ChessGame();
+    public ChessGame getGame(int gameID) throws DataAccessException {
+        GameData gameData = dataAccess.getGame(gameID);
+        if (gameData == null){
+            throw new DataAccessException("Error: Invalid GameID");
+        }
+        return gameData.getChessGame();
     }
 }
