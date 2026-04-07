@@ -15,9 +15,11 @@ public class Client {
     private State state = State.LOGGED_OUT;
     private final ServerFacade server;
     private String authToken;
+    private WebSocketCommunicator ws;
 
-    public Client(String serverUrl){
+    public Client(String serverUrl) throws ResponseException {
         server = new ServerFacade(serverUrl);
+        ws = new WebSocketCommunicator(serverUrl, this);
     }
 
     public void run(){
@@ -161,6 +163,7 @@ public class Client {
         String color = params[1].toLowerCase();
         server.userPlayGame(gameID, color, authToken);
         String gameName = getGames().get(gameIndex).gameName();
+        ws.joinGame(authToken, gameID);
         System.out.printf("Successfully joined game: %s!" + "\n \n", gameName);
         if (color.equals("white")){
             ChessBoard.drawWhitePlayerBoard(gameID);

@@ -7,6 +7,7 @@ import jakarta.websocket.*;
 import io.javalin.router.EndpointMetadata;
 import org.jetbrains.annotations.NotNull;
 import ui.Client;
+import websocket.commands.UserGameCommand;
 import websocket.messages.NotificationMessage;
 
 import java.io.IOException;
@@ -37,6 +38,15 @@ public class WebSocketCommunicator extends Endpoint {
             });
         } catch (URISyntaxException | DeploymentException | IOException e) {
             throw new ResponseException(500, e.getMessage());
+        }
+    }
+
+    public void joinGame(String authToken, int gameID) throws ResponseException {
+        try {
+            UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+            session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
+        } catch (IOException e) {
+            throw new ResponseException(500, "Could not connect");
         }
     }
 

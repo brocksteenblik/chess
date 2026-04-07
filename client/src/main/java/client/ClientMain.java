@@ -9,7 +9,12 @@ public class ClientMain {
         if (args.length == 1){
             serverUrl = args[0];
         }
-        var client = new Client(serverUrl);
+        Client client = null;
+        try {
+            client = new Client(serverUrl);
+        } catch (ResponseException e) {
+            System.out.print("Unable to start server");
+        }
         client.run();
     }
 }
