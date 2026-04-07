@@ -18,9 +18,9 @@ public class Server {
 
     public Server() {
         try{
-            DataAccess memoryDataAccess = new SqlDataAccess();
-            Handler handler = new Handler(memoryDataAccess);
-            WebSocketHandler webSocketHandler = new WebSocketHandler();
+            DataAccess dataAccess = new SqlDataAccess();
+            Handler handler = new Handler(dataAccess);
+            WebSocketHandler webSocketHandler = new WebSocketHandler(dataAccess);
             javalin = Javalin.create(config -> config.staticFiles.add("web"))
                     .post("/user", handler::addUser)
                     .post("/session", handler::login)
