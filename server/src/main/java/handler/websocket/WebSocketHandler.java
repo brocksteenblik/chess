@@ -10,6 +10,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import service.WebSocketService;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
@@ -46,10 +47,10 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         }
     }
 
-    private void connect(String authToken, int gameID, Session session) throws IOException {
-        connections.add(gameID, session);
+    private void connect(String authToken, int gameID, Session session) throws IOException, DataAccessException {
         try {
             String username = service.getUsernameFromAuth(authToken);
+            connections.add(gameID, session);
             String message = String.format("%s has joined the game", username);
             ChessGame game = service.getGame(gameID);
             ServerMessage rootNotif = new LoadGameMessage(game);
@@ -57,7 +58,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             ServerMessage nonRootNotif = new NotificationMessage(message);
             connections.broadcast(session, gameID, nonRootNotif);
         } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            ServerMessage rootError = new ErrorMessage("Error: Faulty Data Provided");
+            connections.messageRoot(session, gameID, rootError);
         }
     }
 

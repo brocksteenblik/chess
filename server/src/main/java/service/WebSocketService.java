@@ -15,7 +15,11 @@ public class WebSocketService {
     }
 
     public String getUsernameFromAuth(String authToken) throws DataAccessException {
-        return dataAccess.getAuth(authToken).username();
+        AuthData authData = dataAccess.getAuth(authToken);
+        if (authData == null){
+            throw new DataAccessException("Error: Invalid Auth Token");
+        }
+        return authData.username();
     }
 
     public ChessGame getGame(int gameID) {
