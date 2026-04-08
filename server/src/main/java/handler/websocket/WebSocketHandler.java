@@ -6,6 +6,7 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import handler.InputException;
 import io.javalin.websocket.*;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import service.WebSocketService;
@@ -50,7 +51,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void connect(String authToken, int gameID, Session session) throws IOException, DataAccessException {
         try {
             String username = service.getUsernameFromAuth(authToken);
-            ChessGame game = service.getGame(gameID);
+            GameData game = service.getGame(gameID);
             connections.add(gameID, session);
             ServerMessage rootNotif = new LoadGameMessage(game);
             connections.messageRoot(session, gameID, rootNotif);

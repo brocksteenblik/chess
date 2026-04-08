@@ -29,10 +29,9 @@ public class WebSocketService {
         }
     }
 
-    public ChessGame getGame(int gameID) throws DataAccessException {
+    public GameData getGame(int gameID) throws DataAccessException {
         checkValidGameID(gameID);
-        GameData gameData = dataAccess.getGame(gameID);
-        return gameData.getChessGame();
+        return dataAccess.getGame(gameID);
     }
 
     public void checkValidGameID(int gameID) throws DataAccessException{
