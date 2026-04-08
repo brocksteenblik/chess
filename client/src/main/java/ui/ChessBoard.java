@@ -43,7 +43,10 @@ public class ChessBoard {
     private static void printRow(PrintStream out, int row, chess.ChessBoard board, String boardColor){
         for (int i = 8; i > 0; i--){
             ChessPiece piece = board.getPiece(new ChessPosition(row, i));
-            if (piece.getPieceType() == ChessPiece.PieceType.ROOK){
+            if (piece == null) {
+                determineSquareColor(out, row, i, boardColor, null);
+                out.print("   ");}
+            else if (piece.getPieceType() == ChessPiece.PieceType.ROOK){
                 determineSquareColor(out, row, i, boardColor, piece.getTeamColor());
                 out.print(" R ");}
             else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT){
@@ -61,8 +64,6 @@ public class ChessBoard {
             else if (piece.getPieceType() == ChessPiece.PieceType.PAWN){
                 determineSquareColor(out, row, i, boardColor, piece.getTeamColor());
                 out.print(" P ");}
-            else{determineSquareColor(out, row, i, boardColor, piece.getTeamColor());
-                out.print("   ");}
         }
     }
 
@@ -70,7 +71,10 @@ public class ChessBoard {
         if (boardColor.equals("BLACK")){
             if (row % 2 == 1){
                 if (col % 2 == 1){
-                    if (pieceColor == ChessGame.TeamColor.WHITE){
+                    if (pieceColor == null){
+                        setBlackSpaceBlackPiece(out);
+                    }
+                    else if (pieceColor == ChessGame.TeamColor.WHITE){
                         setBlackSpaceWhitePiece(out);
                     }
                     else if (pieceColor == ChessGame.TeamColor.BLACK){
@@ -78,7 +82,10 @@ public class ChessBoard {
                     }
                 }
                 else{
-                    if (pieceColor == ChessGame.TeamColor.WHITE){
+                    if (pieceColor == null){
+                        setWhiteSpaceWhitePiece(out);
+                    }
+                    else if (pieceColor == ChessGame.TeamColor.WHITE){
                         setWhiteSpaceWhitePiece(out);
                     }
                     else if (pieceColor == ChessGame.TeamColor.BLACK){
@@ -88,7 +95,10 @@ public class ChessBoard {
             }
             else if (row % 2 == 0){
                 if (col % 2 == 1){
-                    if (pieceColor == ChessGame.TeamColor.WHITE){
+                    if (pieceColor == null){
+                        setWhiteSpaceWhitePiece(out);
+                    }
+                    else if (pieceColor == ChessGame.TeamColor.WHITE){
                         setWhiteSpaceWhitePiece(out);
                     }
                     else if (pieceColor == ChessGame.TeamColor.BLACK){
@@ -96,7 +106,10 @@ public class ChessBoard {
                     }
                 }
                 else{
-                    if (pieceColor == ChessGame.TeamColor.WHITE){
+                    if (pieceColor == null){
+                        setBlackSpaceBlackPiece(out);
+                    }
+                    else if (pieceColor == ChessGame.TeamColor.WHITE){
                         setBlackSpaceWhitePiece(out);
                     }
                     else if (pieceColor == ChessGame.TeamColor.BLACK){
@@ -108,7 +121,10 @@ public class ChessBoard {
         else if (boardColor.equals("WHITE")){
             if (row % 2 == 1){
                 if (col % 2 == 1){
-                    if (pieceColor == ChessGame.TeamColor.WHITE){
+                    if (pieceColor == null){
+                        setWhiteSpaceWhitePiece(out);
+                    }
+                    else if (pieceColor == ChessGame.TeamColor.WHITE){
                         setWhiteSpaceWhitePiece(out);
                     }
                     else if (pieceColor == ChessGame.TeamColor.BLACK){
@@ -116,7 +132,10 @@ public class ChessBoard {
                     }
                 }
                 else{
-                    if (pieceColor == ChessGame.TeamColor.WHITE){
+                    if (pieceColor == null){
+                        setBlackSpaceBlackPiece(out);
+                    }
+                    else if (pieceColor == ChessGame.TeamColor.WHITE){
                         setBlackSpaceWhitePiece(out);
                     }
                     else if (pieceColor == ChessGame.TeamColor.BLACK){
@@ -126,7 +145,10 @@ public class ChessBoard {
             }
             else if (row % 2 == 0){
                 if (col % 2 == 1){
-                    if (pieceColor == ChessGame.TeamColor.WHITE){
+                    if (pieceColor == null){
+                        setBlackSpaceBlackPiece(out);
+                    }
+                    else if (pieceColor == ChessGame.TeamColor.WHITE){
                         setBlackSpaceWhitePiece(out);
                     }
                     else if (pieceColor == ChessGame.TeamColor.BLACK){
@@ -134,7 +156,10 @@ public class ChessBoard {
                     }
                 }
                 else{
-                    if (pieceColor == ChessGame.TeamColor.WHITE){
+                    if (pieceColor == null){
+                        setWhiteSpaceWhitePiece(out);
+                    }
+                    else if (pieceColor == ChessGame.TeamColor.WHITE){
                         setWhiteSpaceWhitePiece(out);
                     }
                     else if (pieceColor == ChessGame.TeamColor.BLACK){
@@ -163,86 +188,35 @@ public class ChessBoard {
     }
 
     private static void drawBlackBackline(PrintStream out, String color, chess.ChessBoard board){
-        // add backwards parser for board flip
-        setBorderColors(out);
-        out.print(" 8 ");
-        printRow(out, 8, board, color);
-        //drawLineStartsWhite(out, pieces, color);
-        setBorderColors(out);
-        out.print(" 8 ");
-        resetColors(out);
-        out.println();
+        drawGivenRow(out, " 8 ", 8, board, color);
     }
 
-    private static void drawLineStartsWhite(PrintStream out, ArrayList<String> pieces, String color) {
-        if (color.equals("BLACK")) {
-            for (int i = 0; i <= 7; i++) {
-                if (i % 2 != 0) {
-                    setWhiteSpaceBlackPiece(out);
-                } else {
-                    setBlackSpaceBlackPiece(out);
-                }
-                out.print(pieces.get(i));
-            }
-        }
-        else{
-            for (int i = 7; i >= 0; i--) {
-                if (i % 2 != 0) {
-                    setWhiteSpaceBlackPiece(out);
-                } else {
-                    setBlackSpaceBlackPiece(out);
-                }
-                out.print(pieces.get(i));
-            }
-        }
+    private static void drawGivenRow(PrintStream out, String s, int row, chess.ChessBoard board, String color) {
+        setBorderColors(out);
+        out.print(s);
+        printRow(out, row, board, color);
+        setBorderColors(out);
+        out.print(s);
+        resetColors(out);
+        out.println();
     }
 
     private static void drawBlackPawnLine(PrintStream out, String color, chess.ChessBoard board){
-        // Add backwards parser for board flip
-        setBorderColors(out);
-        out.print(" 7 ");
-        //drawBlPLWithPlayerPOV(out, color);
-        printRow(out, 7, board, color);
-        //drawLineStartBlack(out, pieces, color);
-        setBorderColors(out);
-        out.print(" 7 ");
-        resetColors(out);
-        out.println();
-    }
-
-    private static void drawBlPLWithPlayerPOV(PrintStream out, String color) {
-        if (color.equals("BLACK")) {
-            for (int i = 0; i <= 7; i++) {
-                if (i % 2 != 0) {
-                    setBlackSpaceBlackPiece(out);
-                } else {
-                    setWhiteSpaceBlackPiece(out);
-                }
-                out.print(" P ");
-            }
-        }
-        else{
-            for (int i = 7; i >= 0; i--) {
-                if (i % 2 != 0) {
-                    setBlackSpaceBlackPiece(out);
-                } else {
-                    setWhiteSpaceBlackPiece(out);
-                }
-                out.print(" P ");
-            }
-        }
+        drawGivenRow(out, " 7 ", 7, board, color);
     }
 
     private static void drawMiddleSquares(PrintStream out, String color, chess.ChessBoard board){
         // From the perspective of white player
         if (color.equals("WHITE")) {
             for (int i = 6; i >= 3; i--) {
-                drawSingleBlankLine(i, out, color);
+                String s = String.format(" %d ", i);
+                drawGivenRow(out, s, i, board, color);
             }
         }
         else{
             for (int i = 3; i <= 6; i++) {
-                drawSingleBlankLine(i, out, color);
+                String s = String.format(" %d ", i);
+                drawGivenRow(out, s, i, board, color);
             }
         }
     }
@@ -294,74 +268,13 @@ public class ChessBoard {
     }
 
     private static void drawWhiteBackline(PrintStream out, String color, chess.ChessBoard board){
-        // add backwards parser for board flip
-        setBorderColors(out);
-        out.print(" 1 ");
-        printRow(out,1, board, color);
-        //drawLineStartBlack(out, pieces, color);
-        setBorderColors(out);
-        out.print(" 1 ");
-        resetColors(out);
-        out.println();
-    }
-
-    private static void drawLineStartBlack(PrintStream out, ArrayList<String> pieces, String color) {
-        if (color.equals("BLACK")) {
-            for (int i = 0; i <= 7; i++) {
-                if (i % 2 != 0) {
-                    setBlackSpaceWhitePiece(out);
-                } else {
-                    setWhiteSpaceWhitePiece(out);
-                }
-                out.print(pieces.get(i));
-            }
-        }
-        else {
-            for (int i = 7; i >= 0; i--) {
-                if (i % 2 != 0) {
-                    setBlackSpaceWhitePiece(out);
-                } else {
-                    setWhiteSpaceWhitePiece(out);
-                }
-                out.print(pieces.get(i));
-            }
-        }
+        drawGivenRow(out, " 1 ", 1, board, color);
     }
 
     private static void drawWhitePawnLine(PrintStream out, String color, chess.ChessBoard board){
-        // Add backwards parser for board flip
-        setBorderColors(out);
-        out.print(" 2 ");
-        drawWhPLWithPlayerPOV(out, color);
-        setBorderColors(out);
-        out.print(" 2 ");
-        resetColors(out);
-        out.println();
+        drawGivenRow(out, " 2 ", 2, board, color);
     }
-
-    private static void drawWhPLWithPlayerPOV(PrintStream out, String color) {
-        if (color.equals("BLACK")) {
-            for (int i = 0; i <= 7; i++) {
-                if (i % 2 != 0) {
-                    setWhiteSpaceWhitePiece(out);
-                } else {
-                    setBlackSpaceWhitePiece(out);
-                }
-                out.print(" P ");
-            }
-        }
-        else{
-            for (int i = 7; i >= 0; i--) {
-                if (i % 2 != 0) {
-                    setWhiteSpaceWhitePiece(out);
-                } else {
-                    setBlackSpaceWhitePiece(out);
-                }
-                out.print(" P ");
-            }
-        }
-    }
-
+    
     private static void drawBlackBorder(PrintStream out){
         setBorderColors(out);
         String[] headers = {"a", "b", "c", "d", "e", "f", "g", "h"};
