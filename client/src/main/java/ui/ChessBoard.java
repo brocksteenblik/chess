@@ -70,102 +70,62 @@ public class ChessBoard {
         if (boardColor.equals("BLACK")){
             if (row % 2 == 1){
                 if (col % 2 == 1){
-                    if (pieceColor == null){
-                        setBlackSpaceBlackPiece(out);
-                    }
-                    else if (pieceColor == ChessGame.TeamColor.WHITE){
-                        setBlackSpaceWhitePiece(out);
-                    }
-                    else if (pieceColor == ChessGame.TeamColor.BLACK){
-                        setBlackSpaceBlackPiece(out);
-                    }
+                    assignBlackSpace(out, pieceColor);
                 }
                 else{
-                    if (pieceColor == null){
-                        setWhiteSpaceWhitePiece(out);
-                    }
-                    else if (pieceColor == ChessGame.TeamColor.WHITE){
-                        setWhiteSpaceWhitePiece(out);
-                    }
-                    else if (pieceColor == ChessGame.TeamColor.BLACK){
-                        setWhiteSpaceBlackPiece(out);
-                    }
+                    assignWhiteSpace(out, pieceColor);
                 }
             }
             else if (row % 2 == 0){
                 if (col % 2 == 1){
-                    if (pieceColor == null){
-                        setWhiteSpaceWhitePiece(out);
-                    }
-                    else if (pieceColor == ChessGame.TeamColor.WHITE){
-                        setWhiteSpaceWhitePiece(out);
-                    }
-                    else if (pieceColor == ChessGame.TeamColor.BLACK){
-                        setWhiteSpaceBlackPiece(out);
-                    }
+                    assignWhiteSpace(out, pieceColor);
                 }
                 else{
-                    if (pieceColor == null){
-                        setBlackSpaceBlackPiece(out);
-                    }
-                    else if (pieceColor == ChessGame.TeamColor.WHITE){
-                        setBlackSpaceWhitePiece(out);
-                    }
-                    else if (pieceColor == ChessGame.TeamColor.BLACK){
-                        setBlackSpaceBlackPiece(out);
-                    }
+                    assignBlackSpace(out, pieceColor);
                 }
             }
         }
         else if (boardColor.equals("WHITE")){
             if (row % 2 == 1){
                 if (col % 2 == 1){
-                    if (pieceColor == null){
-                        setWhiteSpaceWhitePiece(out);
-                    }
-                    else if (pieceColor == ChessGame.TeamColor.WHITE){
-                        setWhiteSpaceWhitePiece(out);
-                    }
-                    else if (pieceColor == ChessGame.TeamColor.BLACK){
-                        setWhiteSpaceBlackPiece(out);
-                    }
+                    assignWhiteSpace(out, pieceColor);
                 }
                 else{
-                    if (pieceColor == null){
-                        setBlackSpaceBlackPiece(out);
-                    }
-                    else if (pieceColor == ChessGame.TeamColor.WHITE){
-                        setBlackSpaceWhitePiece(out);
-                    }
-                    else if (pieceColor == ChessGame.TeamColor.BLACK){
-                        setBlackSpaceBlackPiece(out);
-                    }
+                    assignBlackSpace(out, pieceColor);
                 }
             }
             else if (row % 2 == 0){
                 if (col % 2 == 1){
-                    if (pieceColor == null){
-                        setBlackSpaceBlackPiece(out);
-                    }
-                    else if (pieceColor == ChessGame.TeamColor.WHITE){
-                        setBlackSpaceWhitePiece(out);
-                    }
-                    else if (pieceColor == ChessGame.TeamColor.BLACK){
-                        setBlackSpaceBlackPiece(out);
-                    }
+                    assignBlackSpace(out, pieceColor);
                 }
                 else{
-                    if (pieceColor == null){
-                        setWhiteSpaceWhitePiece(out);
-                    }
-                    else if (pieceColor == ChessGame.TeamColor.WHITE){
-                        setWhiteSpaceWhitePiece(out);
-                    }
-                    else if (pieceColor == ChessGame.TeamColor.BLACK){
-                        setWhiteSpaceBlackPiece(out);
-                    }
+                    assignWhiteSpace(out, pieceColor);
                 }
             }
+        }
+    }
+
+    private static void assignWhiteSpace(PrintStream out, ChessGame.TeamColor pieceColor) {
+        if (pieceColor == null){
+            setWhiteSpaceWhitePiece(out);
+        }
+        else if (pieceColor == ChessGame.TeamColor.WHITE){
+            setWhiteSpaceWhitePiece(out);
+        }
+        else if (pieceColor == ChessGame.TeamColor.BLACK){
+            setWhiteSpaceBlackPiece(out);
+        }
+    }
+
+    private static void assignBlackSpace(PrintStream out, ChessGame.TeamColor pieceColor) {
+        if (pieceColor == null){
+            setBlackSpaceBlackPiece(out);
+        }
+        else if (pieceColor == ChessGame.TeamColor.WHITE){
+            setBlackSpaceWhitePiece(out);
+        }
+        else if (pieceColor == ChessGame.TeamColor.BLACK){
+            setBlackSpaceBlackPiece(out);
         }
     }
 

@@ -4,7 +4,6 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
-import handler.InputException;
 import io.javalin.websocket.*;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
@@ -23,8 +22,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private final ConnectionManager connections = new ConnectionManager();
     private final WebSocketService service;
 
-    public WebSocketHandler(DataAccess SqlDataAccess){
-        this.service = new WebSocketService(SqlDataAccess);
+    public WebSocketHandler(DataAccess sqlDataAccess){
+        this.service = new WebSocketService(sqlDataAccess);
     }
 
     @Override
