@@ -8,7 +8,10 @@ import io.javalin.router.EndpointMetadata;
 import org.jetbrains.annotations.NotNull;
 import ui.Client;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 import java.net.URI;
@@ -33,7 +36,18 @@ public class WebSocketCommunicator extends Endpoint {
                 @Override
                 public void onMessage(String message) {
                     NotificationMessage notification = new Gson().fromJson(message, NotificationMessage.class);
-                    client.notify(notification);
+                    if (notification.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME){
+                        LoadGameMessage real_notification = new Gson().fromJson(message, LoadGameMessage.class);
+                        client.notify(real_notification);
+                    }
+                    else if (notification.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION){
+                        NotificationMessage real_notification = new Gson().fromJson(message, NotificationMessage.class);
+                        client.notify(real_notification);
+                    }
+                    else {
+                        ErrorMessage real_notification = new Gson().fromJson(message, ErrorMessage.class);
+                        client.notify(real_notification);
+                    }
                 }
             });
         } catch (URISyntaxException | DeploymentException | IOException e) {

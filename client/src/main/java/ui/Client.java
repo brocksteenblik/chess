@@ -1,11 +1,14 @@
 package ui;
 
+import chess.ChessGame;
 import model.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import client.*;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 
 import static ui.EscapeSequences.*;
@@ -46,8 +49,22 @@ public class Client {
         }
     }
 
+    public void notify(LoadGameMessage notification) {
+        ChessGame game = notification.getGame();
+        // draw the dang thing later
+        startPrompt();
+    }
+
     public void notify(NotificationMessage notification) {
+        setColor("BLUE");
         System.out.println(notification.getMessage());
+        startPrompt();
+    }
+
+
+    public void notify(ErrorMessage notification) {
+        System.out.println(notification.getErrorMessage());
+        startPrompt();
     }
 
     private void optionalPrintHelp(String input) {
@@ -227,7 +244,7 @@ public class Client {
                     quit - Exit the program.
                     """;
         }
-        else{
+        else if (state == State.LOGGED_IN){
             return """
                     create <NAME> - Create a new game.
                     - ex. create newgame
@@ -238,6 +255,16 @@ public class Client {
                     list - Show all games in database.
                     logout - Logs current user out.
                     quit - Exit the program.
+                    help - Display info about what actions can be taken.
+                    """;
+        }
+        else {
+            return """
+                    redraw - Prints the chess board again.
+                    move (PARAMS) - Make a move in current game.
+                    resign - Forfeit and end the current game.
+                    highlight - Highlights legal moves for a piece.
+                    leave - Leave the game without ending it.
                     help - Display info about what actions can be taken.
                     """;
         }
