@@ -8,7 +8,6 @@ import chess.ChessPosition;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 
 import static ui.EscapeSequences.*;
 
@@ -206,7 +205,6 @@ public class ChessBoard {
     }
 
     private static void drawMiddleSquares(PrintStream out, String color, chess.ChessBoard board){
-        // From the perspective of white player
         if (color.equals("WHITE")) {
             for (int i = 6; i >= 3; i--) {
                 String s = String.format(" %d ", i);
@@ -217,52 +215,6 @@ public class ChessBoard {
             for (int i = 3; i <= 6; i++) {
                 String s = String.format(" %d ", i);
                 drawGivenRow(out, s, i, board, color);
-            }
-        }
-    }
-
-    private static void drawSingleBlankLine(int row, PrintStream out, String color){
-        setBorderColors(out);
-        out.print(" " + row + " ");
-        for (int i = 0; i <= 7; i++){
-            determineRowPattern(out, i, row, color);
-            out.print("   ");
-        }
-        setBorderColors(out);
-        out.print(" " + row + " ");
-        resetColors(out);
-        out.println();
-    }
-
-    private static void determineRowPattern(PrintStream out, int i, int row, String color) {
-        if (color.equals("BLACK")) {
-            if (row % 2 == 0) {
-                if (i % 2 != 0) {
-                    setWhiteSpaceBlackPiece(out);
-                } else {
-                    setBlackSpaceBlackPiece(out);
-                }
-            } else {
-                if (i % 2 != 0) {
-                    setBlackSpaceBlackPiece(out);
-                } else {
-                    setWhiteSpaceBlackPiece(out);
-                }
-            }
-        }
-        else {
-            if (row % 2 == 1) {
-                if (i % 2 != 0) {
-                    setWhiteSpaceBlackPiece(out);
-                } else {
-                    setBlackSpaceBlackPiece(out);
-                }
-            } else {
-                if (i % 2 != 0) {
-                    setBlackSpaceBlackPiece(out);
-                } else {
-                    setWhiteSpaceBlackPiece(out);
-                }
             }
         }
     }
