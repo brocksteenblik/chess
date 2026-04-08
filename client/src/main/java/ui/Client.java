@@ -1,6 +1,5 @@
 package ui;
 
-import chess.ChessGame;
 import model.*;
 
 import java.util.ArrayList;
@@ -50,8 +49,13 @@ public class Client {
     }
 
     public void notify(LoadGameMessage notification) {
-        ChessGame game = notification.getGame();
-        // draw the dang thing later
+        GameData game = notification.getGame();
+        if (state == State.BLACK_PLAYER){
+            ChessBoard.drawBlackPlayerBoard(game.getChessGame());
+        }
+        else{
+            ChessBoard.drawWhitePlayerBoard(game.getChessGame());
+        }
         startPrompt();
     }
 
@@ -186,13 +190,12 @@ public class Client {
         server.userPlayGame(gameID, color, authToken);
         String gameName = getGames().get(gameIndex).gameName();
         ws.joinGame(authToken, gameID);
-        state = State.PLAYING_GAME;
         System.out.printf("Successfully joined game: %s!" + "\n \n", gameName);
         if (color.equals("white")){
-            ChessBoard.drawWhitePlayerBoard(gameID);
+            state = State.WHITE_PLAYER;
         }
         else{
-            ChessBoard.drawBlackPlayerBoard(gameID);
+            state = State.BLACK_PLAYER;
         }
         return "";
     }
@@ -211,8 +214,7 @@ public class Client {
         checkValidObserveInput(params);
         int gameIndex = Integer.parseInt(params[0]) - 1;
         int gameID = getGames().get(gameIndex).gameID();
-        state = State.OBSERVING_GAME;
-        ChessBoard.drawWhitePlayerBoard(gameID);
+        state = State.OBSERVER;
         return "";
     }
 
@@ -294,7 +296,15 @@ public class Client {
                     help - Display info about what actions can be taken.
                     """;
         }
-        else {
+        else if (state == State.OBSERVER){
+            return """
+                    redraw - Prints the chess board again.
+                    highlight (PARAMS) - Highlights legal moves for a piece.
+                    leave - Leave the game without ending it.
+                    help - Display info about what actions can be taken.
+                    """;
+        }
+        else{
             return """
                     redraw - Prints the chess board again.
                     move (PARAMS) - Make a move in current game.
@@ -321,14 +331,14 @@ public class Client {
     }
 
     private void assertInGame() throws ResponseException{
-        if (state == State.PLAYING_GAME | state == State.OBSERVING_GAME){
+        if (state != State.WHITE_PLAYER && state != State.BLACK_PLAYER && state != State.OBSERVER){
             setColor("RED");
             throw new ResponseException(401, "Unauthorized: Not in a game");
         }
     }
 
     private void assertPlayingGame() throws ResponseException{
-        if (state != State.PLAYING_GAME){
+        if (state != State.WHITE_PLAYER && state != State.BLACK_PLAYER){
             setColor("RED");
             throw new ResponseException(401, "Unauthorized: Not playing a game");
         }

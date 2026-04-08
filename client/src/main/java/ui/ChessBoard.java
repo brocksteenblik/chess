@@ -2,6 +2,8 @@ package ui;
 
 
 
+import chess.ChessGame;
+
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 
@@ -11,7 +13,7 @@ public class ChessBoard {
 
     private static final String EMPTY = "  ";
 
-    public static void drawWhitePlayerBoard(int gameID) {
+    public static void drawWhitePlayerBoard(ChessGame game) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         drawWhiteBorder(out);
         drawBlackBackline(out, "WHITE");
@@ -22,7 +24,7 @@ public class ChessBoard {
         drawWhiteBorder(out);
     }
 
-    public static void drawBlackPlayerBoard(int gameID){
+    public static void drawBlackPlayerBoard(ChessGame game){
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         drawBlackBorder(out);
         drawWhiteBackline(out, "BLACK");
