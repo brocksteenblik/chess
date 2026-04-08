@@ -50,6 +50,7 @@ public class Client {
 
     public void notify(LoadGameMessage notification) {
         GameData game = notification.getGame();
+        System.out.printf("Successfully joined game!" + "\n \n");
         if (state == State.BLACK_PLAYER){
             ChessBoard.drawBlackPlayerBoard(game.getChessGame());
         }
@@ -190,7 +191,6 @@ public class Client {
         server.userPlayGame(gameID, color, authToken);
         String gameName = getGames().get(gameIndex).gameName();
         ws.joinGame(authToken, gameID);
-        System.out.printf("Successfully joined game: %s!" + "\n \n", gameName);
         if (color.equals("white")){
             state = State.WHITE_PLAYER;
         }

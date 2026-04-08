@@ -3,9 +3,13 @@ package ui;
 
 
 import chess.ChessGame;
+import chess.ChessPiece;
+import chess.ChessPosition;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static ui.EscapeSequences.*;
 
@@ -15,24 +19,47 @@ public class ChessBoard {
 
     public static void drawWhitePlayerBoard(ChessGame game) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+        chess.ChessBoard board = game.getBoard();
         drawWhiteBorder(out);
-        drawBlackBackline(out, "WHITE");
-        drawBlackPawnLine(out, "WHITE");
-        drawMiddleSquares(out, "WHITE");
-        drawWhitePawnLine(out, "WHITE");
-        drawWhiteBackline(out, "WHITE");
+        drawBlackBackline(out, "WHITE", board);
+        drawBlackPawnLine(out, "WHITE", board);
+        drawMiddleSquares(out, "WHITE", board);
+        drawWhitePawnLine(out, "WHITE", board);
+        drawWhiteBackline(out, "WHITE", board);
         drawWhiteBorder(out);
     }
 
     public static void drawBlackPlayerBoard(ChessGame game){
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+        chess.ChessBoard board = game.getBoard();
         drawBlackBorder(out);
-        drawWhiteBackline(out, "BLACK");
-        drawWhitePawnLine(out, "BLACK");
-        drawMiddleSquares(out, "BLACK");
-        drawBlackPawnLine(out, "BLACK");
-        drawBlackBackline(out, "BLACK");
+        drawWhiteBackline(out, "BLACK", board);
+        drawWhitePawnLine(out, "BLACK", board);
+        drawMiddleSquares(out, "BLACK", board);
+        drawBlackPawnLine(out, "BLACK", board);
+        drawBlackBackline(out, "BLACK", board);
         drawBlackBorder(out);
+    }
+
+    private static ArrayList<String> turnIntoString(int row, chess.ChessBoard board){
+        ArrayList<String> pieces = new ArrayList<>();
+        for (int i = 8; i > 0; i--){
+            ChessPiece piece = board.getPiece(new ChessPosition(row, i));
+            if (piece.getPieceType() == ChessPiece.PieceType.ROOK){
+                pieces.add(" R ");}
+            else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT){
+                pieces.add(" N ");}
+            else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP){
+                pieces.add(" B ");}
+            else if (piece.getPieceType() == ChessPiece.PieceType.KING){
+                pieces.add(" K ");}
+            else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN){
+                pieces.add(" Q ");}
+            else if (piece.getPieceType() == ChessPiece.PieceType.PAWN){
+                pieces.add(" P ");}
+            else{pieces.add("   ");}
+        }
+        return pieces;
     }
 
     private static void drawWhiteBorder(PrintStream out){
@@ -52,9 +79,9 @@ public class ChessBoard {
         out.println();
     }
 
-    private static void drawBlackBackline(PrintStream out, String color){
+    private static void drawBlackBackline(PrintStream out, String color, chess.ChessBoard board){
         // add backwards parser for board flip
-        String[] pieces = {" R ", " N ", " B ", " K ", " Q ", " B ", " N ", " R "};
+        ArrayList<String> pieces = turnIntoString(7, board);
         setBorderColors(out);
         out.print(" 8 ");
         drawBlBLWithPlayerPOV(out, pieces, color);
@@ -64,7 +91,7 @@ public class ChessBoard {
         out.println();
     }
 
-    private static void drawBlBLWithPlayerPOV(PrintStream out, String[] pieces, String color) {
+    private static void drawBlBLWithPlayerPOV(PrintStream out, ArrayList<String> pieces, String color) {
         if (color.equals("BLACK")) {
             for (int i = 0; i <= 7; i++) {
                 if (i % 2 != 0) {
@@ -72,7 +99,7 @@ public class ChessBoard {
                 } else {
                     setBlackSpaceBlackPiece(out);
                 }
-                out.print(pieces[i]);
+                out.print(pieces.get(i));
             }
         }
         else{
@@ -82,12 +109,12 @@ public class ChessBoard {
                 } else {
                     setBlackSpaceBlackPiece(out);
                 }
-                out.print(pieces[i]);
+                out.print(pieces.get(i));
             }
         }
     }
 
-    private static void drawBlackPawnLine(PrintStream out, String color){
+    private static void drawBlackPawnLine(PrintStream out, String color, chess.ChessBoard board){
         // Add backwards parser for board flip
         setBorderColors(out);
         out.print(" 7 ");
@@ -121,7 +148,7 @@ public class ChessBoard {
         }
     }
 
-    private static void drawMiddleSquares(PrintStream out, String color){
+    private static void drawMiddleSquares(PrintStream out, String color, chess.ChessBoard board){
         // From the perspective of white player
         if (color.equals("WHITE")) {
             for (int i = 6; i >= 3; i--) {
@@ -181,9 +208,9 @@ public class ChessBoard {
         }
     }
 
-    private static void drawWhiteBackline(PrintStream out, String color){
+    private static void drawWhiteBackline(PrintStream out, String color, chess.ChessBoard board){
         // add backwards parser for board flip
-        String[] pieces = {" R ", " N ", " B ", " K ", " Q ", " B ", " N ", " R "};
+        ArrayList<String> pieces = turnIntoString(1, board);
         setBorderColors(out);
         out.print(" 1 ");
         drawWhBLWithPlayerPOV(out, pieces, color);
@@ -193,7 +220,7 @@ public class ChessBoard {
         out.println();
     }
 
-    private static void drawWhBLWithPlayerPOV(PrintStream out, String[] pieces, String color) {
+    private static void drawWhBLWithPlayerPOV(PrintStream out, ArrayList<String> pieces, String color) {
         if (color.equals("BLACK")) {
             for (int i = 0; i <= 7; i++) {
                 if (i % 2 != 0) {
@@ -201,7 +228,7 @@ public class ChessBoard {
                 } else {
                     setWhiteSpaceWhitePiece(out);
                 }
-                out.print(pieces[i]);
+                out.print(pieces.get(i));
             }
         }
         else {
@@ -211,12 +238,12 @@ public class ChessBoard {
                 } else {
                     setWhiteSpaceWhitePiece(out);
                 }
-                out.print(pieces[i]);
+                out.print(pieces.get(i));
             }
         }
     }
 
-    private static void drawWhitePawnLine(PrintStream out, String color){
+    private static void drawWhitePawnLine(PrintStream out, String color, chess.ChessBoard board){
         // Add backwards parser for board flip
         setBorderColors(out);
         out.print(" 2 ");
