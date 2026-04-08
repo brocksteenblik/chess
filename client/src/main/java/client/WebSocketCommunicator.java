@@ -1,11 +1,7 @@
 package client;
 
 import com.google.gson.Gson;
-import io.javalin.http.Handler;
-import io.javalin.http.HandlerType;
 import jakarta.websocket.*;
-import io.javalin.router.EndpointMetadata;
-import org.jetbrains.annotations.NotNull;
 import ui.Client;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
@@ -16,7 +12,6 @@ import websocket.messages.ServerMessage;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Set;
 
 public class WebSocketCommunicator extends Endpoint {
 
