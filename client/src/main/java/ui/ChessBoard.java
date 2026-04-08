@@ -9,7 +9,6 @@ import chess.ChessPosition;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static ui.EscapeSequences.*;
 
@@ -41,25 +40,109 @@ public class ChessBoard {
         drawBlackBorder(out);
     }
 
-    private static ArrayList<String> turnIntoString(int row, chess.ChessBoard board){
-        ArrayList<String> pieces = new ArrayList<>();
+    private static void printRow(PrintStream out, int row, chess.ChessBoard board, String boardColor){
         for (int i = 8; i > 0; i--){
             ChessPiece piece = board.getPiece(new ChessPosition(row, i));
             if (piece.getPieceType() == ChessPiece.PieceType.ROOK){
-                pieces.add(" R ");}
+                determineSquareColor(out, row, i, boardColor, piece.getTeamColor());
+                out.print(" R ");}
             else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT){
-                pieces.add(" N ");}
+                determineSquareColor(out, row, i, boardColor, piece.getTeamColor());
+                out.print(" N ");}
             else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP){
-                pieces.add(" B ");}
+                determineSquareColor(out, row, i, boardColor, piece.getTeamColor());
+                out.print(" B ");}
             else if (piece.getPieceType() == ChessPiece.PieceType.KING){
-                pieces.add(" K ");}
+                determineSquareColor(out, row, i, boardColor, piece.getTeamColor());
+                out.print(" K ");}
             else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN){
-                pieces.add(" Q ");}
+                determineSquareColor(out, row, i, boardColor, piece.getTeamColor());
+                out.print(" Q ");}
             else if (piece.getPieceType() == ChessPiece.PieceType.PAWN){
-                pieces.add(" P ");}
-            else{pieces.add("   ");}
+                determineSquareColor(out, row, i, boardColor, piece.getTeamColor());
+                out.print(" P ");}
+            else{determineSquareColor(out, row, i, boardColor, piece.getTeamColor());
+                out.print("   ");}
         }
-        return pieces;
+    }
+
+    private static void determineSquareColor(PrintStream out, int row, int col, String boardColor, ChessGame.TeamColor pieceColor){
+        if (boardColor.equals("BLACK")){
+            if (row % 2 == 1){
+                if (col % 2 == 1){
+                    if (pieceColor == ChessGame.TeamColor.WHITE){
+                        setBlackSpaceWhitePiece(out);
+                    }
+                    else if (pieceColor == ChessGame.TeamColor.BLACK){
+                        setBlackSpaceBlackPiece(out);
+                    }
+                }
+                else{
+                    if (pieceColor == ChessGame.TeamColor.WHITE){
+                        setWhiteSpaceWhitePiece(out);
+                    }
+                    else if (pieceColor == ChessGame.TeamColor.BLACK){
+                        setWhiteSpaceBlackPiece(out);
+                    }
+                }
+            }
+            else if (row % 2 == 0){
+                if (col % 2 == 1){
+                    if (pieceColor == ChessGame.TeamColor.WHITE){
+                        setWhiteSpaceWhitePiece(out);
+                    }
+                    else if (pieceColor == ChessGame.TeamColor.BLACK){
+                        setWhiteSpaceBlackPiece(out);
+                    }
+                }
+                else{
+                    if (pieceColor == ChessGame.TeamColor.WHITE){
+                        setBlackSpaceWhitePiece(out);
+                    }
+                    else if (pieceColor == ChessGame.TeamColor.BLACK){
+                        setBlackSpaceBlackPiece(out);
+                    }
+                }
+            }
+        }
+        else if (boardColor.equals("WHITE")){
+            if (row % 2 == 1){
+                if (col % 2 == 1){
+                    if (pieceColor == ChessGame.TeamColor.WHITE){
+                        setWhiteSpaceWhitePiece(out);
+                    }
+                    else if (pieceColor == ChessGame.TeamColor.BLACK){
+                        setWhiteSpaceBlackPiece(out);
+                    }
+                }
+                else{
+                    if (pieceColor == ChessGame.TeamColor.WHITE){
+                        setBlackSpaceWhitePiece(out);
+                    }
+                    else if (pieceColor == ChessGame.TeamColor.BLACK){
+                        setBlackSpaceBlackPiece(out);
+                    }
+                }
+            }
+            else if (row % 2 == 0){
+                if (col % 2 == 1){
+                    if (pieceColor == ChessGame.TeamColor.WHITE){
+                        setBlackSpaceWhitePiece(out);
+                    }
+                    else if (pieceColor == ChessGame.TeamColor.BLACK){
+                        setBlackSpaceBlackPiece(out);
+                    }
+                }
+                else{
+                    if (pieceColor == ChessGame.TeamColor.WHITE){
+                        setWhiteSpaceWhitePiece(out);
+                    }
+                    else if (pieceColor == ChessGame.TeamColor.BLACK){
+                        setWhiteSpaceBlackPiece(out);
+                    }
+                }
+            }
+        }
     }
 
     private static void drawWhiteBorder(PrintStream out){
@@ -81,17 +164,17 @@ public class ChessBoard {
 
     private static void drawBlackBackline(PrintStream out, String color, chess.ChessBoard board){
         // add backwards parser for board flip
-        ArrayList<String> pieces = turnIntoString(7, board);
         setBorderColors(out);
         out.print(" 8 ");
-        drawBlBLWithPlayerPOV(out, pieces, color);
+        printRow(out, 8, board, color);
+        //drawLineStartsWhite(out, pieces, color);
         setBorderColors(out);
         out.print(" 8 ");
         resetColors(out);
         out.println();
     }
 
-    private static void drawBlBLWithPlayerPOV(PrintStream out, ArrayList<String> pieces, String color) {
+    private static void drawLineStartsWhite(PrintStream out, ArrayList<String> pieces, String color) {
         if (color.equals("BLACK")) {
             for (int i = 0; i <= 7; i++) {
                 if (i % 2 != 0) {
@@ -118,7 +201,9 @@ public class ChessBoard {
         // Add backwards parser for board flip
         setBorderColors(out);
         out.print(" 7 ");
-        drawBlPLWithPlayerPOV(out, color);
+        //drawBlPLWithPlayerPOV(out, color);
+        printRow(out, 7, board, color);
+        //drawLineStartBlack(out, pieces, color);
         setBorderColors(out);
         out.print(" 7 ");
         resetColors(out);
@@ -210,17 +295,17 @@ public class ChessBoard {
 
     private static void drawWhiteBackline(PrintStream out, String color, chess.ChessBoard board){
         // add backwards parser for board flip
-        ArrayList<String> pieces = turnIntoString(1, board);
         setBorderColors(out);
         out.print(" 1 ");
-        drawWhBLWithPlayerPOV(out, pieces, color);
+        printRow(out,1, board, color);
+        //drawLineStartBlack(out, pieces, color);
         setBorderColors(out);
         out.print(" 1 ");
         resetColors(out);
         out.println();
     }
 
-    private static void drawWhBLWithPlayerPOV(PrintStream out, ArrayList<String> pieces, String color) {
+    private static void drawLineStartBlack(PrintStream out, ArrayList<String> pieces, String color) {
         if (color.equals("BLACK")) {
             for (int i = 0; i <= 7; i++) {
                 if (i % 2 != 0) {
