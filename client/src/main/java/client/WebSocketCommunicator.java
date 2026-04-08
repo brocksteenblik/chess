@@ -40,8 +40,8 @@ public class WebSocketCommunicator extends Endpoint {
                         client.notify(real_notification);
                     }
                     else {
-                        ErrorMessage real_notification = new Gson().fromJson(message, ErrorMessage.class);
-                        client.notify(real_notification);
+                        ErrorMessage realNotification = new Gson().fromJson(message, ErrorMessage.class);
+                        client.notify(realNotification);
                     }
                 }
             });
@@ -56,6 +56,15 @@ public class WebSocketCommunicator extends Endpoint {
             session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
         } catch (IOException e) {
             throw new ResponseException(500, "Could not connect");
+        }
+    }
+
+    public void leaveGame(String authToken, int gameID) throws ResponseException {
+        try {
+            UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
+            session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
+        } catch (IOException e) {
+            throw new ResponseException(500, "Could not connect to server");
         }
     }
 

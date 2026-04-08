@@ -18,6 +18,7 @@ public class Client {
     private final ServerFacade server;
     private String authToken;
     private WebSocketCommunicator ws;
+    private int gameID = 0;
 
     public Client(String serverUrl) throws ResponseException {
         server = new ServerFacade(serverUrl);
@@ -191,6 +192,7 @@ public class Client {
         server.userPlayGame(gameID, color, authToken);
         String gameName = getGames().get(gameIndex).gameName();
         ws.joinGame(authToken, gameID);
+        this.gameID = gameID;
         if (color.equals("white")){
             state = State.WHITE_PLAYER;
         }
@@ -213,7 +215,7 @@ public class Client {
         assertLoggedIn();
         checkValidObserveInput(params);
         int gameIndex = Integer.parseInt(params[0]) - 1;
-        int gameID = getGames().get(gameIndex).gameID();
+        this.gameID = getGames().get(gameIndex).gameID();
         state = State.OBSERVER;
         return "";
     }
@@ -248,9 +250,10 @@ public class Client {
 
     private String leaveGame(String[] params) throws ResponseException {
         assertInGame();
-
+        ws.leaveGame(authToken, gameID);
+        gameID = 0;
         state = State.LOGGED_IN;
-        return null;
+        return "Successfully left game! Type command 'help' for options.";
     }
 
 
