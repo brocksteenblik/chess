@@ -215,6 +215,7 @@ public class Client {
         assertLoggedIn();
         checkValidObserveInput(params);
         int gameIndex = Integer.parseInt(params[0]) - 1;
+        ws.joinGame(authToken, gameIndex);
         this.gameID = getGames().get(gameIndex).gameID();
         state = State.OBSERVER;
         return "";
