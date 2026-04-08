@@ -87,6 +87,11 @@ public class Client {
                 case "list" -> listGames();
                 case "join" -> playGame(params);
                 case "observe" -> observeGame(params);
+                case "redraw" -> redrawBoard(params);
+                case "move" -> movePiece(params);
+                case "resign" -> resignPlayer(params);
+                case "highlight" -> highlightMoves(params);
+                case "leave" -> leaveGame(params);
                 case "quit" -> quit();
                 default -> help();
             };
@@ -181,6 +186,7 @@ public class Client {
         server.userPlayGame(gameID, color, authToken);
         String gameName = getGames().get(gameIndex).gameName();
         ws.joinGame(authToken, gameID);
+        state = State.PLAYING_GAME;
         System.out.printf("Successfully joined game: %s!" + "\n \n", gameName);
         if (color.equals("white")){
             ChessBoard.drawWhitePlayerBoard(gameID);
@@ -205,6 +211,7 @@ public class Client {
         checkValidObserveInput(params);
         int gameIndex = Integer.parseInt(params[0]) - 1;
         int gameID = getGames().get(gameIndex).gameID();
+        state = State.OBSERVING_GAME;
         ChessBoard.drawWhitePlayerBoard(gameID);
         return "";
     }
@@ -215,6 +222,35 @@ public class Client {
         int gameID = Integer.parseInt(params[0]);
         if (gameID > getGames().size()){throw new ResponseException(400, "Error: Game not found");}
     }
+
+
+    private String redrawBoard(String[] params) throws ResponseException {
+        assertInGame();
+        return null;
+    }
+
+    private String movePiece(String[] params)throws ResponseException {
+        assertPlayingGame();
+        return null;
+    }
+
+    private String resignPlayer(String[] params) throws ResponseException {
+        assertPlayingGame();
+        return null;
+    }
+
+    private String highlightMoves(String[] params) throws ResponseException {
+        assertInGame();
+        return null;
+    }
+
+    private String leaveGame(String[] params) throws ResponseException {
+        assertInGame();
+
+        state = State.LOGGED_IN;
+        return null;
+    }
+
 
     private String quit() throws ResponseException {
         String result = "quit";
@@ -263,7 +299,7 @@ public class Client {
                     redraw - Prints the chess board again.
                     move (PARAMS) - Make a move in current game.
                     resign - Forfeit and end the current game.
-                    highlight - Highlights legal moves for a piece.
+                    highlight (PARAMS) - Highlights legal moves for a piece.
                     leave - Leave the game without ending it.
                     help - Display info about what actions can be taken.
                     """;
@@ -281,6 +317,20 @@ public class Client {
         if (state == State.LOGGED_OUT){
             setColor("RED");
             throw new ResponseException(401, "Unauthorized: Already logged in");
+        }
+    }
+
+    private void assertInGame() throws ResponseException{
+        if (state == State.PLAYING_GAME | state == State.OBSERVING_GAME){
+            setColor("RED");
+            throw new ResponseException(401, "Unauthorized: Not in a game");
+        }
+    }
+
+    private void assertPlayingGame() throws ResponseException{
+        if (state != State.PLAYING_GAME){
+            setColor("RED");
+            throw new ResponseException(401, "Unauthorized: Not playing a game");
         }
     }
 
