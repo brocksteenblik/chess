@@ -17,6 +17,7 @@ public class ChessGame {
     public ChessGame() {
         board.resetBoard();
     }
+    private boolean gameEnded = false;
 
     /**
      * @return Which team's turn it is
@@ -32,6 +33,14 @@ public class ChessGame {
      */
     public void setTeamTurn(TeamColor team) {
         teamTurn = team;
+    }
+
+    public boolean isGameEnded() {
+        return gameEnded;
+    }
+
+    public void setGameEnded() {
+        this.gameEnded = true;
     }
 
     /**
@@ -171,6 +180,7 @@ public class ChessGame {
                 }
             }
         }
+        setGameEnded();
         return true;
     }
 
