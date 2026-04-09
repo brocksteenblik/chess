@@ -254,11 +254,23 @@ public class Client {
         int rowNum = Integer.parseInt(params[0].substring(0,1));
         String colLetter = params[0].substring(1);
         int colNum = Integer.parseInt(convertLetterToNum(colLetter));
-        ChessPosition start = new ChessPosition(rowNum, 9 - colNum);
+        ChessPosition start;
+        if (state == State.WHITE_PLAYER){
+            start = new ChessPosition(rowNum, colNum);
+        }
+        else{
+            start = new ChessPosition(rowNum, 9 - colNum);
+        }
         rowNum = Integer.parseInt(params[1].substring(0,1));
         colLetter = params[1].substring(1);
         colNum = Integer.parseInt(convertLetterToNum(colLetter));
-        ChessPosition end = new ChessPosition(rowNum, 9 - colNum);
+        ChessPosition end;
+        if (state == State.WHITE_PLAYER){
+            end = new ChessPosition(rowNum, colNum);
+        }
+        else{
+            end = new ChessPosition(rowNum, 9 - colNum);
+        }
         // work on promotionPieces later
         ChessMove move = new ChessMove(start, end, null);
         ws.makeMove(authToken, gameID, move);
@@ -278,7 +290,7 @@ public class Client {
 
     private String highlightMoves(String[] params) throws ResponseException {
         // fix error with highlighting pieces that can't move
-        // displaying as if different pieces moved
+        // update the way in which white positions are selected to highlight
         assertInGame();
         assertValidHighlightPosition(params);
         int rowNum = Integer.parseInt(params[0].substring(0,1));

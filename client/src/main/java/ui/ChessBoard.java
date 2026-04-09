@@ -51,50 +51,51 @@ public class ChessBoard {
     }
 
     private static void printRow(PrintStream out, int row, chess.ChessBoard board, String boardColor, ArrayList<ChessMove> validMoves){
-        // white board is being drawn wrong
-        for (int i = 8; i > 0; i--){
-            ChessPiece piece = board.getPiece(new ChessPosition(row, i));
-            if (piece == null) {
-                determineSquareColor(out, row, i, boardColor, null, validMoves);
-                out.print("   ");}
-            else if (piece.getPieceType() == ChessPiece.PieceType.ROOK){
-                determineSquareColor(out, row, i, boardColor, piece.getTeamColor(), validMoves);
-                out.print(" R ");}
-            else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT){
-                determineSquareColor(out, row, i, boardColor, piece.getTeamColor(), validMoves);
-                out.print(" N ");}
-            else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP){
-                determineSquareColor(out, row, i, boardColor, piece.getTeamColor(), validMoves);
-                out.print(" B ");}
-            else if (piece.getPieceType() == ChessPiece.PieceType.KING){
-                determineSquareColor(out, row, i, boardColor, piece.getTeamColor(), validMoves);
-                out.print(" K ");}
-            else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN){
-                determineSquareColor(out, row, i, boardColor, piece.getTeamColor(), validMoves);
-                out.print(" Q ");}
-            else if (piece.getPieceType() == ChessPiece.PieceType.PAWN){
-                determineSquareColor(out, row, i, boardColor, piece.getTeamColor(), validMoves);
-                out.print(" P ");}
+        if (boardColor.equals("BLACK")){
+            for (int i = 8; i > 0; i--){
+                drawSquare(out, row, board, boardColor, validMoves, i);
+            }
         }
+        else if (boardColor.equals("WHITE")){
+            for (int i = 1; i < 9; i++){
+                drawSquare(out, row, board, boardColor, validMoves, i);
+            }
+        }
+
+    }
+
+    private static void drawSquare(PrintStream out, int row, chess.ChessBoard board, String boardColor, ArrayList<ChessMove> validMoves, int i) {
+        ChessPiece piece = board.getPiece(new ChessPosition(row, i));
+        if (piece == null) {
+            determineSquareColor(out, row, i, boardColor, null, validMoves);
+            out.print("   ");}
+        else if (piece.getPieceType() == ChessPiece.PieceType.ROOK){
+            determineSquareColor(out, row, i, boardColor, piece.getTeamColor(), validMoves);
+            out.print(" R ");}
+        else if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT){
+            determineSquareColor(out, row, i, boardColor, piece.getTeamColor(), validMoves);
+            out.print(" N ");}
+        else if (piece.getPieceType() == ChessPiece.PieceType.BISHOP){
+            determineSquareColor(out, row, i, boardColor, piece.getTeamColor(), validMoves);
+            out.print(" B ");}
+        else if (piece.getPieceType() == ChessPiece.PieceType.KING){
+            determineSquareColor(out, row, i, boardColor, piece.getTeamColor(), validMoves);
+            out.print(" K ");}
+        else if (piece.getPieceType() == ChessPiece.PieceType.QUEEN){
+            determineSquareColor(out, row, i, boardColor, piece.getTeamColor(), validMoves);
+            out.print(" Q ");}
+        else if (piece.getPieceType() == ChessPiece.PieceType.PAWN){
+            determineSquareColor(out, row, i, boardColor, piece.getTeamColor(), validMoves);
+            out.print(" P ");}
     }
 
     private static void determineSquareColor(PrintStream out, int row, int col,
                                              String boardColor, ChessGame.TeamColor pieceColor, ArrayList<ChessMove> validMoves){
-        if (boardColor.equals("BLACK")){
-            if (row % 2 == 1){
-                blackThenWhiteSpace(out, row, col, pieceColor, validMoves);
-            }
-            else if (row % 2 == 0){
-                whiteThenBlackSpace(out, row, col, pieceColor, validMoves);
-            }
+        if (row % 2 == 1){
+            blackThenWhiteSpace(out, row, col, pieceColor, validMoves);
         }
-        else if (boardColor.equals("WHITE")){
-            if (row % 2 == 1){
-                whiteThenBlackSpace(out, row, col, pieceColor, validMoves);
-            }
-            else if (row % 2 == 0){
-                blackThenWhiteSpace(out, row, col, pieceColor, validMoves);
-            }
+        else if (row % 2 == 0){
+            whiteThenBlackSpace(out, row, col, pieceColor, validMoves);
         }
     }
 
