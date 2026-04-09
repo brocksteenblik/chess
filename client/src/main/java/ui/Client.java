@@ -286,8 +286,16 @@ public class Client {
     private String resignPlayer(String[] params) throws ResponseException {
         assertPlayingGame();
         // Add menu dialogue to confirm resign
-        ws.resignPlayer(authToken, gameID);
-        return "Successfully resigned. You'll get them next time!";
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Are you SURE you want to resign? y/n\n");
+        startPrompt();
+        String input = scanner.nextLine();
+        if (input.equalsIgnoreCase("y")) {
+            ws.resignPlayer(authToken, gameID);
+            return "Successfully resigned. You'll get them next time!";
+        } else if (input.equalsIgnoreCase("n")) {
+            return "";
+        } else {throw new ResponseException(400, "Improper response");}
     }
 
     private String highlightMoves(String[] params) throws ResponseException {
