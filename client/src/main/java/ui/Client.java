@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import client.*;
+import org.jetbrains.annotations.NotNull;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
@@ -301,57 +302,47 @@ public class Client {
 
     private String convertLetterToNum(String col) throws ResponseException{
         if (state == State.WHITE_PLAYER) {
-            return switch (col) {
-                case "a" -> "1";
-                case "b" -> "2";
-                case "c" -> "3";
-                case "d" -> "4";
-                case "e" -> "5";
-                case "f" -> "6";
-                case "g" -> "7";
-                case "h" -> "8";
-                default -> throw new ResponseException(400, "Invalid column provided");
-            };
+            return alphabeticalOrder(col);
         } else if (state == State.BLACK_PLAYER) {
-            return switch (col) {
-                case "a" -> "8";
-                case "b" -> "7";
-                case "c" -> "6";
-                case "d" -> "5";
-                case "e" -> "4";
-                case "f" -> "3";
-                case "g" -> "2";
-                case "h" -> "1";
-                default -> throw new ResponseException(400, "Invalid column provided");
-            };
+            return inverseAlphabeticalOrder(col);
         } else {return "0";}
+    }
+
+    @NotNull
+    private static String inverseAlphabeticalOrder(String col) throws ResponseException {
+        return switch (col) {
+            case "a" -> "8";
+            case "b" -> "7";
+            case "c" -> "6";
+            case "d" -> "5";
+            case "e" -> "4";
+            case "f" -> "3";
+            case "g" -> "2";
+            case "h" -> "1";
+            default -> throw new ResponseException(400, "Invalid column provided");
+        };
+    }
+
+    @NotNull
+    private static String alphabeticalOrder(String col) throws ResponseException {
+        return switch (col) {
+            case "a" -> "1";
+            case "b" -> "2";
+            case "c" -> "3";
+            case "d" -> "4";
+            case "e" -> "5";
+            case "f" -> "6";
+            case "g" -> "7";
+            case "h" -> "8";
+            default -> throw new ResponseException(400, "Invalid column provided");
+        };
     }
 
     private String convertLetterToNumHighlight(String col) throws ResponseException{
         if (state == State.BLACK_PLAYER) {
-            return switch (col) {
-                case "a" -> "1";
-                case "b" -> "2";
-                case "c" -> "3";
-                case "d" -> "4";
-                case "e" -> "5";
-                case "f" -> "6";
-                case "g" -> "7";
-                case "h" -> "8";
-                default -> throw new ResponseException(400, "Invalid column provided");
-            };
+            return alphabeticalOrder(col);
         } else if (state == State.WHITE_PLAYER) {
-            return switch (col) {
-                case "a" -> "8";
-                case "b" -> "7";
-                case "c" -> "6";
-                case "d" -> "5";
-                case "e" -> "4";
-                case "f" -> "3";
-                case "g" -> "2";
-                case "h" -> "1";
-                default -> throw new ResponseException(400, "Invalid column provided");
-            };
+            return inverseAlphabeticalOrder(col);
         } else {return "0";}
     }
 

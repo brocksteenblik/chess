@@ -78,73 +78,56 @@ public class ChessBoard {
         }
     }
 
-    private static void determineSquareColor(PrintStream out, int row, int col, String boardColor, ChessGame.TeamColor pieceColor, ArrayList<ChessMove> validMoves){
+    private static void determineSquareColor(PrintStream out, int row, int col,
+                                             String boardColor, ChessGame.TeamColor pieceColor, ArrayList<ChessMove> validMoves){
         if (boardColor.equals("BLACK")){
             if (row % 2 == 1){
-                if (col % 2 == 1){
-                    if (checkHighlight(row, col, validMoves)){
-                        highlightBlackSpace(out, pieceColor, validMoves);
-                    } else {
-                        assignBlackSpace(out, pieceColor, validMoves);
-                    }
-                }
-                else{
-                    if (checkHighlight(row, col, validMoves)){
-                        highlightWhiteSpace(out, pieceColor, validMoves);
-                    } else {
-                        assignWhiteSpace(out, pieceColor, validMoves);
-                    }
-                }
+                blackThenWhiteSpace(out, row, col, pieceColor, validMoves);
             }
             else if (row % 2 == 0){
-                if (col % 2 == 1){
-                    if (checkHighlight(row, col, validMoves)){
-                        highlightWhiteSpace(out, pieceColor, validMoves);
-                    } else {
-                        assignWhiteSpace(out, pieceColor, validMoves);
-                    }
-                }
-                else{
-                    if (checkHighlight(row, col, validMoves)){
-                        highlightBlackSpace(out, pieceColor, validMoves);
-                    } else {
-                        assignBlackSpace(out, pieceColor, validMoves);
-                    }
-                }
+                whiteThenBlackSpace(out, row, col, pieceColor, validMoves);
             }
         }
         else if (boardColor.equals("WHITE")){
             if (row % 2 == 1){
-                if (col % 2 == 1){
-                    if (checkHighlight(row, col, validMoves)){
-                        highlightWhiteSpace(out, pieceColor, validMoves);
-                    } else {
-                        assignWhiteSpace(out, pieceColor, validMoves);
-                    }
-                }
-                else{
-                    if (checkHighlight(row, col, validMoves)){
-                        highlightBlackSpace(out, pieceColor, validMoves);
-                    } else {
-                        assignBlackSpace(out, pieceColor, validMoves);
-                    }
-                }
+                whiteThenBlackSpace(out, row, col, pieceColor, validMoves);
             }
             else if (row % 2 == 0){
-                if (col % 2 == 1){
-                    if (checkHighlight(row, col, validMoves)){
-                        highlightBlackSpace(out, pieceColor, validMoves);
-                    } else {
-                        assignBlackSpace(out, pieceColor, validMoves);
-                    }
-                }
-                else{
-                    if (checkHighlight(row, col, validMoves)){
-                        highlightWhiteSpace(out, pieceColor, validMoves);
-                    } else {
-                        assignWhiteSpace(out, pieceColor, validMoves);
-                    }
-                }
+                blackThenWhiteSpace(out, row, col, pieceColor, validMoves);
+            }
+        }
+    }
+
+    private static void blackThenWhiteSpace(PrintStream out, int row, int col, ChessGame.TeamColor pieceColor, ArrayList<ChessMove> validMoves) {
+        if (col % 2 == 1){
+            if (checkHighlight(row, col, validMoves)){
+                highlightBlackSpace(out, pieceColor, validMoves);
+            } else {
+                assignBlackSpace(out, pieceColor, validMoves);
+            }
+        }
+        else{
+            if (checkHighlight(row, col, validMoves)){
+                highlightWhiteSpace(out, pieceColor, validMoves);
+            } else {
+                assignWhiteSpace(out, pieceColor, validMoves);
+            }
+        }
+    }
+
+    private static void whiteThenBlackSpace(PrintStream out, int row, int col, ChessGame.TeamColor pieceColor, ArrayList<ChessMove> validMoves) {
+        if (col % 2 == 1){
+            if (checkHighlight(row, col, validMoves)){
+                highlightWhiteSpace(out, pieceColor, validMoves);
+            } else {
+                assignWhiteSpace(out, pieceColor, validMoves);
+            }
+        }
+        else{
+            if (checkHighlight(row, col, validMoves)){
+                highlightBlackSpace(out, pieceColor, validMoves);
+            } else {
+                assignBlackSpace(out, pieceColor, validMoves);
             }
         }
     }

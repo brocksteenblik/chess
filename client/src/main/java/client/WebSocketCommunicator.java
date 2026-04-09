@@ -38,8 +38,8 @@ public class WebSocketCommunicator extends Endpoint {
                         client.notify(realNotification);
                     }
                     else if (notification.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION){
-                        NotificationMessage real_notification = new Gson().fromJson(message, NotificationMessage.class);
-                        client.notify(real_notification);
+                        NotificationMessage realNotification = new Gson().fromJson(message, NotificationMessage.class);
+                        client.notify(realNotification);
                     }
                     else {
                         ErrorMessage realNotification = new Gson().fromJson(message, ErrorMessage.class);
