@@ -51,6 +51,7 @@ public class ChessBoard {
     }
 
     private static void printRow(PrintStream out, int row, chess.ChessBoard board, String boardColor, ArrayList<ChessMove> validMoves){
+        // white board is being drawn wrong
         for (int i = 8; i > 0; i--){
             ChessPiece piece = board.getPiece(new ChessPosition(row, i));
             if (piece == null) {
@@ -153,7 +154,7 @@ public class ChessBoard {
             return false;
         }
         ChessPosition start = validMoves.getFirst().getStartPosition();
-        ChessMove move = new ChessMove(start, new ChessPosition(row, 9 - col), null);
+        ChessMove move = new ChessMove(start, new ChessPosition(row, col), null);
         if (move.getEndPosition().equals(start)){
             return true;
         }
