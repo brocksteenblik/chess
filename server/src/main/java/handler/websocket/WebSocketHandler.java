@@ -122,6 +122,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             connections.remove(session, gameID);
             String username = service.getUsernameFromAuth(authToken);
             if (service.checkIfPlayer(username, gameID)){
+                // error with removing black player when white is in game
                 service.removePlayerFromGame(authToken, gameID);
             }
             String message = String.format("%s has left the game", username);

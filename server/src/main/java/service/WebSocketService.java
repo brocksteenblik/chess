@@ -74,7 +74,8 @@ public class WebSocketService {
                 if (whiteUser.equals(authData.username())) {
                     joinGameRequest = new JoinGameRequest(JoinGameRequest.PlayerColor.WHITE, gameID);
                 }
-            } else if (blackUser != null) {
+            }
+            if (blackUser != null) {
                 if (blackUser.equals(authData.username())) {
                     joinGameRequest = new JoinGameRequest(JoinGameRequest.PlayerColor.BLACK, gameID);
                 }
