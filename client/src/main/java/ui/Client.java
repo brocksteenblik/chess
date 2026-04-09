@@ -1,5 +1,7 @@
 package ui;
 
+import chess.ChessGame;
+import chess.ChessPosition;
 import model.*;
 
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ public class Client {
     private String authToken;
     private WebSocketCommunicator ws;
     private int gameID = 0;
+    private chess.ChessPosition chessPosition;
+    private ChessGame game;
 
     public Client(String serverUrl) throws ResponseException {
         server = new ServerFacade(serverUrl);
@@ -50,13 +54,14 @@ public class Client {
     }
 
     public void notify(LoadGameMessage notification) {
-        GameData game = notification.getGame();
+        GameData gameData = notification.getGame();
+        this.game = gameData.getChessGame();
         System.out.printf("Successfully joined game!" + "\n \n");
         if (state == State.BLACK_PLAYER){
-            ChessBoard.drawBlackPlayerBoard(game.getChessGame());
+            ChessBoard.drawBlackPlayerBoard(game, chessPosition);
         }
         else{
-            ChessBoard.drawWhitePlayerBoard(game.getChessGame());
+            ChessBoard.drawWhitePlayerBoard(game, chessPosition);
         }
         startPrompt();
     }
@@ -246,7 +251,40 @@ public class Client {
 
     private String highlightMoves(String[] params) throws ResponseException {
         assertInGame();
-        return null;
+        assertValidPosition(params);
+        int rowNum = Integer.parseInt(params[0]);
+        String colLetter = params[1];
+        int colNum = Integer.parseInt(convertLetterToNum(colLetter));
+        chessPosition = new ChessPosition(rowNum, colNum);
+        if (state.equals(State.BLACK_PLAYER)){
+            ui.ChessBoard.drawBlackPlayerBoard(game, chessPosition);
+            chessPosition = null;
+        }
+        else{
+            ui.ChessBoard.drawWhitePlayerBoard(game, chessPosition);
+            chessPosition = null;
+        }
+        return "";
+    }
+
+    private void assertValidPosition(String[] params) throws ResponseException{
+        if (params.length != 2){throw new ResponseException(400, "Error: incorrect number of parameters");}
+        if (!params[0].matches("[0-8]")){throw new ResponseException(400, "Error: Not a number");}
+        if (!params[1].matches("[abcdefgh]")){throw new ResponseException(400, "Error: Not a column");}
+    }
+
+    private String convertLetterToNum(String col) throws ResponseException{
+        return switch (col) {
+            case "a" -> "1";
+            case "b" -> "2";
+            case "c" -> "3";
+            case "d" -> "4";
+            case "e" -> "5";
+            case "f" -> "6";
+            case "g" -> "7";
+            case "h" -> "8";
+            default -> throw new ResponseException(400, "Invalid column provided");
+        };
     }
 
     private String leaveGame(String[] params) throws ResponseException {
@@ -303,7 +341,7 @@ public class Client {
         else if (state == State.OBSERVER){
             return """
                     redraw - Prints the chess board again.
-                    highlight (PARAMS) - Highlights legal moves for a piece.
+                    highlight <row> <column> - Highlights legal moves for a piece.
                     leave - Leave the game without ending it.
                     help - Display info about what actions can be taken.
                     """;
@@ -313,7 +351,7 @@ public class Client {
                     redraw - Prints the chess board again.
                     move (PARAMS) - Make a move in current game.
                     resign - Forfeit and end the current game.
-                    highlight (PARAMS) - Highlights legal moves for a piece.
+                    highlight <row> <column> - Highlights legal moves for a piece.
                     leave - Leave the game without ending it.
                     help - Display info about what actions can be taken.
                     """;
