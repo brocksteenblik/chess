@@ -82,4 +82,13 @@ public class WebSocketCommunicator extends Endpoint {
     @Override
     public void onOpen(jakarta.websocket.Session session, EndpointConfig endpointConfig) {
     }
+
+    public void resignPlayer(String authToken, int gameID) throws ResponseException {
+        try {
+            UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
+            session.getBasicRemote().sendText(new Gson().toJson(userGameCommand));
+        } catch (IOException e) {
+            throw new ResponseException(500, "Could not connect to server");
+        }
+    }
 }

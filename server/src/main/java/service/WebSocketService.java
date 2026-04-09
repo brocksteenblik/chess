@@ -87,7 +87,8 @@ public class WebSocketService {
     public boolean checkValidMove(String authToken, int gameID, ChessMove move) throws DataAccessException {
         String username = getUsernameFromAuth(authToken);
         GameData game = getGame(gameID);
-        matchUserToColor(username, game, move);
+        ChessGame.TeamColor color = getPieceColor(game, move);
+        matchUserToColor(username, game, color);
         ArrayList<ChessMove> validMoves = (ArrayList<ChessMove>) game.getChessGame().validMoves(move.getStartPosition());
         for (ChessMove m : validMoves){
             if (m.equals(move)){
@@ -97,26 +98,58 @@ public class WebSocketService {
         return false;
     }
 
-    private void matchUserToColor(String username, GameData game, ChessMove move) throws DataAccessException {
+    private String matchUserToColor(String username, GameData game, ChessGame.TeamColor color) throws DataAccessException {
+        if (color.equals(ChessGame.TeamColor.WHITE)){
+            if (!username.equals(game.whiteUsername())){
+                throw new DataAccessException("Error: Invalid Team Color");
+            }
+            return "WHITE";
+        }
+        else if (color.equals(ChessGame.TeamColor.BLACK)){
+            if (!username.equals(game.blackUsername())){
+                throw new DataAccessException("Error: Invalid Team Color");
+            }
+            return "BLACK";
+        }
+        return null;
+    }
+
+    private static ChessGame.TeamColor getPieceColor(GameData game, ChessMove move) throws DataAccessException {
         ChessBoard board = game.getChessGame().getBoard();
         ChessPiece piece = board.getPiece(move.getStartPosition());
         if (piece == null){
             throw new DataAccessException("Error: Invalid starting position");
         }
         ChessGame.TeamColor color = piece.getTeamColor();
-        if (color.equals(ChessGame.TeamColor.WHITE)){
-            if (!username.equals(game.whiteUsername())){
-                throw new DataAccessException("Error: Invalid Team Color");
-            }
-        }
-        else if (color.equals(ChessGame.TeamColor.BLACK)){
-            if (!username.equals(game.blackUsername())){
-                throw new DataAccessException("Error: Invalid Team Color");
-            }
-        }
+        return color;
     }
 
     public void executeMove(AuthData authData, int gameID, ChessMove move) throws DataAccessException {
+        checkGameIsOver(gameID);
         dataAccess.makeMove(authData, gameID, move);
+    }
+
+    public void checkGameIsOver(int gameID) throws DataAccessException {
+        GameData game = getGame(gameID);
+        if (game.getChessGame().isGameEnded()){
+            throw new DataAccessException("Game has ended");
+        }
+    }
+
+    public void resignGame(AuthData authData, int gameID) throws DataAccessException {
+        dataAccess.endGame(authData, gameID);
+    }
+
+    public String getEnemyTeam(String username, int gameID) throws DataAccessException {
+        GameData game = getGame(gameID);
+        String isWhite = matchUserToColor(username, game, ChessGame.TeamColor.WHITE);
+        String isBlack = matchUserToColor(username, game, ChessGame.TeamColor.BLACK);
+        if (isWhite != null){
+            return "BLACK";
+        }
+        if (isBlack != null){
+            return "WHITE";
+        }
+        return "";
     }
 }

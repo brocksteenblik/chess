@@ -82,6 +82,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             connections.broadcast(null, gameID, moveNotif);
             String start = move.getStartPosition().toString();
             String end = move.getEndPosition().toString();
+            // Change message to work in board positions (i.e. 1d)
             String message = String.format("%s to %s", start, end);
             ServerMessage notificationMessage = new NotificationMessage(message);
             connections.broadcast(session, gameID, notificationMessage);
@@ -134,7 +135,22 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         }
     }
 
-    private void resign(String authToken, int gameID, Session session) {
+    private void resign(String authToken, int gameID, Session session) throws IOException {
+        try {
+            String username = service.getUsernameFromAuth(authToken);
+            service.checkValidGameID(gameID);
+            if (!service.checkIfPlayer(username, gameID)){
+                throw new DataAccessException("Not a player");
+            }
+            service.checkGameIsOver(gameID);
+            service.resignGame(new AuthData(authToken, username), gameID);
+            String message = String.format("Player %s has resigned.", username);
+            ServerMessage notificationMessage = new NotificationMessage(message);
+            connections.broadcast(null, gameID, notificationMessage);
+        } catch (DataAccessException e) {
+            ServerMessage rootError = new ErrorMessage(String.format("Error: %s", e.getMessage()));
+            connections.messageRoot(session, gameID, rootError);
+        }
     }
 
 

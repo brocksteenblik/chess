@@ -194,6 +194,15 @@ public class SqlDataAccess implements DataAccess{
         }
     }
 
+    @Override
+    public void endGame(AuthData authData, int gameID) throws DataAccessException {
+        GameData gameData = getGame(gameID);
+        ChessGame game = gameData.getChessGame();
+        game.setGameEnded();
+        GameData updatedGame = new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
+        changeGameData(updatedGame);
+    }
+
     private void changeGameData(GameData newGameData) throws DataAccessException {
         try(var conn = DatabaseManager.getConnection()){
             try(var preparedStatement = conn.prepareStatement(

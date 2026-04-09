@@ -285,7 +285,9 @@ public class Client {
 
     private String resignPlayer(String[] params) throws ResponseException {
         assertPlayingGame();
-        return null;
+        // Add menu dialogue to confirm resign
+        ws.resignPlayer(authToken, gameID);
+        return "Successfully resigned. You'll get them next time!";
     }
 
     private String highlightMoves(String[] params) throws ResponseException {

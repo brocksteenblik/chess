@@ -82,6 +82,11 @@ public class MemoryDataAccess implements DataAccess {
 
     }
 
+    @Override
+    public void endGame(AuthData authData, int gameID) throws DataAccessException {
+
+    }
+
     public void clear(){
         users.clear();
         auths.clear();

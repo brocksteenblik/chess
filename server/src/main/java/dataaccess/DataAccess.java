@@ -29,6 +29,8 @@ public interface DataAccess {
 
     void makeMove(AuthData authData, int gameID, ChessMove move) throws DataAccessException;
 
+    void endGame(AuthData authData, int gameID) throws DataAccessException;
+
     //createAuth: Create a new authorization.
     AuthData createAuth(String authToken, String username) throws DataAccessException;
 
