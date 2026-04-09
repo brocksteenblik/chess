@@ -1,6 +1,7 @@
 package dataaccess;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import handler.InputException;
 import model.*;
 
@@ -74,6 +75,11 @@ public class MemoryDataAccess implements DataAccess {
                 throw new InputException(403, "Error 403: Forbidden");
             }
         }
+    }
+
+    @Override
+    public void makeMove(AuthData authData, int gameID, ChessMove move) throws DataAccessException {
+
     }
 
     public void clear(){

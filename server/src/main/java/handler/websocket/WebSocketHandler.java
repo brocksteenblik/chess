@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import io.javalin.websocket.*;
+import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
@@ -75,10 +76,43 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                 ServerMessage rootError = new ErrorMessage("Error: Invalid move");
                 connections.messageRoot(session, gameID, rootError);
             }
-
+            String username = service.getUsernameFromAuth(authToken);
+            service.executeMove(new AuthData(authToken, username), gameID, move);
+            GameData game = service.getGame(gameID);
+            ServerMessage moveNotif = new LoadGameMessage(game);
+            connections.broadcast(session, gameID, moveNotif);
+            String start = move.getStartPosition().toString();
+            String end = move.getEndPosition().toString();
+            String message = String.format("%s to %s", start, end);
+            ServerMessage notificationMessage = new NotificationMessage(message);
+            connections.broadcast(session, gameID, notificationMessage);
+            checkGameState(game);
         } catch (DataAccessException e) {
             ServerMessage rootError = new ErrorMessage("Error: Faulty Data Provided");
             connections.messageRoot(session, gameID, rootError);
+        }
+    }
+
+    private void checkGameState(GameData gameData) throws IOException {
+        ChessGame game = gameData.getChessGame();
+        if (game.isInCheckmate(ChessGame.TeamColor.WHITE)){
+            ServerMessage notificationMessage = new NotificationMessage("White is in Checkmate!");
+            connections.broadcast(null, gameData.gameID(), notificationMessage);
+        } else if (game.isInCheckmate(ChessGame.TeamColor.BLACK)){
+            ServerMessage notificationMessage = new NotificationMessage("Black is in Checkmate!");
+            connections.broadcast(null, gameData.gameID(), notificationMessage);
+        } else if (game.isInStalemate(ChessGame.TeamColor.WHITE)){
+            ServerMessage notificationMessage = new NotificationMessage("White is in Stalemate!");
+            connections.broadcast(null, gameData.gameID(), notificationMessage);
+        } else if (game.isInStalemate(ChessGame.TeamColor.BLACK)){
+            ServerMessage notificationMessage = new NotificationMessage("Black is in Stalemate!");
+            connections.broadcast(null, gameData.gameID(), notificationMessage);
+        }else if (game.isInCheck(ChessGame.TeamColor.WHITE)){
+            ServerMessage notificationMessage = new NotificationMessage("White is in Check!");
+            connections.broadcast(null, gameData.gameID(), notificationMessage);
+        } else if (game.isInCheck(ChessGame.TeamColor.BLACK)){
+            ServerMessage notificationMessage = new NotificationMessage("Black is in Check!");
+            connections.broadcast(null, gameData.gameID(), notificationMessage);
         }
     }
 

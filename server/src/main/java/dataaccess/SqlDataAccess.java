@@ -1,14 +1,14 @@
 package dataaccess;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import handler.InputException;
 import model.*;
-import org.eclipse.jetty.server.Authentication;
 import org.jetbrains.annotations.NotNull;
 import org.mindrot.jbcrypt.BCrypt;
 
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -180,6 +180,34 @@ public class SqlDataAccess implements DataAccess{
         ChessGame chessGame = new Gson().fromJson(chessGameJSON, ChessGame.class);
         return new GameData(gameID, whiteUsername, blackUsername, gameName, chessGame);
     }
+
+    @Override
+    public void makeMove(AuthData authData, int gameID, ChessMove move) throws DataAccessException {
+        GameData gameData = getGame(gameID);
+        ChessGame game = gameData.getChessGame();
+        try {
+            game.makeMove(move);
+            GameData updatedGame = new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
+            changeGameData(updatedGame);
+        } catch (InvalidMoveException e) {
+            throw new DataAccessException("Error: Invalid Move");
+        }
+    }
+
+    private void changeGameData(GameData newGameData) throws DataAccessException {
+        try(var conn = DatabaseManager.getConnection()){
+            try(var preparedStatement = conn.prepareStatement(
+                    "UPDATE games SET chessGame = ? WHERE gameID = ?")){
+                preparedStatement.setString(1, new Gson().toJson(newGameData.getChessGame()));
+                preparedStatement.setInt(2, newGameData.gameID());
+
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException error) {
+            throw new DataAccessException(String.format("Error: Unable to configure database: %s", error));
+        }
+    }
+
 
     @Override
     public AuthData createAuth(String authToken, String username) throws DataAccessException {

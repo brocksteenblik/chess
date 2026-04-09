@@ -1,6 +1,7 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPosition;
 import model.*;
 
@@ -194,9 +195,9 @@ public class Client {
         int gameIndex = Integer.parseInt(params[0]) - 1;
         int gameID = getGames().get(gameIndex).gameID();
         String color = params[1].toLowerCase();
+        ws.joinGame(authToken, gameID);
         server.userPlayGame(gameID, color, authToken);
         String gameName = getGames().get(gameIndex).gameName();
-        ws.joinGame(authToken, gameID);
         this.gameID = gameID;
         if (color.equals("white")){
             state = State.WHITE_PLAYER;
@@ -220,6 +221,7 @@ public class Client {
         assertLoggedIn();
         checkValidObserveInput(params);
         int gameIndex = Integer.parseInt(params[0]) - 1;
+        // debug both server and client
         ws.joinGame(authToken, gameIndex);
         this.gameID = getGames().get(gameIndex).gameID();
         state = State.OBSERVER;
@@ -246,8 +248,27 @@ public class Client {
     }
 
     private String movePiece(String[] params)throws ResponseException {
+        // misses own move notifications occasionally?
         assertPlayingGame();
-        return null;
+        assertValidMovePositions(params);
+        int rowNum = Integer.parseInt(params[0].substring(0,1));
+        String colLetter = params[0].substring(1);
+        int colNum = Integer.parseInt(convertLetterToNum(colLetter));
+        ChessPosition start = new ChessPosition(rowNum, colNum);
+        rowNum = Integer.parseInt(params[1].substring(0,1));
+        colLetter = params[1].substring(1);
+        colNum = Integer.parseInt(convertLetterToNum(colLetter));
+        ChessPosition end = new ChessPosition(rowNum, colNum);
+        // work on promotionPieces later
+        ChessMove move = new ChessMove(start, end, null);
+        ws.makeMove(authToken, gameID, move);
+        return "";
+    }
+
+    private void assertValidMovePositions(String[] params) throws ResponseException{
+        if (params.length != 2){throw new ResponseException(400, "Error: incorrect number of parameters");}
+        if (!params[0].matches("[0-8][abcdefgh]")){throw new ResponseException(400, "Error: Invalid position provided");}
+        if (!params[1].matches("[0-8][abcdefgh]")){throw new ResponseException(400, "Error: Invalid position provided");}
     }
 
     private String resignPlayer(String[] params) throws ResponseException {
@@ -258,7 +279,7 @@ public class Client {
     private String highlightMoves(String[] params) throws ResponseException {
         // fix error with highlighting pieces that can't move
         assertInGame();
-        assertValidPosition(params);
+        assertValidHighlightPosition(params);
         int rowNum = Integer.parseInt(params[0].substring(0,1));
         String colLetter = params[0].substring(1);
         int colNum = Integer.parseInt(convertLetterToNum(colLetter));
@@ -273,9 +294,9 @@ public class Client {
         return "";
     }
 
-    private void assertValidPosition(String[] params) throws ResponseException{
+    private void assertValidHighlightPosition(String[] params) throws ResponseException{
         if (params.length != 1){throw new ResponseException(400, "Error: incorrect number of parameters");}
-        if (!params[0].matches("[0-8][abcdefgh]")){throw new ResponseException(400, "Error: Not a number");}
+        if (!params[0].matches("[0-8][abcdefgh]")){throw new ResponseException(400, "Error: Invalid position provided");}
     }
 
     private String convertLetterToNum(String col) throws ResponseException{

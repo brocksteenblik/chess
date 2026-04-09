@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessMove;
 import model.*;
 
 import java.sql.SQLException;
@@ -25,6 +26,8 @@ public interface DataAccess {
 
     //updateGame: Updates a chess game.
     void updateGame(AuthData authData, JoinGameRequest joinGameRequest) throws DataAccessException;
+
+    void makeMove(AuthData authData, int gameID, ChessMove move) throws DataAccessException;
 
     //createAuth: Create a new authorization.
     AuthData createAuth(String authToken, String username) throws DataAccessException;

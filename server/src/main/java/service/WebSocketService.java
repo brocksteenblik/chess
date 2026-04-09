@@ -3,6 +3,7 @@ package service;
 import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.ChessPiece;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.SqlDataAccess;
@@ -78,7 +79,11 @@ public class WebSocketService {
 
     private void matchUserToColor(String username, GameData game, ChessMove move) throws DataAccessException {
         ChessBoard board = game.getChessGame().getBoard();
-        ChessGame.TeamColor color = board.getPiece(move.getStartPosition()).getTeamColor();
+        ChessPiece piece = board.getPiece(move.getStartPosition());
+        if (piece == null){
+            throw new DataAccessException("Error: Invalid starting position");
+        }
+        ChessGame.TeamColor color = piece.getTeamColor();
         if (color.equals(ChessGame.TeamColor.WHITE)){
             if (!username.equals(game.whiteUsername())){
                 throw new DataAccessException("Error: Invalid Team Color");
@@ -89,5 +94,9 @@ public class WebSocketService {
                 throw new DataAccessException("Error: Invalid Team Color");
             }
         }
+    }
+
+    public void executeMove(AuthData authData, int gameID, ChessMove move) throws DataAccessException {
+        dataAccess.makeMove(authData, gameID, move);
     }
 }
