@@ -291,8 +291,6 @@ public class Client {
     }
 
     private String highlightMoves(String[] params) throws ResponseException {
-        // fix error with highlighting pieces that can't move
-        // update the way in which white positions are selected to highlight
         assertInGame();
         assertValidHighlightPosition(params);
         int rowNum = Integer.parseInt(params[0].substring(0,1));

@@ -139,17 +139,4 @@ public class WebSocketService {
     public void resignGame(AuthData authData, int gameID) throws DataAccessException {
         dataAccess.endGame(authData, gameID);
     }
-
-    public String getEnemyTeam(String username, int gameID) throws DataAccessException {
-        GameData game = getGame(gameID);
-        String isWhite = matchUserToColor(username, game, ChessGame.TeamColor.WHITE);
-        String isBlack = matchUserToColor(username, game, ChessGame.TeamColor.BLACK);
-        if (isWhite != null){
-            return "BLACK";
-        }
-        if (isBlack != null){
-            return "WHITE";
-        }
-        return "";
-    }
 }
