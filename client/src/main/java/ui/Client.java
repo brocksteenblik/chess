@@ -296,11 +296,12 @@ public class Client {
         int rowNum = Integer.parseInt(params[0].substring(0,1));
         String colLetter = params[0].substring(1);
         int colNum = Integer.parseInt(convertLetterToNumHighlight(colLetter));
-        chessPosition = new ChessPosition(rowNum, colNum);
         if (state.equals(State.BLACK_PLAYER)){
+            chessPosition = new ChessPosition(rowNum, colNum);
             ui.ChessBoard.drawBlackPlayerBoard(game, chessPosition);
         }
         else{
+            chessPosition = new ChessPosition(rowNum, 9 - colNum);
             ui.ChessBoard.drawWhitePlayerBoard(game, chessPosition);
         }
         chessPosition = null;
