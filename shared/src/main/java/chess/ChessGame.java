@@ -79,7 +79,7 @@ public class ChessGame {
             throw new InvalidMoveException();
         }
         if (piece.getTeamColor() != teamTurn){
-            throw new InvalidMoveException();
+            throw new InvalidMoveException("Error: Not your turn");
         }
         if (!validMoves(move.getStartPosition()).contains(move)){
             throw new InvalidMoveException();

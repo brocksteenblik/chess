@@ -297,6 +297,7 @@ public class Client {
         assertInGame();
         ws.leaveGame(authToken, gameID);
         gameID = 0;
+        game = null;
         state = State.LOGGED_IN;
         return "Successfully left game! Type command 'help' for options.";
     }
