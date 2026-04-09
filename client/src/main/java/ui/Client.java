@@ -259,8 +259,8 @@ public class Client {
         // fix error with highlighting pieces that can't move
         assertInGame();
         assertValidPosition(params);
-        int rowNum = Integer.parseInt(params[0]);
-        String colLetter = params[1];
+        int rowNum = Integer.parseInt(params[0].substring(0,1));
+        String colLetter = params[0].substring(1);
         int colNum = Integer.parseInt(convertLetterToNum(colLetter));
         chessPosition = new ChessPosition(rowNum, colNum);
         if (state.equals(State.BLACK_PLAYER)){
@@ -274,9 +274,8 @@ public class Client {
     }
 
     private void assertValidPosition(String[] params) throws ResponseException{
-        if (params.length != 2){throw new ResponseException(400, "Error: incorrect number of parameters");}
-        if (!params[0].matches("[0-8]")){throw new ResponseException(400, "Error: Not a number");}
-        if (!params[1].matches("[abcdefgh]")){throw new ResponseException(400, "Error: Not a column");}
+        if (params.length != 1){throw new ResponseException(400, "Error: incorrect number of parameters");}
+        if (!params[0].matches("[0-8][abcdefgh]")){throw new ResponseException(400, "Error: Not a number");}
     }
 
     private String convertLetterToNum(String col) throws ResponseException{
