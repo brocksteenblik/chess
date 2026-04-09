@@ -57,7 +57,7 @@ public class Client {
     public void notify(LoadGameMessage notification) {
         GameData gameData = notification.getGame();
         this.game = gameData.getChessGame();
-        System.out.printf("Successfully joined game!" + "\n \n");
+        System.out.print("\n");
         if (state == State.BLACK_PLAYER){
             ChessBoard.drawBlackPlayerBoard(game, chessPosition);
         }
@@ -195,17 +195,17 @@ public class Client {
         int gameIndex = Integer.parseInt(params[0]) - 1;
         int gameID = getGames().get(gameIndex).gameID();
         String color = params[1].toLowerCase();
-        ws.joinGame(authToken, gameID);
-        server.userPlayGame(gameID, color, authToken);
-        String gameName = getGames().get(gameIndex).gameName();
-        this.gameID = gameID;
         if (color.equals("white")){
             state = State.WHITE_PLAYER;
         }
         else{
             state = State.BLACK_PLAYER;
         }
-        return "";
+        ws.joinGame(authToken, gameID);
+        server.userPlayGame(gameID, color, authToken);
+        String gameName = getGames().get(gameIndex).gameName();
+        this.gameID = gameID;
+        return String.format("Successfully joined game %s!" + "\n \n", gameName);
     }
 
     private void checkValidJoinInput(String[] params) throws ResponseException{
@@ -248,17 +248,16 @@ public class Client {
     }
 
     private String movePiece(String[] params)throws ResponseException {
-        // misses own move notifications occasionally?
         assertPlayingGame();
         assertValidMovePositions(params);
         int rowNum = Integer.parseInt(params[0].substring(0,1));
         String colLetter = params[0].substring(1);
         int colNum = Integer.parseInt(convertLetterToNum(colLetter));
-        ChessPosition start = new ChessPosition(rowNum, colNum);
+        ChessPosition start = new ChessPosition(rowNum, 9 - colNum);
         rowNum = Integer.parseInt(params[1].substring(0,1));
         colLetter = params[1].substring(1);
         colNum = Integer.parseInt(convertLetterToNum(colLetter));
-        ChessPosition end = new ChessPosition(rowNum, colNum);
+        ChessPosition end = new ChessPosition(rowNum, 9 - colNum);
         // work on promotionPieces later
         ChessMove move = new ChessMove(start, end, null);
         ws.makeMove(authToken, gameID, move);
@@ -278,11 +277,12 @@ public class Client {
 
     private String highlightMoves(String[] params) throws ResponseException {
         // fix error with highlighting pieces that can't move
+        // displaying as if different pieces moved
         assertInGame();
         assertValidHighlightPosition(params);
         int rowNum = Integer.parseInt(params[0].substring(0,1));
         String colLetter = params[0].substring(1);
-        int colNum = Integer.parseInt(convertLetterToNum(colLetter));
+        int colNum = Integer.parseInt(convertLetterToNumHighlight(colLetter));
         chessPosition = new ChessPosition(rowNum, colNum);
         if (state.equals(State.BLACK_PLAYER)){
             ui.ChessBoard.drawBlackPlayerBoard(game, chessPosition);
@@ -300,18 +300,61 @@ public class Client {
     }
 
     private String convertLetterToNum(String col) throws ResponseException{
-        return switch (col) {
-            case "a" -> "1";
-            case "b" -> "2";
-            case "c" -> "3";
-            case "d" -> "4";
-            case "e" -> "5";
-            case "f" -> "6";
-            case "g" -> "7";
-            case "h" -> "8";
-            default -> throw new ResponseException(400, "Invalid column provided");
-        };
+        if (state == State.WHITE_PLAYER) {
+            return switch (col) {
+                case "a" -> "1";
+                case "b" -> "2";
+                case "c" -> "3";
+                case "d" -> "4";
+                case "e" -> "5";
+                case "f" -> "6";
+                case "g" -> "7";
+                case "h" -> "8";
+                default -> throw new ResponseException(400, "Invalid column provided");
+            };
+        } else if (state == State.BLACK_PLAYER) {
+            return switch (col) {
+                case "a" -> "8";
+                case "b" -> "7";
+                case "c" -> "6";
+                case "d" -> "5";
+                case "e" -> "4";
+                case "f" -> "3";
+                case "g" -> "2";
+                case "h" -> "1";
+                default -> throw new ResponseException(400, "Invalid column provided");
+            };
+        } else {return "0";}
     }
+
+    private String convertLetterToNumHighlight(String col) throws ResponseException{
+        if (state == State.BLACK_PLAYER) {
+            return switch (col) {
+                case "a" -> "1";
+                case "b" -> "2";
+                case "c" -> "3";
+                case "d" -> "4";
+                case "e" -> "5";
+                case "f" -> "6";
+                case "g" -> "7";
+                case "h" -> "8";
+                default -> throw new ResponseException(400, "Invalid column provided");
+            };
+        } else if (state == State.WHITE_PLAYER) {
+            return switch (col) {
+                case "a" -> "8";
+                case "b" -> "7";
+                case "c" -> "6";
+                case "d" -> "5";
+                case "e" -> "4";
+                case "f" -> "3";
+                case "g" -> "2";
+                case "h" -> "1";
+                default -> throw new ResponseException(400, "Invalid column provided");
+            };
+        } else {return "0";}
+    }
+
 
     private String leaveGame(String[] params) throws ResponseException {
         assertInGame();
@@ -395,7 +438,7 @@ public class Client {
     private void assertLoggedIn() throws ResponseException{
         if (state == State.LOGGED_OUT){
             setColor("RED");
-            throw new ResponseException(401, "Unauthorized: Already logged in");
+            throw new ResponseException(401, "Unauthorized: Not logged in");
         }
     }
 

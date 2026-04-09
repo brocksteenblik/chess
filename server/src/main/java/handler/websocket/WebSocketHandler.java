@@ -73,14 +73,13 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void makeMove(String authToken, int gameID, ChessMove move, Session session) throws IOException {
         try {
             if (!service.checkValidMove(authToken, gameID, move)){
-                ServerMessage rootError = new ErrorMessage("Error: Invalid move");
-                connections.messageRoot(session, gameID, rootError);
+                throw new DataAccessException("Invalid move");
             }
             String username = service.getUsernameFromAuth(authToken);
             service.executeMove(new AuthData(authToken, username), gameID, move);
             GameData game = service.getGame(gameID);
             ServerMessage moveNotif = new LoadGameMessage(game);
-            connections.broadcast(session, gameID, moveNotif);
+            connections.broadcast(null, gameID, moveNotif);
             String start = move.getStartPosition().toString();
             String end = move.getEndPosition().toString();
             String message = String.format("%s to %s", start, end);
@@ -88,7 +87,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             connections.broadcast(session, gameID, notificationMessage);
             checkGameState(game);
         } catch (DataAccessException e) {
-            ServerMessage rootError = new ErrorMessage("Error: Faulty Data Provided");
+            ServerMessage rootError = new ErrorMessage(String.format("Error: %s", e.getMessage()));
             connections.messageRoot(session, gameID, rootError);
         }
     }
