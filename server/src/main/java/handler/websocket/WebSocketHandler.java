@@ -1,6 +1,7 @@
 package handler.websocket;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import com.google.gson.Gson;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
@@ -9,6 +10,7 @@ import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import service.WebSocketService;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
@@ -36,9 +38,13 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     public void handleMessage(@NotNull WsMessageContext ctx) {
         try {
             UserGameCommand action = new Gson().fromJson(ctx.message(), UserGameCommand.class);
+            ChessMove move = null;
+            if (action.getCommandType() == UserGameCommand.CommandType.MAKE_MOVE){
+                move = new Gson().fromJson(ctx.message(), MakeMoveCommand.class).getMove();
+            }
             switch (action.getCommandType()) {
                 case CONNECT -> connect(action.getAuthToken(), action.getGameID(), ctx.session);
-                case MAKE_MOVE -> makeMove(action.getAuthToken(), action.getGameID(), ctx.session);
+                case MAKE_MOVE -> makeMove(action.getAuthToken(), action.getGameID(), move, ctx.session);
                 case LEAVE -> leave(action.getAuthToken(), action.getGameID(), ctx.session);
                 case RESIGN -> resign(action.getAuthToken(), action.getGameID(), ctx.session);
             }
@@ -63,8 +69,17 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         }
     }
 
-    private void makeMove(String authToken, int gameID, Session session) {
+    private void makeMove(String authToken, int gameID, ChessMove move, Session session) throws IOException {
+        try {
+            if (!service.checkValidMove(authToken, gameID, move)){
+                ServerMessage rootError = new ErrorMessage("Error: Invalid move");
+                connections.messageRoot(session, gameID, rootError);
+            }
 
+        } catch (DataAccessException e) {
+            ServerMessage rootError = new ErrorMessage("Error: Faulty Data Provided");
+            connections.messageRoot(session, gameID, rootError);
+        }
     }
 
     private void leave(String authToken, int gameID, Session session) throws IOException {

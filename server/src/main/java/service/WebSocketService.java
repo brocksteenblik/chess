@@ -1,6 +1,8 @@
 package service;
 
+import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessMove;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.SqlDataAccess;
@@ -9,6 +11,8 @@ import model.AuthData;
 import model.GameData;
 import model.JoinGameRequest;
 import org.eclipse.jetty.websocket.api.Session;
+
+import java.util.ArrayList;
 
 public class WebSocketService {
     private final DataAccess dataAccess;
@@ -58,4 +62,34 @@ public class WebSocketService {
         }
         dataAccess.updateGame(new AuthData(authToken, null), joinGameRequest);
     }
+
+    public boolean checkValidMove(String authToken, int gameID, ChessMove move) throws DataAccessException {
+        String username = getUsernameFromAuth(authToken);
+        GameData game = getGame(gameID);
+        matchUserToColor(username, game, move);
+        ArrayList<ChessMove> validMoves = (ArrayList<ChessMove>) game.getChessGame().validMoves(move.getStartPosition());
+        for (ChessMove m : validMoves){
+            if (m.equals(move)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void matchUserToColor(String username, GameData game, ChessMove move) throws DataAccessException {
+        ChessBoard board = game.getChessGame().getBoard();
+        ChessGame.TeamColor color = board.getPiece(move.getStartPosition()).getTeamColor();
+        if (color.equals(ChessGame.TeamColor.WHITE)){
+            if (!username.equals(game.whiteUsername())){
+                throw new DataAccessException("Error: Invalid Team Color");
+            }
+        }
+        else if (color.equals(ChessGame.TeamColor.BLACK)){
+            if (!username.equals(game.blackUsername())){
+                throw new DataAccessException("Error: Invalid Team Color");
+            }
+        }
+    }
+}
+
 }
