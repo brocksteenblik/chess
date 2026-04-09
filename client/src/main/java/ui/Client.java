@@ -431,9 +431,12 @@ public class Client {
         else{
             return """
                     redraw - Prints the chess board again.
-                    move (PARAMS) - Make a move in current game.
+                    move <startPosition> <endPosition> <Promotion (optional)> - Make a move in current game.
+                    - ex. move 2d 3d
+                    - ADD PROMOTION STUFF LATER
                     resign - Forfeit and end the current game.
-                    highlight <row> <column> - Highlights legal moves for a piece.
+                    highlight <piecePosition> - Highlights legal moves for a piece.
+                    - ex. highlight 2d
                     leave - Leave the game without ending it.
                     help - Display info about what actions can be taken.
                     """;
