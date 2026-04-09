@@ -223,8 +223,9 @@ public class Client {
         checkValidObserveInput(params);
         int gameIndex = Integer.parseInt(params[0]) - 1;
         // debug both server and client
-        ws.joinGame(authToken, gameIndex);
-        this.gameID = getGames().get(gameIndex).gameID();
+        int gameID = getGames().get(gameIndex).gameID();
+        ws.joinGame(authToken, gameID);
+        this.gameID = gameID;
         state = State.OBSERVER;
         return "";
     }
