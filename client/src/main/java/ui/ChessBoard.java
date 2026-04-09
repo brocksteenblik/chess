@@ -22,6 +22,10 @@ public class ChessBoard {
         ArrayList<ChessMove> validMoves = null;
         if (chessPosition != null) {
             validMoves = (ArrayList<ChessMove>) game.validMoves(chessPosition);
+            if (validMoves.isEmpty()){
+                System.out.print("Selected Piece cannot move.");
+                return;
+            }
         }
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         chess.ChessBoard board = game.getBoard();
@@ -38,6 +42,10 @@ public class ChessBoard {
         ArrayList<ChessMove> validMoves = null;
         if (chessPosition != null){
             validMoves = (ArrayList<ChessMove>) game.validMoves(chessPosition);
+            if (validMoves.isEmpty()){
+                System.out.print("Selected Piece cannot move.");
+                return;
+            }
         }
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         chess.ChessBoard board = game.getBoard();
