@@ -147,7 +147,7 @@ public class SqlDataAccess implements DataAccess{
                 throw new InputException(403, "Error 403: Forbidden");
             }
         } else if (joinGameRequest.playerColor() == JoinGameRequest.PlayerColor.BLACK) {
-            if (gameData.whiteUsername() != null) {
+            if (gameData.blackUsername() != null) {
                 GameData newGameData = gameData.setBlackUsername(null);
                 changeColorUsername(newGameData);
             } else {
