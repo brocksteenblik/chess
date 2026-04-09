@@ -236,7 +236,13 @@ public class Client {
 
     private String redrawBoard(String[] params) throws ResponseException {
         assertInGame();
-        return null;
+        if (state.equals(State.BLACK_PLAYER)){
+            ui.ChessBoard.drawBlackPlayerBoard(game, null);
+        }
+        else{
+            ui.ChessBoard.drawWhitePlayerBoard(game, null);
+        }
+        return "";
     }
 
     private String movePiece(String[] params)throws ResponseException {
@@ -250,6 +256,7 @@ public class Client {
     }
 
     private String highlightMoves(String[] params) throws ResponseException {
+        // fix error with highlighting pieces that can't move
         assertInGame();
         assertValidPosition(params);
         int rowNum = Integer.parseInt(params[0]);
@@ -258,12 +265,11 @@ public class Client {
         chessPosition = new ChessPosition(rowNum, colNum);
         if (state.equals(State.BLACK_PLAYER)){
             ui.ChessBoard.drawBlackPlayerBoard(game, chessPosition);
-            chessPosition = null;
         }
         else{
             ui.ChessBoard.drawWhitePlayerBoard(game, chessPosition);
-            chessPosition = null;
         }
+        chessPosition = null;
         return "";
     }
 
