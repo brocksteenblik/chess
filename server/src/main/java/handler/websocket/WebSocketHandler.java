@@ -93,32 +93,34 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             String message = String.format("Player %s moved %s to %s", username, start, end);
             ServerMessage notificationMessage = new NotificationMessage(message);
             connections.broadcast(session, gameID, notificationMessage);
-            checkGameState(game, username);
+            checkGameState(game);
         } catch (DataAccessException e) {
             ServerMessage rootError = new ErrorMessage(String.format("Error: %s", e.getMessage()));
             connections.messageRoot(session, gameID, rootError);
         }
     }
 
-    private void checkGameState(GameData gameData, String username) throws IOException {
+    private void checkGameState(GameData gameData) throws IOException {
         ChessGame game = gameData.getChessGame();
+        String white = gameData.whiteUsername();
+        String black = gameData.blackUsername();
         if (game.isInCheckmate(ChessGame.TeamColor.WHITE)){
-            ServerMessage notificationMessage = new NotificationMessage(String.format("White Player %s is in Checkmate!", username));
+            ServerMessage notificationMessage = new NotificationMessage(String.format("White Player %s is in Checkmate!", white));
             connections.broadcast(null, gameData.gameID(), notificationMessage);
         } else if (game.isInCheckmate(ChessGame.TeamColor.BLACK)){
-            ServerMessage notificationMessage = new NotificationMessage(String.format("Black Player %s is in Checkmate!", username));
+            ServerMessage notificationMessage = new NotificationMessage(String.format("Black Player %s is in Checkmate!", black));
             connections.broadcast(null, gameData.gameID(), notificationMessage);
         } else if (game.isInStalemate(ChessGame.TeamColor.WHITE)){
-            ServerMessage notificationMessage = new NotificationMessage(String.format("White Player %s is in Stalemate!", username));
+            ServerMessage notificationMessage = new NotificationMessage(String.format("White Player %s is in Stalemate!", white));
             connections.broadcast(null, gameData.gameID(), notificationMessage);
         } else if (game.isInStalemate(ChessGame.TeamColor.BLACK)){
-            ServerMessage notificationMessage = new NotificationMessage(String.format("Black Player %s is in Stalemate!", username));
+            ServerMessage notificationMessage = new NotificationMessage(String.format("Black Player %s is in Stalemate!", black));
             connections.broadcast(null, gameData.gameID(), notificationMessage);
         }else if (game.isInCheck(ChessGame.TeamColor.WHITE)){
-            ServerMessage notificationMessage = new NotificationMessage(String.format("White Player %s is in Check!", username));
+            ServerMessage notificationMessage = new NotificationMessage(String.format("White Player %s is in Check!", white));
             connections.broadcast(null, gameData.gameID(), notificationMessage);
         } else if (game.isInCheck(ChessGame.TeamColor.BLACK)){
-            ServerMessage notificationMessage = new NotificationMessage(String.format("Black Player %s is in Check!", username));
+            ServerMessage notificationMessage = new NotificationMessage(String.format("Black Player %s is in Check!", black));
             connections.broadcast(null, gameData.gameID(), notificationMessage);
         }
     }
