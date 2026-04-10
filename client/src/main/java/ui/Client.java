@@ -2,6 +2,7 @@ package ui;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import model.*;
 
@@ -23,7 +24,7 @@ public class Client {
     private String authToken;
     private WebSocketCommunicator ws;
     private int gameID = 0;
-    private chess.ChessPosition chessPosition;
+    private ChessPosition chessPosition;
     private ChessGame game;
 
     public Client(String serverUrl) throws ResponseException {
@@ -241,10 +242,10 @@ public class Client {
     private String redrawBoard(String[] params) throws ResponseException {
         assertInGame();
         if (state.equals(State.BLACK_PLAYER)){
-            ui.ChessBoard.drawBlackPlayerBoard(game, null);
+            ChessBoard.drawBlackPlayerBoard(game, null);
         }
         else{
-            ui.ChessBoard.drawWhitePlayerBoard(game, null);
+            ChessBoard.drawWhitePlayerBoard(game, null);
         }
         return "";
     }
@@ -272,8 +273,52 @@ public class Client {
         else{
             end = new ChessPosition(rowNum, 9 - colNum);
         }
-        // work on promotionPieces later
-        ChessMove move = new ChessMove(start, end, null);
+        ChessMove move = new ChessMove(start, end, null);;
+        if (start.getRow() == 7 && end.getRow() == 8 && state == State.WHITE_PLAYER){
+            if (game.getBoard().getPiece(start).getPieceType() == ChessPiece.PieceType.PAWN){
+                Scanner scanner = new Scanner(System.in);
+                while (true) {
+                    System.out.print("Select promotion: 'rook', 'knight', 'bishop', 'queen'\n");
+                    startPrompt();
+                    String input = scanner.nextLine();
+                    if (input.equalsIgnoreCase("rook")){
+                        move = new ChessMove(start, end, ChessPiece.PieceType.ROOK);
+                        break;
+                    } else if (input.equalsIgnoreCase("knight")){
+                        move = new ChessMove(start, end, ChessPiece.PieceType.KNIGHT);
+                        break;
+                    } else if (input.equalsIgnoreCase("bishop")){
+                        move = new ChessMove(start, end, ChessPiece.PieceType.BISHOP);
+                        break;
+                    } else if (input.equalsIgnoreCase("queen")){
+                        move = new ChessMove(start, end, ChessPiece.PieceType.QUEEN);
+                        break;
+                    } else{System.out.print("Invalid piece type. Try again. \n");}
+                }
+            }
+        } else if (start.getRow() == 2 && end.getRow() == 1 && state == State.BLACK_PLAYER){
+            if (game.getBoard().getPiece(start).getPieceType() == ChessPiece.PieceType.PAWN){
+                Scanner scanner = new Scanner(System.in);
+                while (true) {
+                    System.out.print("Select promotion: 'rook', 'knight', 'bishop', 'queen'\n");
+                    startPrompt();
+                    String input = scanner.nextLine();
+                    if (input.equalsIgnoreCase("rook")){
+                        move = new ChessMove(start, end, ChessPiece.PieceType.ROOK);
+                        break;
+                    } else if (input.equalsIgnoreCase("knight")){
+                        move = new ChessMove(start, end, ChessPiece.PieceType.KNIGHT);
+                        break;
+                    } else if (input.equalsIgnoreCase("bishop")){
+                        move = new ChessMove(start, end, ChessPiece.PieceType.BISHOP);
+                        break;
+                    } else if (input.equalsIgnoreCase("queen")){
+                        move = new ChessMove(start, end, ChessPiece.PieceType.QUEEN);
+                        break;
+                    } else{System.out.print("Invalid piece type. Try again. \n");}
+                }
+            }
+        }
         ws.makeMove(authToken, gameID, move);
         return "";
     }
@@ -286,7 +331,6 @@ public class Client {
 
     private String resignPlayer(String[] params) throws ResponseException {
         assertPlayingGame();
-        // Add menu dialogue to confirm resign
         Scanner scanner = new Scanner(System.in);
         System.out.print("Are you SURE you want to resign? y/n\n");
         startPrompt();
@@ -307,11 +351,11 @@ public class Client {
         int colNum = Integer.parseInt(convertLetterToNumHighlight(colLetter));
         if (state.equals(State.BLACK_PLAYER)){
             chessPosition = new ChessPosition(rowNum, colNum);
-            ui.ChessBoard.drawBlackPlayerBoard(game, chessPosition);
+            ChessBoard.drawBlackPlayerBoard(game, chessPosition);
         }
         else{
             chessPosition = new ChessPosition(rowNum, 9 - colNum);
-            ui.ChessBoard.drawWhitePlayerBoard(game, chessPosition);
+            ChessBoard.drawWhitePlayerBoard(game, chessPosition);
         }
         chessPosition = null;
         return "";
