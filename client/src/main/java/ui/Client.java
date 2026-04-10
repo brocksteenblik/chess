@@ -416,8 +416,6 @@ public class Client {
         state = State.LOGGED_IN;
         return "Successfully left game! Type command 'help' for options.";
     }
-
-
     private String quit() throws ResponseException {
         String result = "quit";
         if (state == State.LOGGED_IN){
