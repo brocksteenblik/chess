@@ -471,9 +471,8 @@ public class Client {
         else{
             return """
                     redraw - Prints the chess board again.
-                    move <startPosition> <endPosition> <Promotion (optional)> - Make a move in current game.
+                    move <startPosition> <endPosition> - Make a move in current game.
                     - ex. move 2d 3d
-                    - ADD PROMOTION STUFF LATER
                     resign - Forfeit and end the current game.
                     highlight <piecePosition> - Highlights legal moves for a piece.
                     - ex. highlight 2d
@@ -484,16 +483,21 @@ public class Client {
     }
 
     private void assertLoggedOut() throws ResponseException{
-        if (state == State.LOGGED_IN){
+        if (state != State.LOGGED_OUT){
             setColor("RED");
             throw new ResponseException(401, "Unauthorized: Already logged in");
         }
     }
 
     private void assertLoggedIn() throws ResponseException{
-        if (state == State.LOGGED_OUT){
+        if (state != State.LOGGED_IN){
             setColor("RED");
-            throw new ResponseException(401, "Unauthorized: Not logged in");
+            if (state == State.LOGGED_OUT) {
+                throw new ResponseException(401, "Unauthorized: Not logged in");
+            }
+            else {
+                throw new ResponseException(401, "Unauthorized: Currently in a game");
+            }
         }
     }
 
