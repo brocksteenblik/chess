@@ -274,53 +274,48 @@ public class Client {
             end = new ChessPosition(rowNum, 9 - colNum);
         }
         ChessMove move = new ChessMove(start, end, null);;
+        move = checkPromotionPiece(start, end, move);
+        ws.makeMove(authToken, gameID, move);
+        return "";
+    }
+
+    private ChessMove checkPromotionPiece(ChessPosition start, ChessPosition end, ChessMove move) {
         if (start.getRow() == 7 && end.getRow() == 8 && state == State.WHITE_PLAYER){
             if (game.getBoard().getPiece(start).getPieceType() == ChessPiece.PieceType.PAWN){
-                Scanner scanner = new Scanner(System.in);
-                while (true) {
-                    System.out.print("Select promotion: 'rook', 'knight', 'bishop', 'queen'\n");
-                    startPrompt();
-                    String input = scanner.nextLine();
-                    if (input.equalsIgnoreCase("rook")){
-                        move = new ChessMove(start, end, ChessPiece.PieceType.ROOK);
-                        break;
-                    } else if (input.equalsIgnoreCase("knight")){
-                        move = new ChessMove(start, end, ChessPiece.PieceType.KNIGHT);
-                        break;
-                    } else if (input.equalsIgnoreCase("bishop")){
-                        move = new ChessMove(start, end, ChessPiece.PieceType.BISHOP);
-                        break;
-                    } else if (input.equalsIgnoreCase("queen")){
-                        move = new ChessMove(start, end, ChessPiece.PieceType.QUEEN);
-                        break;
-                    } else{System.out.print("Invalid piece type. Try again. \n");}
-                }
+                move = askForAndSetPromotion(move, start, end);
             }
         } else if (start.getRow() == 2 && end.getRow() == 1 && state == State.BLACK_PLAYER){
             if (game.getBoard().getPiece(start).getPieceType() == ChessPiece.PieceType.PAWN){
-                Scanner scanner = new Scanner(System.in);
-                while (true) {
-                    System.out.print("Select promotion: 'rook', 'knight', 'bishop', 'queen'\n");
-                    startPrompt();
-                    String input = scanner.nextLine();
-                    if (input.equalsIgnoreCase("rook")){
-                        move = new ChessMove(start, end, ChessPiece.PieceType.ROOK);
-                        break;
-                    } else if (input.equalsIgnoreCase("knight")){
-                        move = new ChessMove(start, end, ChessPiece.PieceType.KNIGHT);
-                        break;
-                    } else if (input.equalsIgnoreCase("bishop")){
-                        move = new ChessMove(start, end, ChessPiece.PieceType.BISHOP);
-                        break;
-                    } else if (input.equalsIgnoreCase("queen")){
-                        move = new ChessMove(start, end, ChessPiece.PieceType.QUEEN);
-                        break;
-                    } else{System.out.print("Invalid piece type. Try again. \n");}
-                }
+                move = askForAndSetPromotion(move, start, end);
             }
         }
-        ws.makeMove(authToken, gameID, move);
-        return "";
+        return move;
+    }
+
+    @NotNull
+    private ChessMove askForAndSetPromotion(ChessMove move, ChessPosition start, ChessPosition end) {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.print("Select promotion: 'rook', 'knight', 'bishop', 'queen'\n");
+            startPrompt();
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("rook")) {
+                move = new ChessMove(start, end, ChessPiece.PieceType.ROOK);
+                break;
+            } else if (input.equalsIgnoreCase("knight")) {
+                move = new ChessMove(start, end, ChessPiece.PieceType.KNIGHT);
+                break;
+            } else if (input.equalsIgnoreCase("bishop")) {
+                move = new ChessMove(start, end, ChessPiece.PieceType.BISHOP);
+                break;
+            } else if (input.equalsIgnoreCase("queen")) {
+                move = new ChessMove(start, end, ChessPiece.PieceType.QUEEN);
+                break;
+            } else {
+                System.out.print("Invalid piece type. Try again. \n");
+            }
+        }
+        return move;
     }
 
     private void assertValidMovePositions(String[] params) throws ResponseException{
