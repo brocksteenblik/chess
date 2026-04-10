@@ -61,7 +61,15 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             connections.add(gameID, session);
             ServerMessage rootNotif = new LoadGameMessage(game);
             connections.messageRoot(session, gameID, rootNotif);
-            String message = String.format("%s has joined the game", username);
+            String color;
+            if (game.whiteUsername().equalsIgnoreCase(username)){
+                color = "WHITE player";
+            } else if (game.blackUsername().equalsIgnoreCase(username)){
+                color = "BLACK player";
+            } else {
+                color = "observer";
+            }
+            String message = String.format("%s has joined the game as %s", username, color);
             ServerMessage notificationMessage = new NotificationMessage(message);
             connections.broadcast(session, gameID, notificationMessage);
         } catch (DataAccessException e) {
@@ -82,36 +90,35 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             connections.broadcast(null, gameID, moveNotif);
             String start = move.getStartPosition().toString();
             String end = move.getEndPosition().toString();
-            // Change message to work in board positions (i.e. 1d)
-            String message = String.format("%s to %s", start, end);
+            String message = String.format("Player %s moved %s to %s", username, start, end);
             ServerMessage notificationMessage = new NotificationMessage(message);
             connections.broadcast(session, gameID, notificationMessage);
-            checkGameState(game);
+            checkGameState(game, username);
         } catch (DataAccessException e) {
             ServerMessage rootError = new ErrorMessage(String.format("Error: %s", e.getMessage()));
             connections.messageRoot(session, gameID, rootError);
         }
     }
 
-    private void checkGameState(GameData gameData) throws IOException {
+    private void checkGameState(GameData gameData, String username) throws IOException {
         ChessGame game = gameData.getChessGame();
         if (game.isInCheckmate(ChessGame.TeamColor.WHITE)){
-            ServerMessage notificationMessage = new NotificationMessage("White is in Checkmate!");
+            ServerMessage notificationMessage = new NotificationMessage(String.format("White Player %s is in Checkmate!", username));
             connections.broadcast(null, gameData.gameID(), notificationMessage);
         } else if (game.isInCheckmate(ChessGame.TeamColor.BLACK)){
-            ServerMessage notificationMessage = new NotificationMessage("Black is in Checkmate!");
+            ServerMessage notificationMessage = new NotificationMessage(String.format("Black Player %s is in Checkmate!", username));
             connections.broadcast(null, gameData.gameID(), notificationMessage);
         } else if (game.isInStalemate(ChessGame.TeamColor.WHITE)){
-            ServerMessage notificationMessage = new NotificationMessage("White is in Stalemate!");
+            ServerMessage notificationMessage = new NotificationMessage(String.format("White Player %s is in Stalemate!", username));
             connections.broadcast(null, gameData.gameID(), notificationMessage);
         } else if (game.isInStalemate(ChessGame.TeamColor.BLACK)){
-            ServerMessage notificationMessage = new NotificationMessage("Black is in Stalemate!");
+            ServerMessage notificationMessage = new NotificationMessage(String.format("Black Player %s is in Stalemate!", username));
             connections.broadcast(null, gameData.gameID(), notificationMessage);
         }else if (game.isInCheck(ChessGame.TeamColor.WHITE)){
-            ServerMessage notificationMessage = new NotificationMessage("White is in Check!");
+            ServerMessage notificationMessage = new NotificationMessage(String.format("White Player %s is in Check!", username));
             connections.broadcast(null, gameData.gameID(), notificationMessage);
         } else if (game.isInCheck(ChessGame.TeamColor.BLACK)){
-            ServerMessage notificationMessage = new NotificationMessage("Black is in Check!");
+            ServerMessage notificationMessage = new NotificationMessage(String.format("Black Player %s is in Check!", username));
             connections.broadcast(null, gameData.gameID(), notificationMessage);
         }
     }
