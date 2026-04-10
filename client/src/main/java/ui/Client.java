@@ -36,13 +36,11 @@ public class Client {
         setColor("RESET");
         System.out.print("♕ Welcome to CS 240 Chess!\n");
         System.out.print(help() + "\n");
-
         Scanner scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quit")){
             startPrompt();
             String input = scanner.nextLine();
-            
             try {
                 setColor("BLUE");
                 result = eval(input);
@@ -74,7 +72,6 @@ public class Client {
         System.out.println(notification.getMessage());
         startPrompt();
     }
-
 
     public void notify(ErrorMessage notification) {
         System.out.println(notification.getErrorMessage());
@@ -149,7 +146,6 @@ public class Client {
         }
         return "Incorrect number of parameters. Make sure to include a username and a password!\n";
     }
-
 
     private String logout() throws ResponseException {
         assertLoggedIn();
@@ -253,9 +249,12 @@ public class Client {
     private String movePiece(String[] params)throws ResponseException {
         assertPlayingGame();
         assertValidMovePositions(params);
-        int rowNum = Integer.parseInt(params[0].substring(0,1));
-        String colLetter = params[0].substring(1);
-        int colNum = Integer.parseInt(convertLetterToNum(colLetter));
+        int rowNum = 0;
+        String colLetter = null;
+        int colNum = 0;
+        rowNum = Integer.parseInt(params[0].substring(0,1));
+        colLetter = params[0].substring(1);
+        colNum = Integer.parseInt(convertLetterToNum(colLetter));
         ChessPosition start;
         if (state == State.WHITE_PLAYER){
             start = new ChessPosition(rowNum, colNum);
@@ -282,37 +281,11 @@ public class Client {
     private ChessMove checkPromotionPiece(ChessPosition start, ChessPosition end, ChessMove move) {
         if (start.getRow() == 7 && end.getRow() == 8 && state == State.WHITE_PLAYER){
             if (game.getBoard().getPiece(start).getPieceType() == ChessPiece.PieceType.PAWN){
-                move = askForAndSetPromotion(move, start, end);
+                move = server.askForAndSetPromotion(move, start, end);
             }
         } else if (start.getRow() == 2 && end.getRow() == 1 && state == State.BLACK_PLAYER){
             if (game.getBoard().getPiece(start).getPieceType() == ChessPiece.PieceType.PAWN){
-                move = askForAndSetPromotion(move, start, end);
-            }
-        }
-        return move;
-    }
-
-    @NotNull
-    private ChessMove askForAndSetPromotion(ChessMove move, ChessPosition start, ChessPosition end) {
-        Scanner scanner = new Scanner(System.in);
-        while (true) {
-            System.out.print("Select promotion: 'rook', 'knight', 'bishop', 'queen'\n");
-            startPrompt();
-            String input = scanner.nextLine();
-            if (input.equalsIgnoreCase("rook")) {
-                move = new ChessMove(start, end, ChessPiece.PieceType.ROOK);
-                break;
-            } else if (input.equalsIgnoreCase("knight")) {
-                move = new ChessMove(start, end, ChessPiece.PieceType.KNIGHT);
-                break;
-            } else if (input.equalsIgnoreCase("bishop")) {
-                move = new ChessMove(start, end, ChessPiece.PieceType.BISHOP);
-                break;
-            } else if (input.equalsIgnoreCase("queen")) {
-                move = new ChessMove(start, end, ChessPiece.PieceType.QUEEN);
-                break;
-            } else {
-                System.out.print("Invalid piece type. Try again. \n");
+                move = server.askForAndSetPromotion(move, start, end);
             }
         }
         return move;

@@ -1,10 +1,14 @@
 package client;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPiece;
+import chess.ChessPosition;
 import model.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class ServerFacade {
     private final String serverUrl;
@@ -55,5 +59,30 @@ public class ServerFacade {
             joinGameRequest = new JoinGameRequest(JoinGameRequest.PlayerColor.BLACK, gameID);
         } else {throw new ResponseException(400, "Error: invalid player color");}
         communicator.usePlayGameEndpoint(serverUrl, joinGameRequest, authToken);
+    }
+
+    public ChessMove askForAndSetPromotion(ChessMove move, ChessPosition start, ChessPosition end) {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.print("Select promotion: 'rook', 'knight', 'bishop', 'queen'\n");
+            System.out.print(">>> ");
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("rook")) {
+                move = new ChessMove(start, end, ChessPiece.PieceType.ROOK);
+                break;
+            } else if (input.equalsIgnoreCase("knight")) {
+                move = new ChessMove(start, end, ChessPiece.PieceType.KNIGHT);
+                break;
+            } else if (input.equalsIgnoreCase("bishop")) {
+                move = new ChessMove(start, end, ChessPiece.PieceType.BISHOP);
+                break;
+            } else if (input.equalsIgnoreCase("queen")) {
+                move = new ChessMove(start, end, ChessPiece.PieceType.QUEEN);
+                break;
+            } else {
+                System.out.print("Invalid piece type. Try again. \n");
+            }
+        }
+        return move;
     }
 }
