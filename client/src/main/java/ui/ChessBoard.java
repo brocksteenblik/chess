@@ -21,6 +21,10 @@ public class ChessBoard {
     public static void drawWhitePlayerBoard(ChessGame game, ChessPosition chessPosition) {
         ArrayList<ChessMove> validMoves = null;
         if (chessPosition != null) {
+            if (game.getBoard().getPiece(chessPosition) == null){
+                System.out.print("Provided position does not have a Piece");
+                return;
+            }
             validMoves = (ArrayList<ChessMove>) game.validMoves(chessPosition);
             if (validMoves.isEmpty()){
                 System.out.print("Selected Piece cannot move.");
