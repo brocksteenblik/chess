@@ -155,6 +155,11 @@ public class ChessBoard {
                 return true;
             }
         }
+        for (ChessMove m : validMoves){
+            if (m.equals(new ChessMove(start, new ChessPosition(row, col), ChessPiece.PieceType.ROOK))){
+                return true;
+            }
+        }
         return false;
     }
 

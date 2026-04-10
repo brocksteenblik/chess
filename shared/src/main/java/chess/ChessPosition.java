@@ -37,7 +37,7 @@ public class ChessPosition {
     @Override
     public String toString() {
         String columnLetter = convertNumToLetter(col);
-        return String.format("[%d%s]", row, columnLetter);
+        return String.format("[%s%d]", columnLetter, row);
     }
 
     private String convertNumToLetter(int col) {
