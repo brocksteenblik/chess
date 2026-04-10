@@ -363,9 +363,9 @@ public class Client {
     private String convertLetterToNumHighlight(String col) throws ResponseException{
         if (state == State.BLACK_PLAYER) {
             return alphabeticalOrder(col);
-        } else if (state == State.WHITE_PLAYER) {
+        } else {
             return inverseAlphabeticalOrder(col);
-        } else {return "0";}
+        }
     }
 
 
